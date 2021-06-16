@@ -1,0 +1,58 @@
+ARG BASE_TAG="develop"
+FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+
+# Install Tor Browser
+COPY ./src/ubuntu/install/torbrowser $INST_SCRIPTS/torbrowser/
+RUN bash $INST_SCRIPTS/torbrowser/install_torbrowser.sh  && rm -rf $INST_SCRIPTS/torbrowser/
+
+# Update the desktop environment to be optimized for a single application
+RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN apt-get remove -y xfce4-panel
+
+# Setup the custom startup script that will be invoked when the container starts
+ENV LAUNCH_URL about:blank
+RUN echo $' \n\
+set -x \n\
+FORCE=$2 \n\
+URL=${1:-$LAUNCH_URL}  \n\
+if [ -n "$URL" ] && ( [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ) ; then \n\
+    if [ -f /tmp/custom_startup.lck ] ; then  \n\
+        echo "custom_startup already running!" \n\
+        exit 1 \n\
+    fi \n\
+    touch /tmp/custom_startup.lck \n\
+    while true \n\
+    do \n\
+        if ! pgrep firefox > /dev/null \n\
+        then \n\
+             /usr/bin/desktop_ready \n\
+             /tmp/tor-browser_en-US/Browser/start-tor-browser --detach --allow-remote --new-tab  $URL \n\
+        fi \n\
+        sleep 1 \n\
+    done \n\
+    rm /tmp/custom_startup.lck \n\
+fi \n\
+' >$STARTUPDIR/custom_startup.sh
+
+# Ensure the startup script is executable
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000

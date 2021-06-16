@@ -1,0 +1,1 @@
+Signal for Kasm Workspaces

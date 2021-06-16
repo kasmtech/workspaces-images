@@ -1,0 +1,1 @@
+VMWare Horizon Client for Kasm Workspaces

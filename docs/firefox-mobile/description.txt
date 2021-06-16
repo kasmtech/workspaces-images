@@ -1,0 +1,1 @@
+Firefox browser for Kasm Workspaces

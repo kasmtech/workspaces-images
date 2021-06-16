@@ -1,0 +1,1 @@
+zsnes emulator for Kasm Workspaces

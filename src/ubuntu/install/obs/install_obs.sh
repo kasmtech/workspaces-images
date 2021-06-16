@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -ex
+apt-get update
+apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+add-apt-repository -y ppa:obsproject/obs-studio
+apt-get update
+apt-get install -y obs-studio
+cp /usr/share/applications/com.obsproject.Studio.desktop $HOME/Desktop/
+chmod +x $HOME/Desktop/com.obsproject.Studio.desktop
+
+wget https://github.com/CatxFish/obs-v4l2sink/releases/download/0.1.0/obs-v4l2sink.deb
+apt-get install ./obs-v4l2sink.deb
+rm -f obs-v4l2sink.deb

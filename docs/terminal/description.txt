@@ -1,0 +1,1 @@
+xfce4-terminal for Kasm Workspaces

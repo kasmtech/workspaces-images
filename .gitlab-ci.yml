@@ -1,0 +1,100 @@
+image: docker
+services:
+  - docker:dind
+
+stages:
+  - build
+  - readme
+
+before_script:
+  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+  - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
+  - export SANITIZED_ROLLING_BRANCH=${SANITIZED_BRANCH}-rolling
+
+# Jobs for the develop and release branches. They should push to the private and public repos
+build:
+  stage: build
+  script:
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+
+    - docker build -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH  -f dockerfile-kasm-$KASM_IMAGE --build-arg BASE_TAG="develop" .
+
+    - docker push ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH
+    - docker push ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH
+
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop ]
+
+
+
+
+# These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
+
+build_dev:
+  stage: build
+  script:
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+
+    - docker build -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -f dockerfile-kasm-$KASM_IMAGE --build-arg BASE_TAG="develop" .
+
+    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+  except:
+    - develop
+    - /^release\/.*$/
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop ]
+
+
+
+# These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
+build_schedules:
+  stage: build
+  script:
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+
+    - docker build -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH  -f dockerfile-kasm-$KASM_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" .
+
+    - docker push ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH
+  only:
+    - schedules
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop ]
+
+
+
+update_readmes:
+  stage: readme
+  script:
+    - apk add git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${README_TEMPLATE_REPO}
+    - sed -e "/{about}/r docs/$KASM_IMAGE/README.md" -e "/{about}/d" dockerhub-readme-template/TEMPLATE.md > docs/$KASM_IMAGE/FULL_README.md
+    - cat docs/$KASM_IMAGE/FULL_README.md
+    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE-private" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  kasmweb/dockerhub-updater:latest
+    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  kasmweb/dockerhub-updater:latest
+
+  only:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop ]
+

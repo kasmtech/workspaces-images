@@ -1,0 +1,53 @@
+ARG BASE_TAG="develop"
+FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV KASM_RX_HOME $STARTUPDIR/kasmrx
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+# Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+# Update the desktop environment to be optimized for a single application
+RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN apt-get remove -y xfce4-panel
+
+### Configure Firefox Mobile Settings
+COPY ./src/ubuntu/install/firefox_mobile $INST_SCRIPTS/firefox_mobile/
+RUN bash $INST_SCRIPTS/firefox_mobile/configure_firefox_mobile.sh  && rm -rf $INST_SCRIPTS/firefox_mobile/
+
+
+### Configure Mobile Settings
+COPY ./src/ubuntu/install/mobile $INST_SCRIPTS/mobile/
+RUN bash $INST_SCRIPTS/mobile/configure_mobile.sh  && rm -rf $INST_SCRIPTS/mobile/
+
+
+# Setup the custom startup script that will be invoked when the container starts
+ENV LAUNCH_URL  http://kasmweb.com
+
+COPY ./src/ubuntu/install/firefox_mobile/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+
+
+# Update the desktop environment to be optimized for a single application
+RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN apt-get remove -y xfce4-panel
+
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
