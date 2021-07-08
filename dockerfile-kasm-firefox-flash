@@ -28,6 +28,10 @@ RUN chmod +x $STARTUPDIR/custom_startup.sh
 COPY ./src/ubuntu/install/firefox_flash $INST_SCRIPTS/firefox_flash/
 RUN bash $INST_SCRIPTS/firefox_flash/install_flash.sh  && rm -rf $INST_SCRIPTS/firefox_flash/
 
+ENV KASM_RESTRICTED_FILE_CHOOSER=1
+COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
+RUN $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
