@@ -19,6 +19,10 @@ RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME
 RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
 RUN apt-get remove -y xfce4-panel
 
+ENV KASM_RESTRICTED_FILE_CHOOSER=1
+COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
+RUN $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+
 # Setup the custom startup script that will be invoked when the container starts
 ENV LAUNCH_URL  http://kasmweb.com
 
