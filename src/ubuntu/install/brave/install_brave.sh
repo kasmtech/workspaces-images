@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run"
+CHROME_ARGS="--password-store=basic --no-sandbox --use-gl=angle --use-angle=swiftshader --user-data-dir --no-first-run"
 
 apt-get update
 apt install -y  apt-transport-https curl
