@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run"
+CHROME_ARGS="--password-store=basic --no-sandbox --use-gl=angle --use-angle=swiftshader  --user-data-dir --no-first-run"
 
 if [ "$DISTRO" = centos ]; then
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
