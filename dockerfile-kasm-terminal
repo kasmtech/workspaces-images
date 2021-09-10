@@ -13,6 +13,13 @@ RUN apt-get update && apt-get install -y tmux screen nano dnsutils zip
 
 RUN echo "set -g mouse on" > $HOME/.tmux.conf && chown 1000:1000  $HOME/.tmux.conf
 
+### Update .bashrc to run an arbitrary command if specified as an environment variable
+RUN echo "if [ ! -z \"\${SHELL_EXEC}\" ] && [ \"\${TERM}\" == \"xterm-256color\" ] ; \n\
+then \n\
+    set +e \n\
+    eval \${SHELL_EXEC} \n\
+fi  " >> $HOME/.bashrc && chown 1000:1000  $HOME/.bashrc
+
 ### Install Ansible
 COPY ./src/ubuntu/install/ansible $INST_SCRIPTS/ansible/
 RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansible/
