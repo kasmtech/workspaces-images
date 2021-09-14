@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 curl -L -o only_office.deb "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb"
+apt-get update
 apt-get install -y ./only_office.deb
 rm -rf only_office.deb
 
