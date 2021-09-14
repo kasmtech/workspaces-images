@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-centos-7-private:$BASE_TAG
+FROM kasmweb/core-centos-7:$BASE_TAG
 USER root
 
 ENV DISTRO=centos

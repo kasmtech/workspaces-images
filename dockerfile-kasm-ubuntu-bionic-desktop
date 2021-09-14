@@ -86,6 +86,10 @@ RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansib
 COPY ./src/ubuntu/install/terraform $INST_SCRIPTS/terraform/
 RUN bash $INST_SCRIPTS/terraform/install_terraform.sh  && rm -rf $INST_SCRIPTS/terraform/
 
+### Install Telegram
+COPY ./src/ubuntu/install/telegram $INST_SCRIPTS/telegram/
+RUN bash $INST_SCRIPTS/telegram/install_telegram.sh  && rm -rf $INST_SCRIPTS/telegram/
+
 ### Remove maxmius
 RUN apt-get remove -y maximus
 
