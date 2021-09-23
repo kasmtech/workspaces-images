@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run"
+CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 
 apt-get update
 
@@ -17,10 +17,11 @@ chown 1000:1000 $HOME/Desktop/microsoft-edge-dev.desktop
 mv /usr/bin/microsoft-edge-dev  /usr/bin/microsoft-edge-dev-orig
 cat >/usr/bin/microsoft-edge-dev <<EOL
 #!/usr/bin/env bash
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/microsoft-edge-dev/Default/Preferences
+sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/microsoft-edge-dev/Default/Preferences
 /opt/microsoft/msedge-dev/microsoft-edge ${CHROME_ARGS} "\$@"
 EOL
 chmod +x /usr/bin/microsoft-edge-dev
-#cp /usr/bin/microsoft-edge-dev /usr/bin/microsoft-edge
 
 sed -i 's@exec -a "$0" "$HERE/microsoft-edge" "$\@"@@g' /usr/bin/x-www-browser
 cat >>/usr/bin/x-www-browser <<EOL

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run"
+CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 
 if [ "$DISTRO" = centos ]; then
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
@@ -24,6 +24,8 @@ chown 1000:1000 $HOME/Desktop/google-chrome.desktop
 mv /usr/bin/google-chrome /usr/bin/google-chrome-orig
 cat >/usr/bin/google-chrome <<EOL
 #!/usr/bin/env bash
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/google-chrome/Default/Preferences
+sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/google-chrome/Default/Preferences
 /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@"
 EOL
 chmod +x /usr/bin/google-chrome
