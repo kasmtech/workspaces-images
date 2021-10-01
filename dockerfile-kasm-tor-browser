@@ -21,7 +21,7 @@ RUN apt-get remove -y xfce4-panel
 
 ENV KASM_RESTRICTED_FILE_CHOOSER=1
 COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
-RUN $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+RUN bash $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
 
 # Setup the custom startup script that will be invoked when the container starts
 ENV LAUNCH_URL about:blank
