@@ -1,19 +1,28 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --disable-gpu --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
+CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
+CHROME_VERSION=$1
 
 if [ "$DISTRO" = centos ]; then
-  wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-  yum localinstall -y google-chrome-stable_current_x86_64.rpm
-  rm google-chrome-stable_current_x86_64.rpm
+  if [ ! -z "${CHROME_VERSION}" ]; then
+    wget https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${CHROME_VERSION}.x86_64.rpm -O chrome.rpm
+  else
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O chrome.rpm
+  fi
+
+  yum localinstall -y chrome.rpm
+  rm chrome.rpm
 else
   apt-get update
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
-
-  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  apt-get install -y ./google-chrome-stable_current_amd64.deb
-  rm google-chrome-stable_current_amd64.deb
+  if [ ! -z "${CHROME_VERSION}" ]; then
+    wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb -O chrome.deb
+  else
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
+  fi
+  apt-get install -y ./chrome.deb
+  rm chrome.deb
 fi
 
 sed -i 's/-stable//g' /usr/share/applications/google-chrome.desktop

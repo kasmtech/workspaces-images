@@ -13,7 +13,7 @@ WORKDIR $HOME
 
 # Install Google Chrome
 COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
-RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh 87.0.4280.141-1 && rm -rf $INST_SCRIPTS/chrome/
 
 # Update the desktop environment to be optimized for a single application
 RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
@@ -31,7 +31,7 @@ RUN bash $INST_SCRIPTS/chrome_flash/install_flash.sh  && rm -rf $INST_SCRIPTS/ch
 
 ENV KASM_RESTRICTED_FILE_CHOOSER=1
 COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
-RUN $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+RUN bash $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
 
 
 ######### End Customizations ###########
