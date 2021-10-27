@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,ubuntu,terminal,remmina,rdesktop,"
+  ARM_BUILDS: ",chromium,firefox,ubuntu-bionic-desktop,terminal,remmina,rdesktop,"
 
 stages:
   - build
@@ -49,8 +49,9 @@ build_dev:
   stage: build
   image: kasmweb/docker-buildx-private:develop
   script:
-    - if [[ "$ARM_BUILDS" == *"$KASM_IMAGE"* ]]; then PLATFORM="linux/amd64,linux/arm64"; fi;
-    - echo "Building ${KASM_IMAGE} for platforms ${PLATFORM}"
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
     # to get qemu ready
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     # to prepare the buildx env
@@ -60,7 +61,7 @@ build_dev:
     - ls docs/$KASM_IMAGE/description.txt
     # Equivilant to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_TAG="develop" -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_TAG="develop" -f dockerfile-kasm-$KASM_IMAGE .
   except:
     - develop
     - /^release\/.*$/
