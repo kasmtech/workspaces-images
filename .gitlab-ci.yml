@@ -1,6 +1,10 @@
 image: docker
 services:
   - docker:dind
+variables:
+  DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
+  PLATFORM: "linux/amd64"
+  ARM_BUILDS: ",chromium,firefox,ubuntu,terminal,remmina,rdesktop,"
 
 stages:
   - build
@@ -43,17 +47,25 @@ build:
 
 build_dev:
   stage: build
+  image: kasmweb/docker-buildx-private:develop
   script:
+    - if [[ "$ARM_BUILDS" == *"$KASM_IMAGE"* ]]; then PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-
-    - docker build -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -f dockerfile-kasm-$KASM_IMAGE --build-arg BASE_TAG="develop" .
-
-    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+    # Equivilant to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_TAG="develop" -f dockerfile-kasm-$KASM_IMAGE .
   except:
     - develop
     - /^release\/.*$/
+  tags:
+    - aws-autoscale
   parallel:
     matrix:
       - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram ]
@@ -97,4 +109,3 @@ update_readmes:
   parallel:
     matrix:
       - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram ]
-
