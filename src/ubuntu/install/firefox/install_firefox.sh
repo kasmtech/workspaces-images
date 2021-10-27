@@ -27,7 +27,7 @@ fi
 if [ "$DISTRO" != centos ]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
   rm /usr/lib/firefox/libnssckbi.so
-  ln /usr/lib/x86_64-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
+  ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
 fi
 
 if [ "$DISTRO" = centos ]; then

@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -ex
-curl -L -o only_office.deb "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb"
+
+ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
+if [ "$ARCH" == "arm64" ] ; then
+  echo "Only Office is not supported on arm64, skipping Only Office installation"
+  exit 0
+fi
+
+curl -L -o only_office.deb "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_${ARCH}.deb"
 apt-get update
 apt-get install -y ./only_office.deb
 rm -rf only_office.deb

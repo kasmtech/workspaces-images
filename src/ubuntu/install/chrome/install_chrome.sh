@@ -4,6 +4,12 @@ set -ex
 CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 CHROME_VERSION=$1
 
+ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
+if [ "$ARCH" == "arm64" ] ; then
+  echo "Chrome not supported on arm64, skipping Chrome installation"
+  exit 0
+fi	
+
 if [ "$DISTRO" = centos ]; then
   if [ ! -z "${CHROME_VERSION}" ]; then
     wget https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${CHROME_VERSION}.x86_64.rpm -O chrome.rpm
