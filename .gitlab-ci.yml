@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,ubuntu-bionic-desktop,terminal,remmina,rdesktop,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,sublime-text,terminal,ubuntu-bionic-desktop,vlc,vs-code,"
 
 stages:
   - build
@@ -18,7 +18,7 @@ before_script:
 # Jobs for the develop and release branches. They should push to the private and public repos
 build:
   stage: build
-  image: kasmweb/docker-buildx-private:develop
+  image: ${ORG_NAME}/docker-buildx-private:develop
   script:
     - BUILD_PLATFORM=$PLATFORM
     - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
@@ -51,7 +51,7 @@ build:
 
 build_dev:
   stage: build
-  image: kasmweb/docker-buildx-private:develop
+  image: ${ORG_NAME}/docker-buildx-private:develop
   script:
     - BUILD_PLATFORM=$PLATFORM
     - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
@@ -79,7 +79,7 @@ build_dev:
 
 # These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
 build_schedules:
-  image: kasmweb/docker-buildx-private:develop
+  image: ${ORG_NAME}/docker-buildx-private:develop
   stage: build
   script:
     - BUILD_PLATFORM=$PLATFORM
@@ -112,8 +112,8 @@ update_readmes:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${README_TEMPLATE_REPO}
     - sed -e "/{about}/r docs/$KASM_IMAGE/README.md" -e "/{about}/d" dockerhub-readme-template/TEMPLATE.md > docs/$KASM_IMAGE/FULL_README.md
     - cat docs/$KASM_IMAGE/FULL_README.md
-    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE-private" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  kasmweb/dockerhub-updater:latest
-    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  kasmweb/dockerhub-updater:latest
+    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE-private" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  ${ORG_NAME}/dockerhub-updater:latest
+    - docker run -v $PWD:/workspace -e DOCKER_USERNAME="$README_USERNAME" -e DOCKER_PASSWORD="$README_PASSWORD" -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE" -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md" -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"  ${ORG_NAME}/dockerhub-updater:latest
 
   only:
     variables:
