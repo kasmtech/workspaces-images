@@ -50,7 +50,7 @@ kasm_startup() {
         URL=$LAUNCH_URL
     fi
 
-    if [ -n "$URL" ] && ( [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ) ; then
+    if  [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
         while true
         do
             if ! pgrep -x $PGREP > /dev/null
