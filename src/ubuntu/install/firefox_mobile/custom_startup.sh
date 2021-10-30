@@ -16,7 +16,6 @@ if [ -n "$URL" ] && ( [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ) ; t
         echo "custom_startup already running!" 
         exit 1 
     fi 
-    touch /tmp/custom_startup.lck 
     while true 
     do 
         if ! pgrep -x firefox > /dev/null 
@@ -26,5 +25,4 @@ if [ -n "$URL" ] && ( [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ) ; t
         fi
         sleep 1
     done 
-    rm /tmp/custom_startup.lck 
 fi
