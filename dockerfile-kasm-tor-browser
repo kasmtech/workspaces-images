@@ -24,7 +24,7 @@ COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
 RUN bash $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
 
 # Setup the custom startup script that will be invoked when the container starts
-ENV LAUNCH_URL about:blank
+#ENV LAUNCH_URL about:blank
 
 COPY ./src/ubuntu/install/torbrowser/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh

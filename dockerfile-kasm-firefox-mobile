@@ -33,7 +33,7 @@ RUN bash $INST_SCRIPTS/mobile/configure_mobile.sh  && rm -rf $INST_SCRIPTS/mobil
 
 
 # Setup the custom startup script that will be invoked when the container starts
-ENV LAUNCH_URL  http://kasmweb.com
+#ENV LAUNCH_URL  http://kasmweb.com
 
 COPY ./src/ubuntu/install/firefox_mobile/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh

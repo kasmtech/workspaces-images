@@ -21,6 +21,7 @@ sed -i 's/Exec=.*/Exec=sh -c \x27"$HOME\/tor-browser\/tor-browser_en-US\/Browser
 
 cat >> $TOR_HOME/tor-browser_en-US/Browser/TorBrowser/Data/Browser/profile.default/prefs.js <<EOL
 user_pref("extensions.torlauncher.prompt_at_startup", false);
+user_pref("extensions.torlauncher.quickstart", true);
 user_pref("browser.download.lastDir", "/home/kasm-user/Downloads");
 EOL
 

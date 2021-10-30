@@ -20,7 +20,7 @@ RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_
 RUN apt-get remove -y xfce4-panel
 
 # Setup the custom startup script that will be invoked when the container starts
-ENV LAUNCH_URL  http://kasmweb.com
+#ENV LAUNCH_URL  http://kasmweb.com
 
 COPY ./src/ubuntu/install/chrome/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh
