@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,sublime-text,terminal,ubuntu-bionic-desktop,vlc,vs-code,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,vlc,vs-code,"
 
 stages:
   - build
