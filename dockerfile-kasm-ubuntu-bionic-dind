@@ -1,0 +1,61 @@
+ARG BASE_TAG="develop"
+FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+ENV DOCKER_CHANNEL=stable \
+	DOCKER_VERSION=20.10.9 \
+	DOCKER_COMPOSE_VERSION=1.29.2 \
+	DEBUG=false
+
+COPY ./src/ubuntu/install/dind $INST_SCRIPTS/dind/
+COPY ./src/ubuntu/install/dind/daemon.json /etc/docker/daemon.json
+
+RUN bash $INST_SCRIPTS/dind/install_dind.sh  && rm -rf $INST_SCRIPTS/dind/
+
+COPY ./src/ubuntu/install/dind/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+COPY ./src/ubuntu/install/dind/modprobe /usr/local/bin/modprobe
+RUN chmod +x /usr/local/bin/modprobe
+COPY ./src/ubuntu/install/dind/dockerd.conf /etc/supervisor/conf.d/
+
+### Install Tools
+COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
+RUN bash $INST_SCRIPTS/tools/install_tools_deluxe.sh  && rm -rf $INST_SCRIPTS/tools/
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+### Install Sublime Text
+COPY ./src/ubuntu/install/sublime_text $INST_SCRIPTS/sublime_text/
+RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
+
+### Install Visual Studio Code
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+
+### Remove maxmius
+RUN apt-get remove -y maximus
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
