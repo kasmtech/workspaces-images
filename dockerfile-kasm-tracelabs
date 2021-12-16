@@ -1,0 +1,26 @@
+ARG BASE_TAG="develop"
+FROM kasmweb/core-kali-rolling:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+
+# Install Tracelabs utils
+COPY ./src/ubuntu/install/tracelabs $INST_SCRIPTS/tracelabs/
+RUN bash $INST_SCRIPTS/tracelabs/install_tracelabs.sh && rm -rf $INST_SCRIPTS/tracelabs/
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
