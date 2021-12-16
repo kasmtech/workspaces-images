@@ -42,7 +42,7 @@ build:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs ]
 
 
 
@@ -73,7 +73,7 @@ build_dev:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs ]
 
 
 
@@ -101,7 +101,7 @@ build_schedules:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs ]
 
 
 
@@ -121,4 +121,4 @@ update_readmes:
       - $README_PASSWORD
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs ]
