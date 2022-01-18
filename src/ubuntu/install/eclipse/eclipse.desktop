@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Eclipse IDE
+GenericName=IDE
+Comment=Sophisticated text editor for code, markup and prose
+Exec=/opt/eclipse/eclipse
+Terminal=false
+MimeType=text/plain;
+Icon=eclipse128.png
+Categories=Development;IDE;
+StartupNotify=true

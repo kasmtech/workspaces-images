@@ -1,0 +1,70 @@
+ARG BASE_TAG="develop"
+FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV KASM_RX_HOME $STARTUPDIR/kasmrx
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+
+### Install Tools
+COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
+RUN bash $INST_SCRIPTS/tools/install_tools_deluxe.sh  && rm -rf $INST_SCRIPTS/tools/
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+
+# Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+### Install Sublime Text
+COPY ./src/ubuntu/install/sublime_text $INST_SCRIPTS/sublime_text/
+RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
+
+### Install Visual Studio Code
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
+### Install Remmina
+COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
+RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
+
+### Install Only Office
+COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
+RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+
+### Install Java
+RUN apt-get update && apt-get install -y default-jdk default-jre
+
+### Install Eclipse
+COPY ./src/ubuntu/install/eclipse $INST_SCRIPTS/eclipse
+RUN bash $INST_SCRIPTS/eclipse/install_eclipse.sh && rm -rf $INST_SCRIPTS/eclipse/
+
+### Remove maxmius
+RUN apt-get remove -y maximus
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]
