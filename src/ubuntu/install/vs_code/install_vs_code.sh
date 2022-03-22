@@ -14,5 +14,9 @@ rm vs_code.deb
 apt-get update
 apt-get install -y python3-setuptools \
                    python3-venv \
-                   python3-virtualenv \
-                   maximus
+                   python3-virtualenv
+
+if [[ "$(lsb_release -cs)" == "bionic" ]];
+then
+    apt-get install -y maximus
+fi

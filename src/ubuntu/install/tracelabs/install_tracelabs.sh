@@ -35,6 +35,8 @@ chown -R 1000:1000 \
     /usr/share/OnionSearch \
     /usr/share/toutatis 
 
+apt-get install -y python3-pip
+
 pip3 install --force-reinstall zope.event
 
 sed -i 's/sudo //g' /usr/share/applications/tl*.desktop

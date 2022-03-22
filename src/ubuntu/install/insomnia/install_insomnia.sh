@@ -11,4 +11,7 @@ chown 1000:1000 $HOME/Desktop/insomnia.desktop
 rm insomnia.deb
 
 # Conveniences for python development
-apt-get install -y  maximus
+if [[ "$(lsb_release -cs)" == "bionic" ]];
+then
+    apt-get install -y  maximus
+fi

@@ -2,6 +2,7 @@
 set -ex
 
 CHROME_ARGS="--password-store=basic --no-sandbox  --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
+ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
 if [ "$DISTRO" = centos ]; then
   yum install -y chromium
@@ -10,7 +11,46 @@ else
   apt-get update
   apt-get install -y software-properties-common
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
-  apt-get install -y chromium-browser
+  
+  # Chromium on Ubuntu 19.10 or newer uses snap to install which is not
+  # currently compatible with docker containers. The new install will pull
+  # deb files from archive.ubuntu.com for ubuntu 18.04 and install them.
+  # This will work until 18.04 goes to an unsupported status.
+  if [[ ${ARCH} == "amd64" ]] ;
+  then
+    chrome_url="http://archive.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/"
+  else
+    chrome_url="http://ports.ubuntu.com/pool/universe/c/chromium-browser/"
+  fi
+
+  chromium_codecs_data=$(curl ${chrome_url})
+  chromium_codecs_data=$(grep "chromium-codecs-ffmpeg-extra_" <<< "${chromium_codecs_data}")
+  chromium_codecs_data=$(grep "18\.04" <<< "${chromium_codecs_data}")
+  chromium_codecs_data=$(grep "${ARCH}" <<< "${chromium_codecs_data}")
+  chromium_codecs_data=$(sed -n 's/.*<a href="//p' <<< "${chromium_codecs_data}")
+  chromium_codecs_data=$(sed -n 's/">.*//p' <<< "${chromium_codecs_data}")
+  echo "Chromium codec deb to download: ${chromium_codecs_data}"
+
+  chromium_data=$(curl ${chrome_url})
+  chromium_data=$(grep "chromium-browser_" <<< "${chromium_data}")
+  chromium_data=$(grep "18\.04" <<< "${chromium_data}")
+  chromium_data=$(grep "${ARCH}" <<< "${chromium_data}")
+  chromium_data=$(sed -n 's/.*<a href="//p' <<< "${chromium_data}")
+  chromium_data=$(sed -n 's/">.*//p' <<< "${chromium_data}")
+  echo "Chromium browser deb to download: ${chromium_data}"
+
+  echo "The things to download"
+  echo "${chrome_url}${chromium_codecs_data}"
+  echo "${chrome_url}${chromium_data}"
+
+  wget "${chrome_url}${chromium_codecs_data}"
+  wget "${chrome_url}${chromium_data}"
+
+  apt-get install -y ./"${chromium_codecs_data}"
+  apt-get install -y ./"${chromium_data}"
+
+  rm "${chromium_codecs_data}"
+  rm "${chromium_data}"
 fi
 
 sed -i 's/-stable//g' /usr/share/applications/chromium-browser.desktop

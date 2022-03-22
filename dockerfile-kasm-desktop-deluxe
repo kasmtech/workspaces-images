@@ -1,5 +1,6 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
@@ -11,6 +12,7 @@ WORKDIR $HOME
 ENV DEBIAN_FRONTEND noninteractive
 ENV KASM_RX_HOME $STARTUPDIR/kasmrx
 ENV INST_SCRIPTS $STARTUPDIR/install
+ENV BASE_IMAGE $BASE_IMAGE
 
 # Add Kasm Branding
 RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
@@ -95,7 +97,7 @@ COPY ./src/ubuntu/install/telegram $INST_SCRIPTS/telegram/
 RUN bash $INST_SCRIPTS/telegram/install_telegram.sh  && rm -rf $INST_SCRIPTS/telegram/
 
 ### Remove maxmius
-RUN apt-get remove -y maximus
+RUN if [[ ${BASE_IMAGE} =~ "bionic" ]]; then apt-get remove -y maximus; fi;
 
 #ADD ./src/common/scripts $STARTUPDIR
 RUN $STARTUPDIR/set_user_permission.sh $HOME

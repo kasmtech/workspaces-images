@@ -2,7 +2,9 @@
 set -ex
 START_COMMAND="zsnes"
 PGREP="zsnes"
-MAXIMUS="true"
+export MAXIMIZE="true"
+export MAXIMIZE_NAME="ZSNES"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -38,6 +40,7 @@ kasm_exec() {
     if [ -n "$URL" ] ; then
         /usr/bin/filter_ready
         /usr/bin/desktop_ready
+        bash ${MAXIMIZE_SCRIPT} &
         $START_COMMAND $ARGS $OPT_URL
     else
         echo "No URL specified for exec command. Doing nothing."
@@ -51,10 +54,6 @@ kasm_startup() {
         URL=$LAUNCH_URL
     fi
 
-    if [[ $MAXIMUS == 'true' ]] ; then
-        maximus &
-    fi
-
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
         while true
         do
@@ -63,6 +62,7 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
+                bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL
                 set -e
             fi

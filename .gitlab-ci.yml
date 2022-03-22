@@ -4,7 +4,10 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,vlc,vs-code,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,"
+  CORE_IMAGE_TAG: "develop"
+  CORE_IMAGE: "core-ubuntu-focal"
+  USE_PRIVATE_IMAGES: 0
 
 stages:
   - build
@@ -16,7 +19,65 @@ before_script:
   - export SANITIZED_ROLLING_BRANCH=${SANITIZED_BRANCH}-rolling
 
 # Jobs for the develop and release branches. They should push to the private and public repos
-build:
+build_browser_images:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
+
+build_app_images:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+
+build_ubuntu_desktop_images:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
   script:
@@ -30,9 +91,10 @@ build:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
 
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_TAG="develop" -f dockerfile-kasm-$KASM_IMAGE .
-
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg PRIVATE=$PRIVATE  --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -42,20 +104,48 @@ build:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs, java-dev ]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
 
+build_non_ubuntu:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [centos-7-desktop, tracelabs]
 
 
 
 # These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
 
-build_dev:
+build_dev_browser_images:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
   script:
     - BUILD_PLATFORM=$PLATFORM
     - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
-    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
     # to get qemu ready
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     # to prepare the buildx env
@@ -63,9 +153,12 @@ build_dev:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-    # Equivilant to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_TAG="develop" -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   except:
     - develop
     - /^release\/.*$/
@@ -73,12 +166,155 @@ build_dev:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs, java-dev ]
+      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
 
+build_dev_app_images:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+
+build_dev_ubuntu_desktop_images:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
+
+build_dev_non_ubuntu:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [centos-7-desktop, tracelabs]
 
 
 # These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
-build_schedules:
+build_schedules_browser_images:
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  stage: build
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
+        CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
+
+build_schedules_app_images:
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  stage: build
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} based on ${CORE_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+        CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
+
+build_schedules_ubuntu_desktop_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
   stage: build
   script:
@@ -92,17 +328,46 @@ build_schedules:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-    # Equivilant to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs, java-dev ]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
 
+build_schedules_non_ubuntu:
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  stage: build
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [centos-7-desktop, tracelabs]
 
 
 update_readmes:
