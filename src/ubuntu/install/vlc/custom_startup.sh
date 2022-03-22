@@ -2,7 +2,9 @@
 set -ex
 START_COMMAND="vlc"
 PGREP="vlc"
-MAXIMUS="true"
+export MAXIMIZE="true"
+export MAXIMIZE_NAME="VLC"
+MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="--no-metadata-network-access --no-qt-privacy-ask"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -38,6 +40,7 @@ kasm_exec() {
     if [ -n "$URL" ] ; then
         /usr/bin/filter_ready
         /usr/bin/desktop_ready
+        bash ${MAXIMIZE_SCRIPT} &
         $START_COMMAND $ARGS $OPT_URL
     else
         echo "No URL specified for exec command. Doing nothing."
@@ -52,10 +55,6 @@ kasm_startup() {
     fi
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
-
-        if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi
         
         while true
         do
@@ -64,6 +63,7 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
+                bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL
                 set -e
             fi

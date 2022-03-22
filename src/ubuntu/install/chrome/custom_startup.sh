@@ -2,8 +2,12 @@
 set -ex
 START_COMMAND="google-chrome"
 PGREP="chrome"
-MAXIMUS="false"
-DEFAULT_ARGS="--start-maximized"
+MAXIMIZE="true"
+DEFAULT_ARGS=""
+
+if [[ $MAXIMIZE == 'true' ]] ; then
+    DEFAULT_ARGS+=" --start-maximized"
+fi
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
@@ -52,10 +56,6 @@ kasm_startup() {
     fi
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
-
-        if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi
 
         while true
         do

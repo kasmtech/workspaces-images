@@ -1,14 +1,20 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
+ENV BASE_IMAGE $BASE_IMAGE
 WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# Maltego wants a browser installed and the default is Firefox, Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
 
 COPY ./src/ubuntu/install/maltego $INST_SCRIPTS/maltego/
 RUN bash $INST_SCRIPTS/maltego/install_maltego.sh  && rm -rf $INST_SCRIPTS/maltego/
@@ -25,6 +31,9 @@ RUN apt-get remove -y xfce4-panel
 
 
 ######### End Customizations ###########
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
 
 RUN chown 1000:0 $HOME
 

@@ -2,8 +2,12 @@
 set -ex
 START_COMMAND="chromium-browser"
 PGREP="chromium"
-MAXIMUS="false"
-DEFAULT_ARGS="--start-maximized"
+MAXIMIZE="true"
+DEFAULT_ARGS=""
+
+if [[ $MAXIMIZE == 'true' ]] ; then
+    DEFAULT_ARGS+=" --start-maximized"
+fi
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
@@ -51,11 +55,7 @@ kasm_startup() {
         URL=$LAUNCH_URL
     fi
 
-    if  [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
-
-         if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi       
+    if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
         
         while true
         do

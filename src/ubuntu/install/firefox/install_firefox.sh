@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -xe
 
+ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
+
 set_centos_desktop_icon() {
   sed -i -e 's!Icon=.\+!Icon=/usr/share/icons/hicolor/48x48/apps/firefox.png!' "$HOME/Desktop/firefox.desktop"
 }
@@ -18,10 +20,15 @@ fi
 if [ "$DISTRO" = centos ]; then
   yum clean all
 else
-  # Plugin to support running flash videos for sites like vimeo
-  apt-get install -y browser-plugin-freshplayer-pepperflash
-  apt-mark hold firefox
-  apt-get clean -y
+  if [ "$ARCH" == "arm64" ] && [ "$(lsb_release -cs)" == "focal" ] ; then
+    echo "Firefox flash player not supported on arm64 Ubuntu Focal Skipping"
+  else
+    # Plugin to support running flash videos for sites like vimeo
+    apt-get update
+    apt-get install -y browser-plugin-freshplayer-pepperflash
+    apt-mark hold firefox
+    apt-get clean -y
+  fi
 fi
 
 if [ "$DISTRO" != centos ]; then

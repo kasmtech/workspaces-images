@@ -5,7 +5,7 @@ set -ex
 # Configure chrome to use the pre-installed version , otherwise it will try and fetch it itself the first time it is
 # used which requires internet access, and it may possibly be removed from being downloaded in the future.
 
-echo "deb http://archive.canonical.com/ubuntu/ bionic partner" > /etc/apt/sources.list.d/canonical_partner.list
+echo "deb http://archive.canonical.com/ubuntu/ $(lsb_release -cs) partner" > /etc/apt/sources.list.d/canonical_partner.list
 apt-get update
 apt-get install -y  pepperflashplugin-nonfree
 rm /etc/apt/sources.list.d/canonical_partner.list

@@ -1,10 +1,12 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
-ENV INST_SCRIPTS $STARTUPDIR/install
+ENV INST_SCRIPTS $STARTUPDIR/
+ENV BASE_IMAGE $BASE_IMAGE
 WORKDIR $HOME
 
 ######### Customize Container Here ###########

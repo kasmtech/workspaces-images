@@ -5,7 +5,7 @@ apt-get update
 apt-get install -y rdesktop
 
 
-wget https://download3.vmware.com/software/view/viewclients/CART22FQ1/VMware-Horizon-Client-2103-8.2.0-17742757.x64.bundle -O horizons.bundle
+wget https://download3.vmware.com/software/view/viewclients/CART22FH2/VMware-Horizon-Client-2111-8.4.0-18957622.x64.bundle -O horizons.bundle
 chmod +x ./horizons.bundle
 
 export TERM=dumb
