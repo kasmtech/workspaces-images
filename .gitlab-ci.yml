@@ -34,7 +34,7 @@ build_browser_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   only:
@@ -63,7 +63,7 @@ build_app_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   only:
@@ -92,9 +92,9 @@ build_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg PRIVATE=$PRIVATE  --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -120,10 +120,13 @@ build_non_ubuntu:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
+    # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -154,7 +157,7 @@ build_dev_browser_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
@@ -183,7 +186,7 @@ build_dev_app_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
@@ -212,11 +215,11 @@ build_dev_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   except:
     - develop
     - /^release\/.*$/
@@ -240,11 +243,15 @@ build_dev_non_ubuntu:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+    # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
   except:
     - develop
     - /^release\/.*$/
@@ -271,7 +278,7 @@ build_schedules_browser_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
@@ -300,7 +307,7 @@ build_schedules_app_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
@@ -329,11 +336,11 @@ build_schedules_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; CORE_IMAGE=$CORE_IMAGE-private; else PRIVATE=""; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
@@ -356,11 +363,15 @@ build_schedules_non_ubuntu:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-    - if [[ $USE_PRIVATE_IMAGES ]]; then PRIVATE=-private; else PRIVATE=""; fi;
+    # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg PRIVATE=$PRIVATE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:

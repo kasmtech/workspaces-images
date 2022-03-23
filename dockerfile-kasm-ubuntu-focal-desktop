@@ -1,6 +1,6 @@
 ARG BASE_TAG="develop"
-ARG PRIVATE=""
-FROM kasmweb/core-ubuntu-focal$PRIVATE:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 

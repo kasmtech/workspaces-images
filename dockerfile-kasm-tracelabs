@@ -1,6 +1,6 @@
 ARG BASE_TAG="develop"
-ARG PRIVATE=""
-FROM kasmweb/core-kali-rolling$PRIVATE:$BASE_TAG
+ARG BASE_IMAGE="core-kali-rolling"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
 ENV HOME /home/kasm-default-profile
