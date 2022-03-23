@@ -397,4 +397,4 @@ update_readmes:
       - $README_PASSWORD
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-bionic-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-bionic-dind, ubuntu-bionic-dind-rootless, tracelabs, java-dev ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-focal-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-focal-dind, ubuntu-focal-dind-rootless, tracelabs, java-dev ]
