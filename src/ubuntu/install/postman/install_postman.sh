@@ -19,9 +19,3 @@ chmod +x /usr/share/applications/postman.desktop
 cp /usr/share/applications/postman.desktop $HOME/Desktop/postman.desktop
 chmod +x $HOME/Desktop/postman.desktop
 chown 1000:1000 $HOME/Desktop/postman.desktop
-
-if [[ "$(lsb_release -cs)" == "bionic" ]];
-then
-    apt-get update
-    apt-get install -y maximus
-fi

@@ -11,10 +11,6 @@ fi
 
 wget -q  https://zoom.us/client/latest/zoom_${ARCH}.deb
 apt-get update
-if [[ "$(lsb_release -cs)" == "bionic" ]];
-then
-    apt-get install -y maximus
-fi
 apt-get install -y ./zoom_${ARCH}.deb
 rm zoom_amd64.deb
 cp /usr/share/applications/Zoom.desktop $HOME/Desktop/

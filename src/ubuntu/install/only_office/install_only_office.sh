@@ -17,9 +17,3 @@ sed -i 's/ONLYOFFICE Desktop Editors/ONLYOFFICE/g' $HOME/Desktop/onlyoffice-desk
 chmod +x $HOME/Desktop/onlyoffice-desktopeditors.desktop
 # KASM-1541
 sed -i 's#/usr/bin/onlyoffice-desktopeditors %U$#bash -c "source ~/.bashrc \&\& /usr/bin/onlyoffice-desktopeditors %U"#' /usr/share/applications/onlyoffice-desktopeditors.desktop
-
-if [[ "$(lsb_release -cs)" == "bionic" ]];
-then
-    apt-get update
-    apt-get install -y maximus
-fi
