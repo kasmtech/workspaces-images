@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 apt-get update
-if [[ "$(lsb_release -cs)" == "bionic" ]];
-then
-    apt-get install -y maximus
-fi
+
 curl -L -o discord.deb  "https://discord.com/api/download?platform=linux&format=deb"
 apt-get install -y ./discord.deb
 rm discord.deb

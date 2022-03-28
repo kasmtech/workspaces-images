@@ -55,10 +55,6 @@ kasm_startup() {
 
     if  [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
 
-         if [[ $MAXIMUS == 'true' ]] ; then
-            maximus &
-        fi       
-
         while true
         do
             if ! pgrep -x $PGREP > /dev/null

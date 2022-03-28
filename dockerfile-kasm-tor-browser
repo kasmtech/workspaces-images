@@ -6,7 +6,6 @@ USER root
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
-ENV BASE_IMAGE $BASE_IMAGE
 # TODO: Once we satisfy KASM-1423, move these to the core images instead
 ENV PULSE_RUNTIME_PATH "/tmp/pulse"
 ENV PULSE_STATE_PATH "/tmp/pulse"

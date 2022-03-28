@@ -6,7 +6,6 @@ USER root
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/
-ENV BASE_IMAGE $BASE_IMAGE
 WORKDIR $HOME
 
 ######### Customize Container Here ###########

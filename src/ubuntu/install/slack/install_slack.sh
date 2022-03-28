@@ -22,10 +22,7 @@ version=4.12.2
 # This path may not be accurate once arm64 support arrives. Specifically I don't know if it will still be under x64
 wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-desktop-${version}-${ARCH}.deb
 apt-get update
-if [[ "$(lsb_release -cs)" == "bionic" ]];
-then
-    apt-get install -y maximus
-fi
+
 apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
 rm slack-desktop-${version}-${ARCH}.deb
 sed -i 's,/usr/bin/slack,/usr/bin/slack --no-sandbox,g' /usr/share/applications/slack.desktop

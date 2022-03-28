@@ -1,6 +1,6 @@
 ARG BASE_TAG="develop"
-ARG PRIVATE=""
-FROM kasmweb/core-ubuntu-focal$PRIVATE:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
@@ -12,7 +12,6 @@ WORKDIR $HOME
 ENV DEBIAN_FRONTEND noninteractive
 ENV KASM_RX_HOME $STARTUPDIR/kasmrx
 ENV INST_SCRIPTS $STARTUPDIR/install
-ENV BASE_IMAGE $BASE_IMAGE
 
 
 ### Install Tools
@@ -91,9 +90,6 @@ RUN bash $INST_SCRIPTS/terraform/install_terraform.sh  && rm -rf $INST_SCRIPTS/t
 ### Install Telegram
 COPY ./src/ubuntu/install/telegram $INST_SCRIPTS/telegram/
 RUN bash $INST_SCRIPTS/telegram/install_telegram.sh  && rm -rf $INST_SCRIPTS/telegram/
-
-### Remove maxmius
-RUN if [[ ${BASE_IMAGE} =~ "bionic" ]]; then apt-get remove -y maximus; fi;
 
 #ADD ./src/common/scripts $STARTUPDIR
 RUN $STARTUPDIR/set_user_permission.sh $HOME
