@@ -3,7 +3,7 @@
 ECLIPSE_VER_DATE="2021-12"
 
 cd /tmp
-wget -q -O eclipse.tar.gz "https://mirrors.xmission.com/eclipse/technology/epp/downloads/release/${ECLIPSE_VER_DATE}/R/eclipse-java-${ECLIPSE_VER_DATE}-R-linux-gtk-x86_64.tar.gz"
+wget -q -O eclipse.tar.gz "https://mirrors.xmission.com/eclipse/technology/epp/downloads/release/${ECLIPSE_VER_DATE}/R/eclipse-java-${ECLIPSE_VER_DATE}-R-linux-gtk-$(arch).tar.gz"
 tar -xzf eclipse.tar.gz -C /opt
 
 ECLIPSE_ICON="/opt/eclipse/plugins/$(ls /opt/eclipse/plugins/ | grep -m 1 org.eclipse.platform_)/eclipse128.png"

@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="/opt/Telegram/Telegram"
-PGREP="Telegram"
+if [ "$(arch)" == "aarch64" ]; then
+  START_COMMAND="/usr/bin/telegram-desktop"
+  PGREP="telegram-desktop"
+else 
+  START_COMMAND="/opt/Telegram/Telegram"
+  PGREP="Telegram"
+fi
 export MAXIMIZE="false"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="--no-sandbox"
