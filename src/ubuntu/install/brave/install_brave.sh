@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
+CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --check-for-update-interval=31449600"
 
 apt-get update
 apt install -y  apt-transport-https curl
@@ -34,15 +34,15 @@ cat >>/usr/bin/x-www-browser <<EOL
 exec -a "\$0" "\$HERE/brave" "${CHROME_ARGS}"  "\$@"
 EOL
 
-mkdir -p /etc/chromium/policies/managed/
+mkdir -p /etc/brave/policies/managed/
 # Vanilla Chrome looks for policies in /etc/opt/chrome/policies/managed which is used by web filtering.
 #   Create a symlink here so filter is applied to brave as well.
 mkdir -p /etc/opt/chrome/policies/
-ln -s /etc/chromium/policies/managed /etc/opt/chrome/policies/
-cat >>/etc/chromium/policies/managed/default_managed_policy.json <<EOL
+ln -s /etc/brave/policies/managed /etc/opt/chrome/policies/
+cat >>/etc/brave/policies/managed/default_managed_policy.json <<EOL
 {"CommandLineFlagSecurityWarningsEnabled": false, "DefaultBrowserSettingEnabled": false}
 EOL
-cat >>/etc/chromium/policies/managed/disable_tor.json <<EOL
+cat >>/etc/brave/policies/managed/disable_tor.json <<EOL
 {"TorDisabled": true}
 EOL
 
