@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 set -ex
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:nextcloud-devs/client
-apt update
-apt install -y nextcloud-client
+if [ "${DISTRO}" == "oracle8" ]; then
+  dnf install -y nextcloud-client
+  dnf clean all
+elif [ "${DISTRO}" == "opensuse" ]; then
+  zypper install -yn nextcloud-desktop
+  zypper clean --all
+else
+  apt-get install -y software-properties-common
+  add-apt-repository -y ppa:nextcloud-devs/client
+  apt update
+  apt install -y nextcloud-client
+fi
 
 cat >$HOME/Desktop/nextcloud.desktop  <<EOL
 [Desktop Entry]

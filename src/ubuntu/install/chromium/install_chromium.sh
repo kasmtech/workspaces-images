@@ -4,9 +4,17 @@ set -ex
 CHROME_ARGS="--password-store=basic --no-sandbox  --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
-if [ "$DISTRO" = centos ]; then
-  yum install -y chromium
-  yum clean all
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8) ]]; then
+  if [ "${DISTRO}" == "oracle8" ]; then
+    dnf install -y chromium
+    dnf clean all
+  else
+    yum install -y chromium
+    yum clean all
+  fi
+elif [ "${DISTRO}" == "opensuse" ]; then
+  zypper install -yn chromium
+  zypper clean --all
 else
   apt-get update
   apt-get install -y software-properties-common
@@ -68,7 +76,7 @@ EOL
 chmod +x /usr/bin/chromium-browser
 cp /usr/bin/chromium-browser /usr/bin/chromium
 
-if [ "$DISTRO" = centos ]; then
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|opensuse) ]]; then
   cat >> $HOME/.config/mimeapps.list <<EOF
     [Default Applications]
     x-scheme-handler/http=chromium-browser.desktop
