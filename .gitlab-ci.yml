@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
