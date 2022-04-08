@@ -10,15 +10,27 @@ if [ "$ARCH" == "arm64" ] ; then
   exit 0
 fi	
 
-if [ "$DISTRO" = centos ]; then
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8) ]]; then
   if [ ! -z "${CHROME_VERSION}" ]; then
     wget https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${CHROME_VERSION}.x86_64.rpm -O chrome.rpm
   else
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O chrome.rpm
   fi
-
-  yum localinstall -y chrome.rpm
+  if [ "${DISTRO}" == "oracle8" ]; then
+    dnf localinstall -y chrome.rpm
+    dnf clean all
+  else
+    yum localinstall -y chrome.rpm
+    yum clean all
+  fi
   rm chrome.rpm
+elif [ "${DISTRO}" == "opensuse" ]; then
+  zypper ar http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
+  wget https://dl.google.com/linux/linux_signing_key.pub
+  rpm --import linux_signing_key.pub
+  rm linux_signing_key.pub
+  zypper install -yn google-chrome-stable
+  zypper clean --all
 else
   apt-get update
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
@@ -46,7 +58,7 @@ EOL
 chmod +x /usr/bin/google-chrome
 cp /usr/bin/google-chrome /usr/bin/chrome
 
-if [ "$DISTRO" = centos ]; then
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|opensuse) ]]; then
   cat >> $HOME/.config/mimeapps.list <<EOF
     [Default Applications]
     x-scheme-handler/http=google-chrome.desktop

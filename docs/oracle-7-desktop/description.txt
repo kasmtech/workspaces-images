@@ -1,0 +1,1 @@
+Oracle Linux 7 desktop for Kasm Workspaces
