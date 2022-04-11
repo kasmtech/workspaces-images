@@ -10,9 +10,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-
+# Install Postman
 COPY ./src/ubuntu/install/postman $INST_SCRIPTS/postman/
 RUN bash $INST_SCRIPTS/postman/install_postman.sh  && rm -rf $INST_SCRIPTS/postman/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 
 COPY ./src/ubuntu/install/postman/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh
