@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
@@ -75,7 +75,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office]
 
 build_ubuntu_desktop_images:
   stage: build
@@ -201,7 +201,7 @@ build_dev_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office]
 
 build_dev_ubuntu_desktop_images:
   stage: build
@@ -324,7 +324,7 @@ build_schedules_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office]
         CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
 
 build_schedules_ubuntu_desktop_images:
@@ -406,4 +406,4 @@ update_readmes:
       - $README_PASSWORD
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-focal-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-focal-dind, ubuntu-focal-dind-rootless, tracelabs, java-dev, oracle-7-desktop, oracle-8-desktop, opensuse-15-desktop ]
+      - KASM_IMAGE: [chrome, chromium, firefox, desktop, desktop-deluxe, firefox-mobile, tor-browser, doom, edge, terminal, vmware-horizon, remmina, rdesktop, brave, discord, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, ubuntu-focal-desktop, maltego, centos-7-desktop, telegram, hunchly, ubuntu-focal-dind, ubuntu-focal-dind-rootless, tracelabs, java-dev, oracle-7-desktop, oracle-8-desktop, opensuse-15-desktop, libre-office ]
