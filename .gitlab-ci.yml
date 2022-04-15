@@ -268,7 +268,7 @@ test_multi_arch_dev:
         -e PUID=1000
         -e DOCKERUSER=$DOCKER_HUB_USERNAME
         -e DOCKERPASS=$DOCKER_HUB_PASSWORD
-        -e TEST_IMAGE="${ORG_NAME}/${KASM_IMAGE}:$(arch)-$SANITIZED_BRANCH"
+        -e TEST_IMAGE="${ORG_NAME}/${KASM_IMAGE}-private:$(arch)-$SANITIZED_BRANCH"
         -e TEST_WEBFILTER="false"
         -e AWS_KEY=${KASM_TEST_AWS_KEY}
         -e AWS_SECRET="${KASM_TEST_AWS_SECRET}"
@@ -299,7 +299,7 @@ test_single_arch_dev:
         -e PUID=1000
         -e DOCKERUSER=$DOCKER_HUB_USERNAME
         -e DOCKERPASS=$DOCKER_HUB_PASSWORD
-        -e TEST_IMAGE="${ORG_NAME}/${KASM_IMAGE}:$SANITIZED_BRANCH"
+        -e TEST_IMAGE="${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH"
         -e TEST_WEBFILTER="false"
         -e AWS_KEY=${KASM_TEST_AWS_KEY}
         -e AWS_SECRET="${KASM_TEST_AWS_SECRET}"
@@ -320,12 +320,12 @@ test_single_arch_dev:
 manifest_dev:
   stage: manifest
   script:
-    - docker pull ${ORG_NAME}/${KASM_IMAGE}:x86_64-$SANITIZED_BRANCH
-    - docker pull ${ORG_NAME}/${KASM_IMAGE}:aarch64-$SANITIZED_BRANCH
-    - "docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}:$SANITIZED_BRANCH || :"
-    - docker manifest create ${ORG_NAME}/${KASM_IMAGE}:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}:x86_64-$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}:aarch64-$SANITIZED_BRANCH
-    - docker manifest annotate ${ORG_NAME}/${KASM_IMAGE}:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}:aarch64-$SANITIZED_BRANCH --os linux --arch arm64 --variant v8
-    - docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}:$SANITIZED_BRANCH
+    - docker pull ${ORG_NAME}/${KASM_IMAGE}-private:x86_64-$SANITIZED_BRANCH
+    - docker pull ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH
+    - "docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH || :"
+    - docker manifest create ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:x86_64-$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH
+    - docker manifest annotate ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH --os linux --arch arm64 --variant v8
+    - docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH
   except:
     - develop
     - /^release\/.*$/
