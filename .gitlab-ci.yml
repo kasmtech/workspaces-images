@@ -57,8 +57,8 @@ variables:
 
 stages:
   - build
-  - test
   - manifest
+  - test
   - readme
 
 before_script:
