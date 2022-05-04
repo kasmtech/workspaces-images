@@ -56,6 +56,8 @@ kasm_startup() {
 
     if [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ; then
 
+        echo "Entering process startup loop"
+        set +x
         while true
         do
             if ! pgrep -x $PGREP > /dev/null
@@ -70,6 +72,7 @@ kasm_startup() {
             fi
             sleep 1
         done
+        set -x
 
     fi
 
