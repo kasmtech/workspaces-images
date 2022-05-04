@@ -8,8 +8,10 @@ fi
 
 
 wget -q https://zoom.us/client/latest/zoom_openSUSE_$(arch).rpm
-rpm --import https://zoom.us/linux/download/pubkey
-zypper install -yn zoom_openSUSE_$(arch).rpm
+wget -O /tmp/package-signing-key.pub https://zoom.us/linux/download/pubkey
+rpm --import /tmp/package-signing-key.pub
+rm -f /tmp/package-signing-key.pub
+zypper install -yn --allow-unsigned-rpm zoom_openSUSE_$(arch).rpm
 zypper clean --all
 rm zoom_openSUSE_$(arch).rpm
 sed -i 's,/usr/bin/zoom,/usr/bin/zoom --no-sandbox,g' /usr/share/applications/Zoom.desktop
