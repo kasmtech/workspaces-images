@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
@@ -24,6 +24,7 @@ variables:
   - sublime-text
   - telegram
   - terminal
+  - thunderbird
   - tor-browser
   - ubuntu-focal-desktop
   - vlc
@@ -57,8 +58,8 @@ variables:
 
 stages:
   - build
-  - manifest
   - test
+  - manifest
   - readme
 
 before_script:
@@ -123,7 +124,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird]
 
 build_ubuntu_desktop_images:
   stage: build
@@ -189,10 +190,7 @@ build_non_ubuntu:
     matrix:
       - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
 
-
-
 # These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
-
 build_multi_arch_dev:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -391,7 +389,7 @@ build_schedules_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird]
         CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
 
 build_schedules_ubuntu_desktop_images:
@@ -519,6 +517,7 @@ update_readmes:
           - teams
           - telegram
           - terminal
+          - thunderbird
           - tor-browser
           - tracelabs
           - ubuntu-focal-desktop
