@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -ex
+LD_LIBRARY_PATH=:/usr/lib/libreoffice/program:/usr/lib/$(arch)-linux-gnu/
 START_COMMAND="libreoffice"
 PGREP="soffice.bin"
 export MAXIMIZE="true"
