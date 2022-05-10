@@ -6,4 +6,4 @@ apt update
 wget -qO- https://dl.winehq.org/wine-builds/winehq.key | apt-key add -
 apt install software-properties-common
 apt-add-repository "deb http://dl.winehq.org/wine-builds/ubuntu/ $(lsb_release -cs) main"
-apt install -y --install-recommends winehq-stable
+apt install -y --install-recommends winehq-stable winetricks
