@@ -4,21 +4,27 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
 
 # YAML level anchors
 .MULTI_ARCH_BUILDS: &MULTI_ARCH_BUILDS
+  - audacity
   - chromium
+  - deluge
   - doom
+  - filezilla
   - firefox
   - gimp
+  - inkscape
   - java-dev
   - libre-office
   - opensuse-15-desktop
   - oracle-8-desktop
+  - pinta
+  - qbittorrent
   - rdesktop
   - remmina
   - sublime-text
@@ -31,6 +37,7 @@ variables:
   - vs-code
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
+  - atom
   - brave
   - centos-7-desktop
   - chrome
@@ -124,7 +131,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
 
 build_ubuntu_desktop_images:
   stage: build
@@ -349,7 +356,7 @@ build_schedules_browser_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE-IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
@@ -361,7 +368,6 @@ build_schedules_browser_images:
   parallel:
     matrix:
       - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
-        CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
 
 build_schedules_app_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -389,8 +395,7 @@ build_schedules_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird]
-        CORE_IMAGE: [core-ubuntu-bionic, core-ubuntu-focal]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, slack, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
 
 build_schedules_ubuntu_desktop_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -486,19 +491,24 @@ update_readmes:
   parallel:
     matrix:
       - KASM_IMAGE:
+          - atom
+          - audacity
           - brave
           - centos-7-desktop
           - chrome
           - chromium
+          - deluge
           - desktop
           - desktop-deluxe
           - discord
           - doom
           - edge
+          - filezilla
           - firefox
           - firefox-mobile
           - gimp
           - hunchly
+          - inkscape
           - insomnia
           - java-dev
           - libre-office 
@@ -507,7 +517,9 @@ update_readmes:
           - opensuse-15-desktop
           - oracle-7-desktop
           - oracle-8-desktop
+          - pinta
           - postman
+          - qbittorrent
           - rdesktop
           - remmina
           - signal
