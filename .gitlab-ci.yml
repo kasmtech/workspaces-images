@@ -66,8 +66,9 @@ variables:
 stages:
   - build
   - manifest
-  - test
   - readme
+  - test
+  - linktests
 
 before_script:
   - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
@@ -339,6 +340,29 @@ manifest_dev:
   parallel:
     matrix:
       - KASM_IMAGE: *MULTI_ARCH_BUILDS
+
+link_tests_single_arch_dev:
+  stage: linktests
+  script:
+    - apk add curl
+    - STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/x86_64/kasmweb/${KASM_IMAGE}-private/${SANITIZED_BRANCH}/ci-status.yml | awk -F'"' '{print $2}')
+    - if [ "${STATUS}" == "PASS" ]; then STATE=success; else STATE=failed; fi;
+    - curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${KASM_IMAGE}-private_x86_64&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/x86_64/kasmweb/${KASM_IMAGE}-private/${SANITIZED_BRANCH}/index.html"
+  parallel:
+    matrix:
+      - KASM_IMAGE: *SINGLE_ARCH_BUILDS
+
+link_tests_multi_arch_dev:
+  stage: linktests
+  script:
+    - apk add curl
+    - STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/ci-status.yml | awk -F'"' '{print $2}')
+    - if [ "${STATUS}" == "PASS" ]; then STATE=success; else STATE=failed; fi;
+    - curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${KASM_IMAGE}-private_${ARCH}&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/index.html"
+  parallel:
+    matrix:
+      - ARCH: [ aarch64, x86_64 ]
+        KASM_IMAGE: *MULTI_ARCH_BUILDS
 
 # These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
 build_schedules_browser_images:
