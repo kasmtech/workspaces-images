@@ -44,5 +44,3 @@ echo "Installing Docker Compose"
 mkdir -p /usr/local/lib/docker/cli-plugins
 curl -L https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
-useradd -m -d /home/kasm-user -s /bin/bash kasm-user 

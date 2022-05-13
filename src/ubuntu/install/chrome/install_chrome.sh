@@ -53,7 +53,13 @@ cat >/usr/bin/google-chrome <<EOL
 #!/usr/bin/env bash
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/google-chrome/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/google-chrome/Default/Preferences
-/opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@"
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
+    echo "Starting Chrome with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
+    vglrun -d "\${KASM_EGL_CARD}" /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@" 
+else
+    echo "Starting Chrome"
+    /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@"
+fi
 EOL
 chmod +x /usr/bin/google-chrome
 cp /usr/bin/google-chrome /usr/bin/chrome
