@@ -71,7 +71,13 @@ cat >/usr/bin/chromium-browser <<EOL
 #!/usr/bin/env bash
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/chromium/Default/Preferences
-/usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@"
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
+    echo "Starting Chrome with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
+    vglrun -d "\${KASM_EGL_CARD}" /usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@" 
+else
+    echo "Starting Chrome"
+    /usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@"
+fi
 EOL
 chmod +x /usr/bin/chromium-browser
 cp /usr/bin/chromium-browser /usr/bin/chromium
