@@ -348,6 +348,9 @@ link_tests_single_arch_dev:
     - STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/x86_64/kasmweb/${KASM_IMAGE}-private/${SANITIZED_BRANCH}/ci-status.yml | awk -F'"' '{print $2}')
     - if [ "${STATUS}" == "PASS" ]; then STATE=success; else STATE=failed; fi;
     - curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${KASM_IMAGE}-private_x86_64&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/x86_64/kasmweb/${KASM_IMAGE}-private/${SANITIZED_BRANCH}/index.html"
+  except:
+    - develop
+    - /^release\/.*$/
   parallel:
     matrix:
       - KASM_IMAGE: *SINGLE_ARCH_BUILDS
@@ -359,6 +362,9 @@ link_tests_multi_arch_dev:
     - STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/ci-status.yml | awk -F'"' '{print $2}')
     - if [ "${STATUS}" == "PASS" ]; then STATE=success; else STATE=failed; fi;
     - curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${KASM_IMAGE}-private_${ARCH}&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/index.html"
+  except:
+    - develop
+    - /^release\/.*$/
   parallel:
     matrix:
       - ARCH: [ aarch64, x86_64 ]
