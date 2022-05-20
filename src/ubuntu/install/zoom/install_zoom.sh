@@ -13,5 +13,6 @@ wget -q  https://zoom.us/client/latest/zoom_${ARCH}.deb
 apt-get update
 apt-get install -y ./zoom_${ARCH}.deb
 rm zoom_amd64.deb
+sed -i 's#/usr/bin/zoom#/usr/bin/zoom --no-sandbox##' /usr/share/applications/Zoom.desktop
 cp /usr/share/applications/Zoom.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/Zoom.desktop
