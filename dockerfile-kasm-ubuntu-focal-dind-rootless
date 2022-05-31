@@ -46,15 +46,15 @@ COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
 RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 
 RUN chown 1000:0 $HOME
-
+RUN mkdir -p /docker && chown 1000:0 /docker
 USER 1000
 
 ### Install docker rootless
 RUN curl -fsSL https://get.docker.com/rootless | sh
 
-ENV XDG_RUNTIME_DIR /home/kasm-user/.docker/run
+ENV XDG_RUNTIME_DIR /docker
 ENV PATH /home/kasm-user/bin:$PATH
-ENV DOCKER_HOST unix:///home/kasm-user/.docker/run/docker.sock
+ENV DOCKER_HOST unix:///docker/docker.sock
 
 USER root
 
