@@ -44,7 +44,10 @@ docker --version
 
 echo "Installing Docker Compose"
 mkdir -p /usr/local/lib/docker/cli-plugins
-curl -L https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
+COMPOSE_RELEASE=$(curl -sX GET "https://api.github.com/repos/docker/compose/releases/latest" \
+    | awk '/tag_name/{print $4;exit}' FS='[""]');
+COMPOSE_OS=$(uname -s)
+curl -L https://github.com/docker/compose/releases/download/${COMPOSE_RELEASE}/docker-compose-${COMPOSE_OS,,}-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 echo 'kasm-user:kasm-user' | chpasswd
