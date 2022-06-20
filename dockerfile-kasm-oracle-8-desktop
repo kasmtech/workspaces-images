@@ -24,7 +24,7 @@ COPY ./src/oracle/install/misc $INST_SCRIPTS/misc/
 RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
 
 # Install Chromium
-COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
+COPY ./src/common/install/chromium $INST_SCRIPTS/chromium/
 RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chromium/
 
 # Install Firefox

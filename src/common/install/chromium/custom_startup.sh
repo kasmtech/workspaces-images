@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 set -ex
-if [ "$(arch)" == "aarch64" ]; then
-  START_COMMAND="chromium"
-  PGREP="chromium"
-else
-  START_COMMAND="chrome"
-  PGREP="chrome"
-fi
-
+START_COMMAND="chromium-browser"
+PGREP="chromium"
 MAXIMIZE="true"
 DEFAULT_ARGS=""
 
