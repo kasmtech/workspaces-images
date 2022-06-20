@@ -10,19 +10,30 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-ENV DOCKER_CHANNEL=stable \
-	DOCKER_VERSION=20.10.9 \
-	DOCKER_COMPOSE_VERSION=1.29.2 \
-	DEBUG=false
+ENV DOCKER_BIN=/usr/local/lib/docker \
+    XDG_RUNTIME_DIR=/docker
 
-COPY ./src/ubuntu/install/dind_rootless $INST_SCRIPTS/dind_rootless/
-RUN bash $INST_SCRIPTS/dind_rootless/install_dind_rootless.sh  && rm -rf $INST_SCRIPTS/dind_rootless/
+RUN mkdir -p $DOCKER_BIN && chown 1000:0 $DOCKER_BIN && \
+    mkdir -p $XDG_RUNTIME_DIR && chown 1000:0 $XDG_RUNTIME_DIR
+
+ENV PATH=$DOCKER_BIN:$DOCKER_BIN/cli-plugins:$PATH \
+        DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+COPY ./src/ubuntu/install/dind_rootless/install_dind_rootless_prerequisites.sh $INST_SCRIPTS/dind_rootless/
+RUN bash $INST_SCRIPTS/dind_rootless/install_dind_rootless_prerequisites.sh
+
+COPY ./src/ubuntu/install/dind_rootless/install_dind_rootless.sh $INST_SCRIPTS/dind_rootless/
+RUN chown 1000:1000 $INST_SCRIPTS/dind_rootless/install_dind_rootless.sh
+# It's recommended that docker-rootless be installed by non root user
+USER 1000
+RUN bash $INST_SCRIPTS/dind_rootless/install_dind_rootless.sh
+USER root
+RUN rm -rf $INST_SCRIPTS/dind_rootless
 
 COPY ./src/ubuntu/install/dind_rootless/custom_startup.sh $STARTUPDIR/custom_startup.sh
-RUN chmod +x $STARTUPDIR/custom_startup.sh
-RUN chmod 755 $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh && chmod 755 $STARTUPDIR/custom_startup.sh
 
-COPY ./src/ubuntu/install/dind/modprobe /usr/local/bin/modprobe
+COPY ./src/ubuntu/install/dind_rootless/modprobe /usr/local/bin/modprobe
 RUN chmod +x /usr/local/bin/modprobe
 
 ### Install Tools
@@ -44,19 +55,6 @@ RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_co
 # Install Google Chrome
 COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
 RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
-
-RUN chown 1000:0 $HOME
-RUN mkdir -p /docker && chown 1000:0 /docker
-USER 1000
-
-### Install docker rootless
-RUN curl -fsSL https://get.docker.com/rootless | sh
-
-ENV XDG_RUNTIME_DIR /docker
-ENV PATH /home/kasm-user/bin:$PATH
-ENV DOCKER_HOST unix:///docker/docker.sock
-
-USER root
 
 ######### End Customizations ###########
 
