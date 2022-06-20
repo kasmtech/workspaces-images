@@ -2,7 +2,8 @@
 set -ex
 START_COMMAND="$HOME/tor-browser/tor-browser_en-US/Browser/start-tor-browser"
 PGREP="firefox.real"
-export MAXIMIZE="false"
+MAXIMIZE=${MAXIMIZE:-"true"}
+export MAXIMIZE=$MAXIMIZE
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="--detach --allow-remote --new-tab"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
