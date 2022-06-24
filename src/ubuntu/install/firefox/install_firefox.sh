@@ -16,6 +16,16 @@ if [[ "${DISTRO}" == @(centos|oracle7|oracle8) ]]; then
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn p11-kit-tools MozillaFirefox
+elif grep -q Jammy /etc/os-release; then
+  if [ ! -f '/etc/apt/preferences.d/mozilla-firefox' ]; then
+    add-apt-repository -y ppa:mozillateam/ppa
+    echo '
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+' > /etc/apt/preferences.d/mozilla-firefox
+  fi
+  apt-get install -y firefox p11-kit-modules
 else
   apt-mark unhold firefox
   apt-get remove firefox
@@ -34,7 +44,7 @@ elif [ "${DISTRO}" == "opensuse" ]; then
 else
   if [ "$ARCH" == "arm64" ] && [ "$(lsb_release -cs)" == "focal" ] ; then
     echo "Firefox flash player not supported on arm64 Ubuntu Focal Skipping"
-  else
+  elif ! grep -q Jammy /etc/os-release; then
     # Plugin to support running flash videos for sites like vimeo
     apt-get update
     apt-get install -y browser-plugin-freshplayer-pepperflash

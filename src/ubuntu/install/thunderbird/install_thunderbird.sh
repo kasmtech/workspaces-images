@@ -15,6 +15,14 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
 else
   apt-get update
+  if [ ! -f '/etc/apt/preferences.d/mozilla-firefox' ]; then
+    add-apt-repository -y ppa:mozillateam/ppa
+    echo '
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+' > /etc/apt/preferences.d/mozilla-firefox
+  fi
   apt-get install -y thunderbird
   rm -rf \
     /var/lib/apt/lists/* \
