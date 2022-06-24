@@ -45,11 +45,6 @@ COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
 
 
-### Install Slack
-COPY ./src/ubuntu/install/slack $INST_SCRIPTS/slack/
-RUN bash $INST_SCRIPTS/slack/install_slack.sh  && rm -rf $INST_SCRIPTS/slack/
-
-
 ### Install NextCloud
 COPY ./src/ubuntu/install/nextcloud $INST_SCRIPTS/nextcloud/
 RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/nextcloud/
