@@ -19,7 +19,13 @@ cat >/usr/bin/microsoft-edge-dev <<EOL
 #!/usr/bin/env bash
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/microsoft-edge-dev/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/microsoft-edge-dev/Default/Preferences
-/opt/microsoft/msedge-dev/microsoft-edge ${CHROME_ARGS} "\$@"
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
+    echo "Starting Edge with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
+    vglrun -d "\${KASM_EGL_CARD}" /opt/microsoft/msedge-dev/microsoft-edge ${CHROME_ARGS} "\$@" 
+else
+    echo "Starting Edge"
+    /opt/microsoft/msedge-dev/microsoft-edge ${CHROME_ARGS} "\$@"
+fi
 EOL
 chmod +x /usr/bin/microsoft-edge-dev
 
