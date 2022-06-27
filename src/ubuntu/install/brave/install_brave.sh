@@ -24,7 +24,13 @@ cat >/usr/bin/brave-browser <<EOL
 #!/usr/bin/env bash
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
-/opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\$@"
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
+    echo "Starting Brave with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
+    vglrun -d "\${KASM_EGL_CARD}" /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\$@" 
+else
+    echo "Starting Brave"
+    /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\$@"
+fi
 EOL
 chmod +x /usr/bin/brave-browser
 cp /usr/bin/brave-browser /usr/bin/brave

@@ -25,6 +25,11 @@ done
 
 FORCE=$2
 
+# run with vgl if GPU is available
+if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${KASM_RENDERD}" ] && [ -O "${KASM_RENDERD}" ] && [ -O "${KASM_EGL_CARD}" ] ; then
+    START_COMMAND="/opt/VirtualGL/bin/vglrun -d ${KASM_EGL_CARD} $START_COMMAND"
+fi
+
 kasm_exec() {
     if [ -n "$OPT_URL" ] ; then
         URL=$OPT_URL
