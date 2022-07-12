@@ -269,7 +269,7 @@ build_single_arch_dev:
 test_multi_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.10.0
+    - docker pull kasmweb/kasm-tester:1.11.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -286,7 +286,7 @@ test_multi_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.10.0
+        kasmweb/kasm-tester:1.11.0
   except:
     - develop
     - /^release\/.*$/
@@ -300,7 +300,7 @@ test_multi_arch_dev:
 test_single_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.10.0
+    - docker pull kasmweb/kasm-tester:1.11.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -317,7 +317,7 @@ test_single_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.10.0
+        kasmweb/kasm-tester:1.11.0
   except:
     - develop
     - /^release\/.*$/
