@@ -17,9 +17,13 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
 else
   apt-get update
-  apt-get install -y software-properties-common
+  apt-get install -y software-properties-common fonts-noto-cjk
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
   
+  # Font config
+  mkdir -p /home/kasm-default-profile/.config/fontconfig
+  cp /dockerstartup/install/chromium/fonts.conf /home/kasm-default-profile/.config/fontconfig/
+
   # Chromium on Ubuntu 19.10 or newer uses snap to install which is not
   # currently compatible with docker containers. The new install will pull
   # deb files from archive.ubuntu.com for ubuntu 18.04 and install them.
