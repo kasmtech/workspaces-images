@@ -17,7 +17,7 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
 else
   apt-get update
-  apt-get install -y software-properties-common
+  apt-get install -y software-properties-common ttf-mscorefonts-installer
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
   
   # Chromium on Ubuntu 19.10 or newer uses snap to install which is not
