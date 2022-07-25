@@ -24,10 +24,6 @@ RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 COPY ./src/ubuntu/install/unityhub $INST_SCRIPTS/unityhub/
 RUN bash $INST_SCRIPTS/unityhub/install_unityhub.sh  && rm -rf $INST_SCRIPTS/unityhub/
 
-COPY ./src/ubuntu/install/unityhub/custom_startup.sh $STARTUPDIR/custom_startup.sh
-RUN chmod +x $STARTUPDIR/custom_startup.sh
-RUN chmod 755 $STARTUPDIR/custom_startup.sh
-
 ######### End Customizations ###########
 
 RUN chown 1000:0 $HOME
