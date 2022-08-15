@@ -5,7 +5,7 @@ CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-d
 
 apt-get update
 
-EDGE_BUILD=$(curl -q https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/ | grep href | grep .deb | sed 's/.*href="//g'  | cut -d '"' -f1 | tail -1)
+EDGE_BUILD=$(curl -q https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/ | grep href | grep .deb | sed 's/.*href="//g'  | cut -d '"' -f1 | sort --version-sort | tail -1)
 
 wget -q -O edge.deb https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-dev/$EDGE_BUILD
 apt-get install -y ./edge.deb
