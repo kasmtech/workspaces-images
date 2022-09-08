@@ -673,8 +673,40 @@ update_readmes:
           - ubuntu-focal-dind
           - ubuntu-focal-dind-rootless
           - unityhub
-          - vivaldi
           - vlc
           - vs-code
           - zoom
           - zsnes
+
+update_readmes2:
+  stage: readme
+  script:
+    - apk add git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${README_TEMPLATE_REPO}
+    - sed -e "/{about}/r docs/$KASM_IMAGE/README.md" -e "/{about}/d" dockerhub-readme-template/TEMPLATE.md > docs/$KASM_IMAGE/FULL_README.md
+    - cat docs/$KASM_IMAGE/FULL_README.md
+    - >
+        docker run -v $PWD:/workspace
+        -e DOCKER_USERNAME="$README_USERNAME"
+        -e DOCKER_PASSWORD="$README_PASSWORD"
+        -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE-private"
+        -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md"
+        -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"
+        ${ORG_NAME}/dockerhub-updater:latest
+    - >
+        docker run -v $PWD:/workspace
+        -e DOCKER_USERNAME="$README_USERNAME"
+        -e DOCKER_PASSWORD="$README_PASSWORD"
+        -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE"
+        -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md"
+        -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"
+        ${ORG_NAME}/dockerhub-updater:latest
+
+  only:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+  parallel:
+    matrix:
+      - KASM_IMAGE:
+          - vivaldi
