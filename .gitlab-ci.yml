@@ -39,8 +39,6 @@ variables:
 
 .MULTI_ARCH_BUILDS2: &MULTI_ARCH_BUILDS2
   - vivaldi
-  - ubuntu-jammy-dind
-  - ubuntu-jammy-dind-rootless
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
   - atom
@@ -65,6 +63,8 @@ variables:
   - tracelabs
   - ubuntu-focal-dind
   - ubuntu-focal-dind-rootless
+  - ubuntu-jammy-dind
+  - ubuntu-jammy-dind-rootless
   - unityhub
   - zoom
   - zsnes
