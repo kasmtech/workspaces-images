@@ -39,6 +39,8 @@ variables:
 
 .MULTI_ARCH_BUILDS2: &MULTI_ARCH_BUILDS2
   - vivaldi
+  - ubuntu-jammy-dind
+  - ubuntu-jammy-dind-rootless
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
   - atom
@@ -166,7 +168,7 @@ build_ubuntu_desktop_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
 
 build_non_ubuntu:
   stage: build
@@ -559,7 +561,7 @@ build_schedules_ubuntu_desktop_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
 
 build_schedules_non_ubuntu:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -710,3 +712,5 @@ update_readmes2:
     matrix:
       - KASM_IMAGE:
           - vivaldi
+          - ubuntu-jammy-dind
+          - ubuntu-jammy-dind-rootless

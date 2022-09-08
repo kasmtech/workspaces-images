@@ -47,6 +47,7 @@ sed -i 's/-stable//g' /usr/share/applications/google-chrome.desktop
 
 cp /usr/share/applications/google-chrome.desktop $HOME/Desktop/
 chown 1000:1000 $HOME/Desktop/google-chrome.desktop
+chmod +x $HOME/Desktop/google-chrome.desktop
 
 mv /usr/bin/google-chrome /usr/bin/google-chrome-orig
 cat >/usr/bin/google-chrome <<EOL
