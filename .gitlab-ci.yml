@@ -4,7 +4,7 @@ services:
 variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,"
+  ARM_BUILDS: ",chromium,firefox,gimp,rdesktop,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
@@ -36,6 +36,9 @@ variables:
   - ubuntu-jammy-desktop
   - vlc
   - vs-code
+
+.MULTI_ARCH_BUILDS2: &MULTI_ARCH_BUILDS2
+  - vivaldi
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
   - atom
@@ -104,7 +107,7 @@ build_browser_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
+      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave, vivaldi]
 
 build_app_images:
   stage: build
@@ -235,6 +238,39 @@ build_multi_arch_dev:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
         KASM_IMAGE: *MULTI_ARCH_BUILDS
 
+build_multi_arch_dev2:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Set core image names
+    - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
+    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+    - >
+        docker build
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$(arch)-$SANITIZED_BRANCH
+        --build-arg BASE_IMAGE=$CORE_IMAGE
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG
+        -f dockerfile-kasm-$KASM_IMAGE .
+    - docker push ${ORG_NAME}/$KASM_IMAGE-private:$(arch)-$SANITIZED_BRANCH
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - ${TAG}
+  parallel:
+    matrix:
+      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+        KASM_IMAGE: *MULTI_ARCH_BUILDS2
+
 build_single_arch_dev:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -298,6 +334,37 @@ test_multi_arch_dev:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
         KASM_IMAGE: *MULTI_ARCH_BUILDS
 
+test_multi_arch_dev2:
+  stage: test
+  script:
+    - docker pull kasmweb/kasm-tester:1.11.0
+    - >
+        docker run --rm --privileged
+        -e KASM_PORT=443
+        -e KASM_PATH=/opt/kasm
+        -e KASM_PASSWORD=password123
+        -e PUID=1000
+        -e DOCKERUSER=$DOCKER_HUB_USERNAME
+        -e DOCKERPASS=$DOCKER_HUB_PASSWORD
+        -e TEST_IMAGE="${ORG_NAME}/${KASM_IMAGE}-private:$(arch)-$SANITIZED_BRANCH"
+        -e TEST_WEBFILTER="false"
+        -e AWS_KEY=${KASM_TEST_AWS_KEY}
+        -e AWS_SECRET="${KASM_TEST_AWS_SECRET}"
+        -e SLACK_TOKEN=${SLACK_TOKEN}
+        -e S3_BUCKET=kasm-ci
+        -e COMMIT=${CI_COMMIT_SHA}
+        -e REPO=workspaces-images
+        kasmweb/kasm-tester:1.11.0
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - ${TAG}
+  parallel:
+    matrix:
+      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+        KASM_IMAGE: *MULTI_ARCH_BUILDS2
+
 test_single_arch_dev:
   stage: test
   script:
@@ -346,6 +413,24 @@ manifest_dev:
     matrix:
       - KASM_IMAGE: *MULTI_ARCH_BUILDS
 
+manifest_dev2:
+  stage: manifest
+  script:
+    - docker pull ${ORG_NAME}/${KASM_IMAGE}-private:x86_64-$SANITIZED_BRANCH
+    - docker pull ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH
+    - "docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH || :"
+    - docker manifest create ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:x86_64-$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH
+    - docker manifest annotate ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH ${ORG_NAME}/${KASM_IMAGE}-private:aarch64-$SANITIZED_BRANCH --os linux --arch arm64 --variant v8
+    - docker manifest push --purge ${ORG_NAME}/${KASM_IMAGE}-private:$SANITIZED_BRANCH
+  except:
+    - develop
+    - /^release\/.*$/
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: *MULTI_ARCH_BUILDS2
+
 link_tests_single_arch_dev:
   stage: linktests
   script:
@@ -375,6 +460,21 @@ link_tests_multi_arch_dev:
       - ARCH: [ aarch64, x86_64 ]
         KASM_IMAGE: *MULTI_ARCH_BUILDS
 
+link_tests_multi_arch_dev2:
+  stage: linktests
+  script:
+    - apk add curl
+    - STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/ci-status.yml | awk -F'"' '{print $2}')
+    - if [ "${STATUS}" == "PASS" ]; then STATE=success; else STATE=failed; fi;
+    - curl --request POST --header "PRIVATE-TOKEN:${GITLAB_API_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/statuses/${CI_COMMIT_SHA}?state=${STATE}&name=${KASM_IMAGE}-private_${ARCH}&target_url=https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/${KASM_IMAGE}-private/${ARCH}-${SANITIZED_BRANCH}/index.html"
+  except:
+    - develop
+    - /^release\/.*$/
+  parallel:
+    matrix:
+      - ARCH: [ aarch64, x86_64 ]
+        KASM_IMAGE: *MULTI_ARCH_BUILDS2
+
 # These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
 build_schedules_browser_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -402,7 +502,7 @@ build_schedules_browser_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave]
+      - KASM_IMAGE: [chrome, chromium, firefox, firefox-mobile, tor-browser, edge, brave, vivaldi]
 
 build_schedules_app_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -577,3 +677,36 @@ update_readmes:
           - vs-code
           - zoom
           - zsnes
+
+update_readmes2:
+  stage: readme
+  script:
+    - apk add git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@${README_TEMPLATE_REPO}
+    - sed -e "/{about}/r docs/$KASM_IMAGE/README.md" -e "/{about}/d" dockerhub-readme-template/TEMPLATE.md > docs/$KASM_IMAGE/FULL_README.md
+    - cat docs/$KASM_IMAGE/FULL_README.md
+    - >
+        docker run -v $PWD:/workspace
+        -e DOCKER_USERNAME="$README_USERNAME"
+        -e DOCKER_PASSWORD="$README_PASSWORD"
+        -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE-private"
+        -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md"
+        -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"
+        ${ORG_NAME}/dockerhub-updater:latest
+    - >
+        docker run -v $PWD:/workspace
+        -e DOCKER_USERNAME="$README_USERNAME"
+        -e DOCKER_PASSWORD="$README_PASSWORD"
+        -e DOCKERHUB_REPOSITORY="${ORG_NAME}/$KASM_IMAGE"
+        -e README_FILEPATH="/workspace/docs/$KASM_IMAGE/FULL_README.md"
+        -e DESCRIPTION_FILEPATH="/workspace/docs/$KASM_IMAGE/description.txt"
+        ${ORG_NAME}/dockerhub-updater:latest
+
+  only:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+  parallel:
+    matrix:
+      - KASM_IMAGE:
+          - vivaldi
