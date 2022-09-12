@@ -63,6 +63,8 @@ variables:
   - tracelabs
   - ubuntu-focal-dind
   - ubuntu-focal-dind-rootless
+  - ubuntu-jammy-dind
+  - ubuntu-jammy-dind-rootless
   - unityhub
   - zoom
   - zsnes
@@ -154,6 +156,8 @@ build_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
@@ -166,7 +170,7 @@ build_ubuntu_desktop_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
 
 build_non_ubuntu:
   stage: build
@@ -285,6 +289,8 @@ build_single_arch_dev:
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
     - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
     - >
@@ -548,6 +554,8 @@ build_schedules_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
 
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
@@ -559,7 +567,7 @@ build_schedules_ubuntu_desktop_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless]
+      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
 
 build_schedules_non_ubuntu:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -710,3 +718,5 @@ update_readmes2:
     matrix:
       - KASM_IMAGE:
           - vivaldi
+          - ubuntu-jammy-dind
+          - ubuntu-jammy-dind-rootless
