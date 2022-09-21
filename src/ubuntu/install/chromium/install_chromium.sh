@@ -80,7 +80,10 @@ else
 fi
 EOL
 chmod +x /usr/bin/chromium-browser
-cp /usr/bin/chromium-browser /usr/bin/chromium
+
+if [ "${DISTRO}" != "opensuse" ]; then
+  cp /usr/bin/chromium-browser /usr/bin/chromium
+fi
 
 if [[ "${DISTRO}" == @(centos|oracle7|oracle8|opensuse) ]]; then
   cat >> $HOME/.config/mimeapps.list <<EOF
