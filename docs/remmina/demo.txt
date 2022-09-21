@@ -1,0 +1,7 @@
+# Live Demo
+
+**Launch a real-time demo in a new browser window:** <a href="https://app.kasmweb.com/#/cast/1452353006" target="_blank">Live Demo</a>.
+
+<a href="https://app.kasmweb.com/#/cast/1452353006" target="_blank"><img src="https://5856039.fs1.hubspotusercontent-na1.net/hub/5856039/hubfs/dockerhub/casting-buttons/Remmina.png" width="300" height="104"></a>
+
+&lowast;*Note: Demo is limited to 3 minutes and has upload/downloads restricted for security purposes.*
