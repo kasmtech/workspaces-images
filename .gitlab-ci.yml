@@ -5,7 +5,7 @@ variables:
   KASM_RELEASE: "1.11.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,"
+  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
@@ -38,6 +38,9 @@ variables:
   - vs-code
 
 .MULTI_ARCH_BUILDS2: &MULTI_ARCH_BUILDS2
+  - minetest
+  - retroarch
+  - super-tux-kart
   - vivaldi
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
@@ -137,7 +140,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
+      - KASM_IMAGE: [sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
 
 build_ubuntu_desktop_images:
   stage: build
@@ -206,6 +209,35 @@ build_non_ubuntu:
   parallel:
     matrix:
       - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+
+build_games:
+  stage: build
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [doom, minetest, retroarch, super-tux-kart]
 
 # These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
 build_multi_arch_dev:
@@ -332,6 +364,7 @@ test_multi_arch_dev:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ manifest_dev ]
   tags:
     - ${TAG}
   parallel:
@@ -363,6 +396,7 @@ test_multi_arch_dev2:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ manifest_dev2 ]
   tags:
     - ${TAG}
   parallel:
@@ -394,6 +428,7 @@ test_single_arch_dev:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ build_single_arch_dev ]
   tags:
     - aws-autoscale
   parallel:
@@ -412,6 +447,7 @@ manifest_dev:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ build_multi_arch_dev ]
   tags:
     - aws-autoscale
   parallel:
@@ -430,6 +466,7 @@ manifest_dev2:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ build_multi_arch_dev2 ]
   tags:
     - aws-autoscale
   parallel:
@@ -446,6 +483,7 @@ link_tests_single_arch_dev:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ test_single_arch_dev ]
   parallel:
     matrix:
       - KASM_IMAGE: *SINGLE_ARCH_BUILDS
@@ -460,6 +498,7 @@ link_tests_multi_arch_dev:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ test_multi_arch_dev ]
   parallel:
     matrix:
       - ARCH: [ aarch64, x86_64 ]
@@ -475,6 +514,7 @@ link_tests_multi_arch_dev2:
   except:
     - develop
     - /^release\/.*$/
+  needs: [ test_multi_arch_dev2 ]
   parallel:
     matrix:
       - ARCH: [ aarch64, x86_64 ]
@@ -535,7 +575,7 @@ build_schedules_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
+      - KASM_IMAGE: [sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
 
 build_schedules_ubuntu_desktop_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -601,6 +641,34 @@ build_schedules_non_ubuntu:
   parallel:
     matrix:
       - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+
+build_schedules_games:
+  image: ${ORG_NAME}/docker-buildx-private:develop
+  stage: build
+  script:
+    - BUILD_PLATFORM=$PLATFORM
+    - if [[ "${ARM_BUILDS}" == *",${KASM_IMAGE},"* ]]; then BUILD_PLATFORM="linux/amd64,linux/arm64"; fi;
+    - echo "Building ${KASM_IMAGE} for platforms ${BUILD_PLATFORM}"
+    # to get qemu ready
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # to prepare the buildx env
+    - docker buildx create --use
+    # Ensure readme and description files are present
+    - ls docs/$KASM_IMAGE/README.md
+    - ls docs/$KASM_IMAGE/description.txt
+    # Check for private variable to build against private core images
+    - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
+
+    # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
+    # The only way to push multiple architectures to the same tag is to use buildx.
+    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+  only:
+    - schedules
+  tags:
+    - aws-autoscale
+  parallel:
+    matrix:
+      - KASM_IMAGE: [doom, minetest, retroarch, super-tux-kart]
 
 update_readmes:
   stage: readme
@@ -688,6 +756,9 @@ update_readmes2:
   parallel:
     matrix:
       - KASM_IMAGE:
-          - vivaldi
+          - minetest
+          - retroarch
+          - super-tux-kart
           - ubuntu-jammy-dind
           - ubuntu-jammy-dind-rootless
+          - vivaldi
