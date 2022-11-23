@@ -2,7 +2,7 @@ image: docker
 services:
   - docker:dind
 variables:
-  KASM_RELEASE: "1.11.0"
+  KASM_RELEASE: "1.12.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
   ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,"
@@ -343,7 +343,7 @@ build_single_arch_dev:
 test_multi_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.11.0
+    - docker pull kasmweb/kasm-tester:1.12.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -360,7 +360,7 @@ test_multi_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.11.0
+        kasmweb/kasm-tester:1.12.0
   except:
     - develop
     - /^release\/.*$/
@@ -375,7 +375,7 @@ test_multi_arch_dev:
 test_multi_arch_dev2:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.11.0
+    - docker pull kasmweb/kasm-tester:1.12.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -392,7 +392,7 @@ test_multi_arch_dev2:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.11.0
+        kasmweb/kasm-tester:1.12.0
   except:
     - develop
     - /^release\/.*$/
@@ -407,7 +407,7 @@ test_multi_arch_dev2:
 test_single_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.11.0
+    - docker pull kasmweb/kasm-tester:1.12.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -424,7 +424,7 @@ test_single_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.11.0
+        kasmweb/kasm-tester:1.12.0
   except:
     - develop
     - /^release\/.*$/
