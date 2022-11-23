@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
-add-apt-repository -y ppa:libretro/stable
+add-apt-repository -y ppa:libretro/testing
 apt-get update
 apt-get install -y retroarch
 cp /usr/share/applications/retroarch.desktop $HOME/Desktop/
