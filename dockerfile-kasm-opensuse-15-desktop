@@ -60,10 +60,6 @@ RUN bash $INST_SCRIPTS/libre_office/install_libre_office.sh  && rm -rf $INST_SCR
 COPY ./src/opensuse/install/gimp $INST_SCRIPTS/gimp/
 RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
 
-### Install Zoom
-COPY ./src/opensuse/install/zoom $INST_SCRIPTS/zoom/
-RUN bash $INST_SCRIPTS/zoom/install_zoom.sh  && rm -rf $INST_SCRIPTS/zoom/
-
 ### Install Ansible
 COPY ./src/opensuse/install/ansible $INST_SCRIPTS/ansible/
 RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansible/
