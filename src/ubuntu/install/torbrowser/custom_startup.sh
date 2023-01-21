@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="$HOME/tor-browser/tor-browser_en-US/Browser/start-tor-browser"
+START_COMMAND="$HOME/tor-browser/tor-browser/Browser/start-tor-browser"
 PGREP="firefox.real"
 MAXIMUS="false"
 DEFAULT_ARGS="--detach --allow-remote --new-tab"
