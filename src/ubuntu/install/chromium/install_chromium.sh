@@ -101,7 +101,7 @@ if [[ "${DISTRO}" == @(centos|oracle7|oracle8|opensuse) ]]; then
     application/x-extension-xht=chromium-browser.desktop
 EOF
 else
-  sed -i 's@exec -a "$0" "$HERE/chromium" "$\@"@@g' /usr/bin/x-www-browser
+  sed -i 's@exec -a "$0" "$HERE/chromium-browser" "$\@"@@g' /usr/bin/x-www-browser
   cat >>/usr/bin/x-www-browser <<EOL
   exec -a "\$0" "\$HERE/chromium" "${CHROME_ARGS}"  "\$@"
 EOL
