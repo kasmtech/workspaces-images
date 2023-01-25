@@ -68,7 +68,14 @@ else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
 # Disabling default first run URL
-echo "pref(\"datareporting.policy.firstRunURL\", \"\");" >> "$preferences_file"
+cat >"$preferences_file" <<EOF
+pref("datareporting.policy.firstRunURL", "");
+pref("datareporting.policy.dataSubmissionEnabled", false);
+pref("datareporting.healthreport.service.enabled", false);
+pref("datareporting.healthreport.uploadEnabled", false);
+pref("trailhead.firstrun.branches", "nofirstrun-empty");
+pref("browser.aboutwelcome.enabled", false);
+EOF
 
 if [[ "${DISTRO}" == @(centos|oracle7|oracle8|opensuse) ]]; then
   # Creating a default profile
