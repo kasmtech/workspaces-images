@@ -5,12 +5,14 @@ variables:
   KASM_RELEASE: "1.12.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,"
+  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,ubuntu-focal-dind,ubuntu-focal-dind-rootless,ubuntu-jammy-dind,ubuntu-jammy-dind-rootless,almalinux-8-desktop,almalinux-9-desktop,alpine-317-desktop,debian-bullseye-desktop,fedora-37-desktop,kali-rolling-desktop,oracle-9-desktop,parrotos-5-desktop,rockylinux-8-desktop,rockylinux-9-desktop,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
 
-# YAML level anchors
+######################
+# YAML level anchors #
+######################
 .MULTI_ARCH_BUILDS: &MULTI_ARCH_BUILDS
   - audacity
   - chromium
@@ -38,9 +40,23 @@ variables:
   - vs-code
 
 .MULTI_ARCH_BUILDS2: &MULTI_ARCH_BUILDS2
+  - almalinux-8-desktop
+  - almalinux-9-desktop
+  - alpine-317-desktop
+  - debian-bullseye-desktop
+  - fedora-37-desktop
+  - kali-rolling-desktop
   - minetest
+  - oracle-9-desktop
+  - parrotos-5-desktop
   - retroarch
+  - rockylinux-8-desktop
+  - rockylinux-9-desktop
   - super-tux-kart
+  - ubuntu-focal-dind
+  - ubuntu-focal-dind-rootless
+  - ubuntu-jammy-dind
+  - ubuntu-jammy-dind-rootless
   - vivaldi
 
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
@@ -59,17 +75,86 @@ variables:
   - only-office
   - oracle-7-desktop
   - postman
+  - remnux-focal-desktop
   - signal
   - steam
-  - teams
   - tracelabs
+  - unityhub
+  - zoom
+  - zsnes
+
+.BROWSER_IMAGES: &BROWSER_IMAGES
+  - brave
+  - chrome
+  - chromium
+  - edge
+  - firefox
+  - tor-browser
+  - vivaldi
+
+.APP_IMAGES: &APP_IMAGES
+  - atom
+  - audacity
+  - blender
+  - deluge
+  - discord
+  - filezilla
+  - gimp
+  - hunchly
+  - inkscape
+  - insomnia
+  - java-dev
+  - libre-office
+  - maltego
+  - only-office
+  - pinta
+  - postman
+  - qbittorrent
+  - remmina
+  - signal
+  - steam
+  - sublime-text
+  - telegram
+  - terminal
+  - thunderbird
+  - unityhub
+  - vlc
+  - vs-code
+  - zoom
+  - zsnes
+
+.UBUNTU_IMAGES: &UBUNTU_IMAGES
+  - desktop
+  - desktop-deluxe
+  - remnux-focal-desktop
+  - ubuntu-focal-desktop
+  - ubuntu-jammy-desktop
   - ubuntu-focal-dind
   - ubuntu-focal-dind-rootless
   - ubuntu-jammy-dind
   - ubuntu-jammy-dind-rootless
-  - unityhub
-  - zoom
-  - zsnes
+
+.NON_UBUNTU_IMAGES: &NON_UBUNTU_IMAGES
+  - almalinux-8-desktop
+  - almalinux-9-desktop
+  - alpine-317-desktop
+  - centos-7-desktop
+  - debian-bullseye-desktop
+  - kali-rolling-desktop
+  - opensuse-15-desktop
+  - oracle-7-desktop
+  - oracle-8-desktop
+  - oracle-9-desktop
+  - parrotos-5-desktop
+  - rockylinux-8-desktop
+  - rockylinux-9-desktop
+  - tracelabs
+
+.GAME_IMAGES: &GAME_IMAGES
+  - doom
+  - minetest
+  - retroarch
+  - super-tux-kart
 
 stages:
   - readme
@@ -83,7 +168,9 @@ before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
   - export SANITIZED_ROLLING_BRANCH=${SANITIZED_BRANCH}-rolling
 
-# Jobs for the develop and release branches. They should push to the private and public repos
+###############################################################################################
+# Jobs for the develop and release branches. They should push to the private and public repos #
+###############################################################################################
 build_browser_images:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -100,8 +187,16 @@ build_browser_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -111,7 +206,7 @@ build_browser_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, tor-browser, edge, brave, vivaldi]
+      - KASM_IMAGE: *BROWSER_IMAGES
 
 build_app_images:
   stage: build
@@ -129,8 +224,16 @@ build_app_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -140,7 +243,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
+      - KASM_IMAGE: *APP_IMAGES
 
 build_ubuntu_desktop_images:
   stage: build
@@ -157,12 +260,22 @@ build_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
+    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -172,7 +285,7 @@ build_ubuntu_desktop_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
+      - KASM_IMAGE: *UBUNTU_IMAGES
 
 build_non_ubuntu:
   stage: build
@@ -189,16 +302,33 @@ build_non_ubuntu:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'almalinux-8-desktop' ]]; then CORE_IMAGE=core-almalinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'almalinux-9-desktop' ]]; then CORE_IMAGE=core-almalinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'alpine-317-desktop' ]]; then CORE_IMAGE=core-alpine-317; fi
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'debian-bullseye-desktop' ]]; then CORE_IMAGE=core-debian-bullseye; fi
+    - if [[ $KASM_IMAGE =~ 'fedora-37-desktop' ]]; then CORE_IMAGE=core-fedora-37; fi
+    - if [[ $KASM_IMAGE =~ 'kali-rolling-desktop' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
-    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
-    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-9-desktop' ]]; then CORE_IMAGE=core-oracle-9; fi
+    - if [[ $KASM_IMAGE =~ 'parrotos-5-desktop' ]]; then CORE_IMAGE=core-parrotos-5; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-8-desktop' ]]; then CORE_IMAGE=core-rockylinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-9-desktop' ]]; then CORE_IMAGE=core-rockylinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push
+        --platform $BUILD_PLATFORM
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH
+        --build-arg BASE_IMAGE=$CORE_IMAGE
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -208,7 +338,44 @@ build_non_ubuntu:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+      - KASM_IMAGE: *NON_UBUNTU_IMAGES
+
+build_fedora_37:
+  stage: build
+  script:
+    - >
+        docker build
+        -t ${ORG_NAME}/fedora-37-desktop:$(arch)-$SANITIZED_BRANCH
+        -f dockerfile-kasm-fedora-37-desktop .
+    - docker push ${ORG_NAME}/fedora-37-desktop:$(arch)-$SANITIZED_BRANCH
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  tags:
+    - ${TAG}
+  parallel:
+    matrix:
+      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+
+manifest_fedora_37:
+  stage: manifest
+  script:
+    - docker pull ${ORG_NAME}/fedora-37-desktop:x86_64-$SANITIZED_BRANCH
+    - docker pull ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_BRANCH
+    - "docker manifest push --purge ${ORG_NAME}/fedora-37-desktop:$SANITIZED_BRANCH || :"
+    - docker manifest create ${ORG_NAME}/fedora-37-desktop:$SANITIZED_BRANCH ${ORG_NAME}/fedora-37-desktop:x86_64-$SANITIZED_BRANCH ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_BRANCH
+    - docker manifest annotate ${ORG_NAME}/fedora-37-desktop:$SANITIZED_BRANCH ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_BRANCH --os linux --arch arm64 --variant v8
+    - docker manifest push --purge ${ORG_NAME}/fedora-37-desktop:$SANITIZED_BRANCH
+  only:
+    - develop
+    - /^release\/.*$/
+  except:
+    - schedules
+  needs: [ build_fedora_37 ]
+  tags:
+    - aws-autoscale
 
 build_games:
   stage: build
@@ -226,8 +393,16 @@ build_games:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH  -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG=$CORE_IMAGE_TAG -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push
+        --platform $BUILD_PLATFORM
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_BRANCH
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH
+        --build-arg BASE_IMAGE=$CORE_IMAGE
+        --build-arg BASE_TAG=$CORE_IMAGE_TAG
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - develop
     - /^release\/.*$/
@@ -237,9 +412,11 @@ build_games:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, minetest, retroarch, super-tux-kart]
+      - KASM_IMAGE: *GAME_IMAGES
 
-# These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
+################################################################################################################################################################
+# These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos #
+################################################################################################################################################################
 build_multi_arch_dev:
   stage: build
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -248,12 +425,24 @@ build_multi_arch_dev:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Set core image names
+    - if [[ $KASM_IMAGE =~ 'almalinux-8-desktop' ]]; then CORE_IMAGE=core-almalinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'almalinux-9-desktop' ]]; then CORE_IMAGE=core-almalinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'alpine-317-desktop' ]]; then CORE_IMAGE=core-alpine-317; fi
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'debian-bullseye-desktop' ]]; then CORE_IMAGE=core-debian-bullseye; fi
+    - if [[ $KASM_IMAGE =~ 'fedora-37-desktop' ]]; then CORE_IMAGE=core-fedora-37; fi
+    - if [[ $KASM_IMAGE =~ 'kali-rolling-desktop' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
-    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-9-desktop' ]]; then CORE_IMAGE=core-oracle-9; fi
+    - if [[ $KASM_IMAGE =~ 'parrotos-5-desktop' ]]; then CORE_IMAGE=core-parrotos-5; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-8-desktop' ]]; then CORE_IMAGE=core-rockylinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-9-desktop' ]]; then CORE_IMAGE=core-rockylinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
     - >
@@ -281,12 +470,24 @@ build_multi_arch_dev2:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Set core image names
+    - if [[ $KASM_IMAGE =~ 'almalinux-8-desktop' ]]; then CORE_IMAGE=core-almalinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'almalinux-9-desktop' ]]; then CORE_IMAGE=core-almalinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'alpine-317-desktop' ]]; then CORE_IMAGE=core-alpine-317; fi
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'debian-bullseye-desktop' ]]; then CORE_IMAGE=core-debian-bullseye; fi
+    - if [[ $KASM_IMAGE =~ 'fedora-37-desktop' ]]; then CORE_IMAGE=core-fedora-37; fi
+    - if [[ $KASM_IMAGE =~ 'kali-rolling-desktop' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
-    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-9-desktop' ]]; then CORE_IMAGE=core-oracle-9; fi
+    - if [[ $KASM_IMAGE =~ 'parrotos-5-desktop' ]]; then CORE_IMAGE=core-parrotos-5; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-8-desktop' ]]; then CORE_IMAGE=core-rockylinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-9-desktop' ]]; then CORE_IMAGE=core-rockylinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
     - >
@@ -317,11 +518,7 @@ build_single_arch_dev:
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
     - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
-    - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
-    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
-    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
-    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
-    - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
     - >
@@ -343,7 +540,7 @@ build_single_arch_dev:
 test_multi_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.12.0
+    - docker pull kasmweb/kasm-tester:1.13.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -360,7 +557,7 @@ test_multi_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.12.0
+        kasmweb/kasm-tester:1.13.0
   except:
     - develop
     - /^release\/.*$/
@@ -375,7 +572,7 @@ test_multi_arch_dev:
 test_multi_arch_dev2:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.12.0
+    - docker pull kasmweb/kasm-tester:1.13.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -392,7 +589,7 @@ test_multi_arch_dev2:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.12.0
+        kasmweb/kasm-tester:1.13.0
   except:
     - develop
     - /^release\/.*$/
@@ -407,7 +604,7 @@ test_multi_arch_dev2:
 test_single_arch_dev:
   stage: test
   script:
-    - docker pull kasmweb/kasm-tester:1.12.0
+    - docker pull kasmweb/kasm-tester:1.13.0
     - >
         docker run --rm --privileged
         -e KASM_PORT=443
@@ -424,7 +621,7 @@ test_single_arch_dev:
         -e S3_BUCKET=kasm-ci
         -e COMMIT=${CI_COMMIT_SHA}
         -e REPO=workspaces-images
-        kasmweb/kasm-tester:1.12.0
+        kasmweb/kasm-tester:1.13.0
   except:
     - develop
     - /^release\/.*$/
@@ -520,7 +717,9 @@ link_tests_multi_arch_dev2:
       - ARCH: [ aarch64, x86_64 ]
         KASM_IMAGE: *MULTI_ARCH_BUILDS2
 
-# These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags
+#########################################################################################################################################
+# These jobs are for the "rolling" release of the images. They should only run for scheduled jobs and should only push the rolling tags #
+#########################################################################################################################################
 build_schedules_browser_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
   stage: build
@@ -537,17 +736,23 @@ build_schedules_browser_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE-IMAGE-private; fi;
-
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [chrome, chromium, firefox, tor-browser, edge, brave, vivaldi]
+      - KASM_IMAGE: *BROWSER_IMAGES
 
 build_schedules_app_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -565,17 +770,23 @@ build_schedules_app_images:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, remmina, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent, blender, unityhub]
+      - KASM_IMAGE: *APP_IMAGES
 
 build_schedules_ubuntu_desktop_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -591,22 +802,30 @@ build_schedules_ubuntu_desktop_images:
     # Ensure readme and description files are present
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
-    # Check for private variable to build against private core images
+    # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
+    # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [desktop, desktop-deluxe, ubuntu-focal-desktop, ubuntu-jammy-desktop, ubuntu-focal-dind, ubuntu-focal-dind-rootless, ubuntu-jammy-dind, ubuntu-jammy-dind-rootless]
+      - KASM_IMAGE: *UBUNTU_IMAGES
 
 build_schedules_non_ubuntu:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -623,24 +842,71 @@ build_schedules_non_ubuntu:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Set base image based on kasm_image variable
+    - if [[ $KASM_IMAGE =~ 'almalinux-8-desktop' ]]; then CORE_IMAGE=core-almalinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'almalinux-9-desktop' ]]; then CORE_IMAGE=core-almalinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'alpine-317-desktop' ]]; then CORE_IMAGE=core-alpine-317; fi
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'debian-bullseye-desktop' ]]; then CORE_IMAGE=core-debian-bullseye; fi
+    - if [[ $KASM_IMAGE =~ 'fedora-37-desktop' ]]; then CORE_IMAGE=core-fedora-37; fi
+    - if [[ $KASM_IMAGE =~ 'kali-rolling-desktop' ]]; then CORE_IMAGE=core-kali-rolling; fi
+    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
-    - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
+    - if [[ $KASM_IMAGE =~ 'oracle-9-desktop' ]]; then CORE_IMAGE=core-oracle-9; fi
+    - if [[ $KASM_IMAGE =~ 'parrotos-5-desktop' ]]; then CORE_IMAGE=core-parrotos-5; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-8-desktop' ]]; then CORE_IMAGE=core-rockylinux-8; fi
+    - if [[ $KASM_IMAGE =~ 'rockylinux-9-desktop' ]]; then CORE_IMAGE=core-rockylinux-9; fi
+    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+      - KASM_IMAGE: *NON_UBUNTU_IMAGES
+
+build_fedora_37_schedules:
+  stage: build
+  script:
+    - >
+        docker build
+        -t ${ORG_NAME}/fedora-37-desktop:$(arch)-$SANITIZED_ROLLING_BRANCH
+        -f dockerfile-kasm-fedora-37-desktop .
+    - docker push ${ORG_NAME}/fedora-37-desktop:$(arch)-$SANITIZED_ROLLING_BRANCH
+  only:
+    - schedules
+  tags:
+    - ${TAG}
+  parallel:
+    matrix:
+      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+
+manifest_fedora_37_schedules:
+  stage: manifest
+  script:
+    - docker pull ${ORG_NAME}/fedora-37-desktop:x86_64-$SANITIZED_ROLLING_BRANCH
+    - docker pull ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_ROLLING_BRANCH
+    - "docker manifest push --purge ${ORG_NAME}/fedora-37-desktop:$SANITIZED_ROLLING_BRANCH || :"
+    - docker manifest create ${ORG_NAME}/fedora-37-desktop:$SANITIZED_ROLLING_BRANCH ${ORG_NAME}/fedora-37-desktop:x86_64-$SANITIZED_ROLLING_BRANCH ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_ROLLING_BRANCH
+    - docker manifest annotate ${ORG_NAME}/fedora-37-desktop:$SANITIZED_ROLLING_BRANCH ${ORG_NAME}/fedora-37-desktop:aarch64-$SANITIZED_ROLLING_BRANCH --os linux --arch arm64 --variant v8
+    - docker manifest push --purge ${ORG_NAME}/fedora-37-desktop:$SANITIZED_ROLLING_BRANCH
+  only:
+    - schedules
+  needs: [ build_fedora_37_schedules ]
+  tags:
+    - aws-autoscale
 
 build_schedules_games:
   image: ${ORG_NAME}/docker-buildx-private:develop
@@ -658,18 +924,27 @@ build_schedules_games:
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
-
     # Equivalent to docker build and docker push. Builds amd64 natively uses qemu for arm64.
     # The only way to push multiple architectures to the same tag is to use buildx.
-    - docker buildx build --push --platform $BUILD_PLATFORM -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH --build-arg BASE_IMAGE=$CORE_IMAGE --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" -f dockerfile-kasm-$KASM_IMAGE .
+    - >
+        docker buildx build --push 
+        --platform $BUILD_PLATFORM 
+        -t ${ORG_NAME}/$KASM_IMAGE:$SANITIZED_ROLLING_BRANCH 
+        -t ${ORG_NAME}/$KASM_IMAGE-private:$SANITIZED_ROLLING_BRANCH 
+        --build-arg BASE_IMAGE=$CORE_IMAGE 
+        --build-arg BASE_TAG="$SANITIZED_ROLLING_BRANCH" 
+        -f dockerfile-kasm-$KASM_IMAGE .
   only:
     - schedules
   tags:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, minetest, retroarch, super-tux-kart]
+      - KASM_IMAGE: *GAME_IMAGES
 
+###############################
+# Readme Updates in Dockerhub # 
+###############################
 update_readmes:
   stage: readme
   script:
@@ -689,6 +964,9 @@ update_readmes:
   parallel:
     matrix:
       - KASM_IMAGE:
+          - almalinux-8-desktop
+          - almalinux-9-desktop
+          - alpine-317-desktop
           - atom
           - audacity
           - blender
@@ -696,12 +974,14 @@ update_readmes:
           - centos-7-desktop
           - chrome
           - chromium
+          - debian-bullseye-desktop
           - deluge
           - desktop
           - desktop-deluxe
           - discord
           - doom
           - edge
+          - fedora-37-desktop
           - filezilla
           - firefox
           - gimp
@@ -709,33 +989,31 @@ update_readmes:
           - inkscape
           - insomnia
           - java-dev
-          - libre-office 
+          - kali-rolling-desktop
+          - libre-office
           - maltego
+          - minetest
           - only-office
           - opensuse-15-desktop
           - oracle-7-desktop
           - oracle-8-desktop
+          - oracle-9-desktop
+          - parrotos-5-desktop
           - pinta
           - postman
           - qbittorrent
           - remmina
+          - retroarch
+          - rockylinux-8-desktop
+          - rockylinux-9-desktop
           - signal
           - steam
           - sublime-text
+          - super-tux-kart
           - teams
           - telegram
           - terminal
           - thunderbird
-          - tor-browser
-          - tracelabs
-          - ubuntu-focal-desktop
-          - ubuntu-jammy-desktop
-          - ubuntu-focal-dind
-          - ubuntu-focal-dind-rootless
-          - unityhub
-          - vlc
-          - vs-code
-          - zoom
 
 update_readmes2:
   stage: readme
@@ -756,9 +1034,16 @@ update_readmes2:
   parallel:
     matrix:
       - KASM_IMAGE:
-          - minetest
-          - retroarch
-          - super-tux-kart
+          - tor-browser
+          - tracelabs
+          - ubuntu-focal-desktop
+          - ubuntu-focal-dind
+          - ubuntu-focal-dind-rootless
+          - ubuntu-jammy-desktop
           - ubuntu-jammy-dind
           - ubuntu-jammy-dind-rootless
+          - unityhub
           - vivaldi
+          - vlc
+          - vs-code
+          - zoom

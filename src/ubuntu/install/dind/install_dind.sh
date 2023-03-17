@@ -6,6 +6,7 @@ apt-get install -y \
     ca-certificates \
     curl \
     dbus-user-session \
+    fuse-overlayfs \
     kmod \
     iptables \
     openssh-client \

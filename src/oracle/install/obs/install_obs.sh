@@ -7,7 +7,7 @@ if [ "$ARCH" == "arm64" ] ; then
   exit 0
 fi
 
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
   dnf install -y obs-studio
   dnf clean all
 else

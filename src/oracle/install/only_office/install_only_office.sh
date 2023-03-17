@@ -8,7 +8,7 @@ if [ "$ARCH" == "arm64" ] ; then
 fi
 
 curl -L -o only_office.rpm "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors.$(arch).rpm"
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf localinstall -y only_office.rpm
   dnf clean all
 else

@@ -1,0 +1,92 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-rockylinux-8"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+USER root
+
+ENV DISTRO=rockylinux8
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV KASM_RX_HOME $STARTUPDIR/kasmrx
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+
+### Install Tools
+COPY ./src/oracle/install/tools $INST_SCRIPTS/tools/
+RUN bash $INST_SCRIPTS/tools/install_tools_deluxe.sh  && rm -rf $INST_SCRIPTS/tools/
+
+# Install Utilities
+COPY ./src/oracle/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install Chromium
+COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
+RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chromium/
+
+# Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+### Install Sublime Text
+COPY ./src/oracle/install/sublime_text $INST_SCRIPTS/sublime_text/
+RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
+
+### Install NextCloud
+COPY ./src/ubuntu/install/nextcloud $INST_SCRIPTS/nextcloud/
+RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/nextcloud/
+
+### Install Remmina
+COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
+RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
+
+### Install Only Office
+COPY ./src/oracle/install/only_office $INST_SCRIPTS/only_office/
+RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+
+### Install GIMP
+COPY ./src/oracle/install/gimp $INST_SCRIPTS/gimp/
+RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
+
+### Install Zoom
+COPY ./src/oracle/install/zoom $INST_SCRIPTS/zoom/
+RUN bash $INST_SCRIPTS/zoom/install_zoom.sh  && rm -rf $INST_SCRIPTS/zoom/
+
+### Install OBS Studio
+COPY ./src/oracle/install/obs $INST_SCRIPTS/obs/
+RUN bash $INST_SCRIPTS/obs/install_obs.sh  && rm -rf $INST_SCRIPTS/obs/
+
+### Install Ansible
+COPY ./src/oracle/install/ansible $INST_SCRIPTS/ansible/
+RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansible/
+
+### Install Terraform
+COPY ./src/oracle/install/terraform $INST_SCRIPTS/terraform/
+RUN bash $INST_SCRIPTS/terraform/install_terraform.sh  && rm -rf $INST_SCRIPTS/terraform/
+
+### Install Telegram
+COPY ./src/oracle/install/telegram $INST_SCRIPTS/telegram/
+RUN bash $INST_SCRIPTS/telegram/install_telegram.sh  && rm -rf $INST_SCRIPTS/telegram/
+
+### Install Thunderbird
+COPY ./src/ubuntu/install/thunderbird $INST_SCRIPTS/thunderbird/
+RUN bash $INST_SCRIPTS/thunderbird/install_thunderbird.sh  && rm -rf $INST_SCRIPTS/thunderbird/
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+RUN rm -f /etc/X11/xinit/Xclients
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]

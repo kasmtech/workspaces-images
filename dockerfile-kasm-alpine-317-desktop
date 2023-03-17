@@ -1,0 +1,97 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-alpine-317"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+USER root
+
+ENV DISTRO=alpine317
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+### Install Tools
+COPY ./src/alpine/install/tools $INST_SCRIPTS/tools/
+RUN bash $INST_SCRIPTS/tools/install_tools_deluxe.sh  && rm -rf $INST_SCRIPTS/tools/
+
+# Install Utilities
+COPY ./src/alpine/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install Chromium
+COPY ./src/alpine/install/chromium $INST_SCRIPTS/chromium/
+RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chromium/
+
+# Install Firefox
+COPY ./src/alpine/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/alpine/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+### Install Remmina
+COPY ./src/alpine/install/remmina $INST_SCRIPTS/remmina/
+RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
+
+### Install GIMP
+COPY ./src/alpine/install/gimp $INST_SCRIPTS/gimp/
+RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
+
+### Install Ansible
+COPY ./src/alpine/install/ansible $INST_SCRIPTS/ansible/
+RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansible/
+
+### Install Terraform
+COPY ./src/alpine/install/terraform $INST_SCRIPTS/terraform/
+RUN bash $INST_SCRIPTS/terraform/install_terraform.sh  && rm -rf $INST_SCRIPTS/terraform/
+
+### Install Thunderbird
+COPY ./src/alpine/install/thunderbird $INST_SCRIPTS/thunderbird/
+RUN bash $INST_SCRIPTS/thunderbird/install_thunderbird.sh  && rm -rf $INST_SCRIPTS/thunderbird/
+
+### Install Audacity
+COPY ./src/alpine/install/audacity $INST_SCRIPTS/audacity/
+RUN bash $INST_SCRIPTS/audacity/install_audacity.sh  && rm -rf $INST_SCRIPTS/audacity/
+
+### Install Blender
+COPY ./src/alpine/install/blender $INST_SCRIPTS/blender/
+RUN bash $INST_SCRIPTS/blender/install_blender.sh  && rm -rf $INST_SCRIPTS/blender/
+
+### Install Geany
+COPY ./src/alpine/install/geany $INST_SCRIPTS/geany/
+RUN bash $INST_SCRIPTS/geany/install_geany.sh  && rm -rf $INST_SCRIPTS/geany/
+
+### Install Inkscape
+COPY ./src/alpine/install/inkscape $INST_SCRIPTS/inkscape/
+RUN bash $INST_SCRIPTS/inkscape/install_inkscape.sh  && rm -rf $INST_SCRIPTS/inkscape/
+
+### Install LibreOffice
+COPY ./src/alpine/install/libre_office $INST_SCRIPTS/libre_office/
+RUN bash $INST_SCRIPTS/libre_office/install_libre_office.sh  && rm -rf $INST_SCRIPTS/libre_office/
+
+### Install Pinta
+COPY ./src/alpine/install/pinta $INST_SCRIPTS/pinta/
+RUN bash $INST_SCRIPTS/pinta/install_pinta.sh  && rm -rf $INST_SCRIPTS/pinta/
+
+### Install OBS
+COPY ./src/alpine/install/obs $INST_SCRIPTS/obs/
+RUN bash $INST_SCRIPTS/obs/install_obs.sh  && rm -rf $INST_SCRIPTS/obs/
+
+### Install Filezilla
+COPY ./src/alpine/install/filezilla $INST_SCRIPTS/filezilla/
+RUN bash $INST_SCRIPTS/filezilla/install_filezilla.sh  && rm -rf $INST_SCRIPTS/filezilla/
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+RUN rm -f /etc/X11/xinit/Xclients
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]

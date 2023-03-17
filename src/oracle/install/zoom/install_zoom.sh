@@ -8,7 +8,7 @@ fi
 
 
 wget -q https://zoom.us/client/latest/zoom_$(arch).rpm
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf localinstall -y zoom_$(arch).rpm
   dnf clean all
 else

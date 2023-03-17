@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 set -ex
 
-if [[ "${DISTRO}" == @(centos|oracle7|oracle8) ]]; then
-  if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8|fedora37) ]]; then
+  if [[ "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
     dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret remmina-plugins-spice xdotool
+    dnf clean all
+  elif [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9|fedora37) ]]; then
+    dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret xdotool
     dnf clean all
   else
     yum install -y remmina remmina-plugins-rdp remmina-plugins-secret remmina-plugins-spice xdotool
@@ -12,6 +15,9 @@ if [[ "${DISTRO}" == @(centos|oracle7|oracle8) ]]; then
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn remmina remmina-plugin-rdp remmina-plugin-secret remmina-plugin-spice xdotool
   zypper clean --all
+elif grep -q "ID=debian" /etc/os-release; then
+  apt-get update
+  apt-get install -y remmina remmina-plugin-rdp remmina-plugin-secret remmina-plugin-spice xdotool
 else
   apt-get update
   apt-get install -y software-properties-common

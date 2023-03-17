@@ -3,7 +3,7 @@ set -ex
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/x64/g')
 
 wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
   dnf localinstall -y vs_code.rpm
 else
@@ -20,7 +20,7 @@ chown 1000:1000 $HOME/Desktop/code.desktop
 rm vs_code.rpm
 
 # Conveniences for python development
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf install -y python3-setuptools python3-virtualenv
   dnf clean all
 else

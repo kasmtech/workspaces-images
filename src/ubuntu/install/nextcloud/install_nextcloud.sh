@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -ex
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8) ]]; then
   dnf install -y nextcloud-client
   dnf clean all
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn nextcloud-desktop
   zypper clean --all
+elif grep -q "ID=debian" /etc/os-release; then
+  apt-get update
+  apt-get install -y nextcloud-desktop
 else
   apt-get install -y software-properties-common
   add-apt-repository -y ppa:nextcloud-devs/client

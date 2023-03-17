@@ -4,7 +4,7 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-ENV DISTRO=oracle7
+ENV DISTRO=centos
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
@@ -43,10 +43,6 @@ RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_co
 ### Install Remmina
 COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
 RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
-
-### Install Teams
-COPY ./src/oracle/install/teams $INST_SCRIPTS/teams/
-RUN bash $INST_SCRIPTS/teams/install_teams.sh  && rm -rf $INST_SCRIPTS/teams/
 
 ### Install Only Office
 COPY ./src/oracle/install/only_office $INST_SCRIPTS/only_office/

@@ -1,0 +1,1 @@
+AlmaLinux 9 desktop for Kasm Workspaces

@@ -7,7 +7,7 @@ if [ "$ARCH" == "amd64" ] ; then
   exit 0
 fi
 
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf install -y \
     libreoffice-core \
     libreoffice-writer \
