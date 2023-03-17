@@ -36,7 +36,7 @@ chown -R 1000:1000 \
 
 apt-get install -y python3-pip
 
-pip3 install --force-reinstall zope.event
+pip3 install --break-system-packages --force-reinstall zope.event
 
 sed -i 's/sudo //g' /usr/share/applications/tl*.desktop
 
