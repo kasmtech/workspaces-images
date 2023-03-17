@@ -55,7 +55,6 @@ variables:
   - postman
   - signal
   - steam
-  - teams
   - tracelabs
   - ubuntu-focal-dind
   - ubuntu-focal-dind-rootless
@@ -132,7 +131,7 @@ build_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
 
 build_ubuntu_desktop_images:
   stage: build
@@ -429,7 +428,7 @@ build_schedules_app_images:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, teams, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
+      - KASM_IMAGE: [doom, sublime-text, gimp, vs-code, only-office, zoom, signal, steam, postman, insomnia, zsnes, vlc, maltego, telegram, hunchly, java-dev, terminal, vmware-horizon, remmina, rdesktop, discord, libre-office, thunderbird, atom, audacity, deluge, filezilla, inkscape, pinta, qbittorrent]
 
 build_schedules_ubuntu_desktop_images:
   image: ${ORG_NAME}/docker-buildx-private:develop
