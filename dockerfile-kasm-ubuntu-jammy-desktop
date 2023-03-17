@@ -50,10 +50,6 @@ RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/n
 COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
 RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
 
-### Install Teams
-COPY ./src/ubuntu/install/teams $INST_SCRIPTS/teams/
-RUN bash $INST_SCRIPTS/teams/install_teams.sh  && rm -rf $INST_SCRIPTS/teams/
-
 ### Install Only Office
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
 RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/

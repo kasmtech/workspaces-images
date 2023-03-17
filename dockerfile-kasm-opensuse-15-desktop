@@ -48,10 +48,6 @@ RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/n
 COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
 RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
 
-### Install Teams
-COPY ./src/opensuse/install/teams $INST_SCRIPTS/teams/
-RUN bash $INST_SCRIPTS/teams/install_teams.sh  && rm -rf $INST_SCRIPTS/teams/
-
 ### Install Libre Office
 COPY ./src/opensuse/install/libre_office $INST_SCRIPTS/libre_office/
 RUN bash $INST_SCRIPTS/libre_office/install_libre_office.sh  && rm -rf $INST_SCRIPTS/libre_office/
@@ -59,10 +55,6 @@ RUN bash $INST_SCRIPTS/libre_office/install_libre_office.sh  && rm -rf $INST_SCR
 ### Install GIMP
 COPY ./src/opensuse/install/gimp $INST_SCRIPTS/gimp/
 RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
-
-### Install Zoom
-COPY ./src/opensuse/install/zoom $INST_SCRIPTS/zoom/
-RUN bash $INST_SCRIPTS/zoom/install_zoom.sh  && rm -rf $INST_SCRIPTS/zoom/
 
 ### Install Ansible
 COPY ./src/opensuse/install/ansible $INST_SCRIPTS/ansible/
