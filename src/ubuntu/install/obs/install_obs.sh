@@ -8,11 +8,18 @@ if [ "${ARCH}" == "arm64" ] ; then
     exit 0
 fi
 
-apt-get update
-apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
-add-apt-repository -y ppa:obsproject/obs-studio
-apt-get update
-apt-get install -y obs-studio
+
+if grep -q "ID=debian" /etc/os-release; then
+  apt-get update
+  apt-get install -y obs-studio
+else
+  apt-get update
+  apt-get install -y mesa-utils libglu1-mesa-dev freeglut3-dev mesa-common-dev
+  add-apt-repository -y ppa:obsproject/obs-studio
+  apt-get update
+  apt-get install -y obs-studio
+fi
+
 cp /usr/share/applications/com.obsproject.Studio.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/com.obsproject.Studio.desktop
 

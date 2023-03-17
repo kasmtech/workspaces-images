@@ -1,0 +1,35 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-kali-rolling"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+
+# Install Kali utils
+COPY ./src/ubuntu/install/kali $INST_SCRIPTS/kali/
+RUN bash $INST_SCRIPTS/kali/install_kali.sh && rm -rf $INST_SCRIPTS/kali/
+
+# Install Chromium
+COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
+RUN bash $INST_SCRIPTS/chromium/install_chromium.sh && rm -rf $INST_SCRIPTS/chromium/
+
+# Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000

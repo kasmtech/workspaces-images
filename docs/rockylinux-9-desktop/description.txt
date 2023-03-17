@@ -1,0 +1,1 @@
+Rocky Linux 9 desktop for Kasm Workspaces

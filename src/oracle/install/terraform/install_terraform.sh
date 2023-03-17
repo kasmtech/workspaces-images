@@ -8,8 +8,12 @@ if [ "${ARCH}" == "arm64" ] ; then
     exit 0
 fi
 
-if [ "${DISTRO}" == "oracle8" ]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8) ]]; then
   dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  dnf install -y terraform
+  dnf clean all
+elif [ "${DISTRO}" == "fedora37" ]; then
+  dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
   dnf install -y terraform
   dnf clean all
 else
