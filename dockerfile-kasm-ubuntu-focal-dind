@@ -13,7 +13,9 @@ WORKDIR $HOME
 ENV DOCKER_CHANNEL=stable \
 	DOCKER_VERSION=20.10.9 \
 	DOCKER_COMPOSE_VERSION=1.29.2 \
-	DEBUG=false
+	DEBUG=false \
+        DONT_PROMPT_WSL_INSTALL="No_Prompt_please"
+
 
 COPY ./src/ubuntu/install/dind $INST_SCRIPTS/dind/
 COPY ./src/ubuntu/install/dind/daemon.json /etc/docker/daemon.json

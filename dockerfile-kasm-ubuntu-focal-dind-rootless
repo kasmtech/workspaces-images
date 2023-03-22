@@ -11,7 +11,8 @@ WORKDIR $HOME
 ######### Customize Container Here ###########
 
 ENV DOCKER_BIN=/usr/local/lib/docker \
-    XDG_RUNTIME_DIR=/docker
+    XDG_RUNTIME_DIR=/docker \
+    DONT_PROMPT_WSL_INSTALL="No_Prompt_please"
 
 RUN mkdir -p $DOCKER_BIN && chown 1000:0 $DOCKER_BIN && \
     mkdir -p $XDG_RUNTIME_DIR && chown 1000:0 $XDG_RUNTIME_DIR

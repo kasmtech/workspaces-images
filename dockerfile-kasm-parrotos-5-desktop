@@ -6,6 +6,7 @@ USER root
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 ENV INST_SCRIPTS $STARTUPDIR/install
+ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
 WORKDIR $HOME
 
 ######### Customize Container Here ###########

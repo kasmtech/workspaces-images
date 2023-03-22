@@ -13,7 +13,7 @@ WORKDIR $HOME
 ENV DEBIAN_FRONTEND noninteractive
 ENV KASM_RX_HOME $STARTUPDIR/kasmrx
 ENV INST_SCRIPTS $STARTUPDIR/install
-
+ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
 
 ### Install Tools
 COPY ./src/oracle/install/tools $INST_SCRIPTS/tools/
@@ -36,16 +36,13 @@ RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefo
 COPY ./src/oracle/install/sublime_text $INST_SCRIPTS/sublime_text/
 RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
 
-
 ### Install Visual Studio Code
 COPY ./src/oracle/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
 
-
 ### Install NextCloud
 COPY ./src/ubuntu/install/nextcloud $INST_SCRIPTS/nextcloud/
 RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/nextcloud/
-
 
 ### Install Remmina
 COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/

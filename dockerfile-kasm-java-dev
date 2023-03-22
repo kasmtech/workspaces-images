@@ -12,7 +12,7 @@ WORKDIR $HOME
 ENV DEBIAN_FRONTEND noninteractive
 ENV KASM_RX_HOME $STARTUPDIR/kasmrx
 ENV INST_SCRIPTS $STARTUPDIR/install
-
+ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
 
 ### Install Tools
 COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
