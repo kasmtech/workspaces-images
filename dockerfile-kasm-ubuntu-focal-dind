@@ -18,7 +18,6 @@ ENV DOCKER_CHANNEL=stable \
 
 
 COPY ./src/ubuntu/install/dind $INST_SCRIPTS/dind/
-COPY ./src/ubuntu/install/dind/daemon.json /etc/docker/daemon.json
 
 RUN bash $INST_SCRIPTS/dind/install_dind.sh  && rm -rf $INST_SCRIPTS/dind/
 
