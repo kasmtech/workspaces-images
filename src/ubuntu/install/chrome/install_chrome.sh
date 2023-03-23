@@ -80,7 +80,7 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
     application/x-extension-xht=google-chrome.desktop
 EOF
 else
-  sed -i 's@exec -a "$0" "$HERE/chrome" "$\@"@@g' /usr/bin/x-www-browser
+  sed -i 's@exec -a "$0" "$HERE/google-chrome" "$\@"@@g' /usr/bin/x-www-browser
   cat >>/usr/bin/x-www-browser <<EOL
   exec -a "\$0" "\$HERE/chrome" "${CHROME_ARGS}"  "\$@"
 EOL
