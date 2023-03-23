@@ -35,7 +35,7 @@ EOL
 chmod +x /usr/bin/brave-browser
 cp /usr/bin/brave-browser /usr/bin/brave
 
-sed -i 's@exec -a "$0" "$HERE/brave" "$\@"@@g' /usr/bin/x-www-browser
+sed -i 's@exec -a "$0" "$HERE/brave-browser" "$\@"@@g' /usr/bin/x-www-browser
 cat >>/usr/bin/x-www-browser <<EOL
 exec -a "\$0" "\$HERE/brave" "${CHROME_ARGS}"  "\$@"
 EOL
