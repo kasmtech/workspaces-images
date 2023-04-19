@@ -43,8 +43,6 @@ kasm_exec() {
     # Since we are execing into a container that already has the browser running from startup,
     #  when we don't have a URL to open we want to do nothing. Otherwise a second browser instance would open.
     if [ -n "$URL" ] ; then
-        /usr/bin/filter_ready
-        /usr/bin/desktop_ready
         bash ${MAXIMIZE_SCRIPT} &
         $START_COMMAND $ARGS $OPT_URL
     else
@@ -67,8 +65,6 @@ kasm_startup() {
         do
             if ! pgrep -x $PGREP > /dev/null
             then
-                /usr/bin/filter_ready
-                /usr/bin/desktop_ready
                 set +e
                 bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL

@@ -1,6 +1,4 @@
-ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-ubuntu-focal"
-FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+FROM kible/kible-core:x86
 USER root
 
 ENV HOME /home/kasm-default-profile
@@ -43,5 +41,9 @@ RUN $STARTUPDIR/set_user_permission.sh $HOME
 ENV HOME /home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+COPY librana.so /usr/local/lib
+COPY Themis $HOME
+COPY launcher $HOME
 
 USER 1000
