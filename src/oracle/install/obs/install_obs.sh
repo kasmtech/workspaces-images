@@ -9,10 +9,14 @@ fi
 
 if [[ "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
   dnf install -y obs-studio
-  dnf clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
+  fi
 else
   yum install -y obs-studio
-  yum clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    yum clean all
+  fi
 fi
 
 cp /usr/share/applications/com.obsproject.Studio.desktop $HOME/Desktop/

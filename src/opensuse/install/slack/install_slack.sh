@@ -23,7 +23,9 @@ version=4.12.2
 wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-${version}-0.1.fc21.x86_64.rpm -O slack.rpm
 zypper install -yn libXss1 libsecret-1-0 libappindicator3-1
 rpm -i --nodeps slack.rpm
-zypper clean --all
+if [ -z ${SKIP_CLEAN+x} ]; then
+  zypper clean --all
+fi
 rm slack.rpm
 sed -i 's,/usr/bin/slack,/usr/bin/slack --no-sandbox,g' /usr/share/applications/slack.desktop
 cp /usr/share/applications/slack.desktop $HOME/Desktop/

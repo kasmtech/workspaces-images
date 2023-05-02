@@ -2,4 +2,7 @@
 set -ex
 
 zypper install -yn nano zip wget xdotool
-zypper clean --all
+
+if [ -z ${SKIP_CLEAN+x} ]; then
+  zypper clean --all
+fi
