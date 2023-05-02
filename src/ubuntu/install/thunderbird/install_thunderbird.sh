@@ -5,17 +5,29 @@ set -ex
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
     dnf install -y thunderbird
-    dnf clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      dnf clean all
+    fi
   else
     yum install -y thunderbird
-    yum clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      yum clean all
+    fi
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn MozillaThunderbird
-  zypper clean --all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    zypper clean --all
+  fi
 elif grep -q "ID=debian" /etc/os-release; then
   apt-get update
   apt-get install -y thunderbird
+  if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+  fi
 else
   apt-get update
   if [ ! -f '/etc/apt/preferences.d/mozilla-firefox' ]; then
@@ -27,9 +39,12 @@ Pin-Priority: 1001
 ' > /etc/apt/preferences.d/mozilla-firefox
   fi
   apt-get install -y thunderbird
+  if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
   rm -rf \
     /var/lib/apt/lists/* \
     /var/tmp/*
+  fi
 fi
 
 # Desktop icon

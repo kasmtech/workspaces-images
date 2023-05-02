@@ -21,8 +21,9 @@ EOL
 chmod +x /usr/bin/minetest
 
 # Cleanup
-apt-get autoclean
-rm -rf \
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
     /var/lib/apt/lists/* \
-    /var/tmp/* \
-    /tmp/*
+    /var/tmp/*
+fi

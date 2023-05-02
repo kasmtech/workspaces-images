@@ -18,10 +18,14 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   fi
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8) ]]; then
     dnf localinstall -y chrome.rpm
-    dnf clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      dnf clean all
+    fi
   else
     yum localinstall -y chrome.rpm
-    yum clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      yum clean all
+    fi
   fi
   rm chrome.rpm
 elif [ "${DISTRO}" == "opensuse" ]; then
@@ -30,7 +34,9 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   rpm --import linux_signing_key.pub
   rm linux_signing_key.pub
   zypper install -yn google-chrome-stable
-  zypper clean --all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    zypper clean --all
+  fi
 else
   apt-get update
   if [ ! -z "${CHROME_VERSION}" ]; then
@@ -40,6 +46,12 @@ else
   fi
   apt-get install -y ./chrome.deb
   rm chrome.deb
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    apt-get autoclean
+    rm -rf \
+      /var/lib/apt/lists/* \
+      /var/tmp/*
+  fi
 fi
 
 sed -i 's/-stable//g' /usr/share/applications/google-chrome.desktop

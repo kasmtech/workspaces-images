@@ -52,3 +52,10 @@ cat >>/etc/brave/policies/managed/disable_tor.json <<EOL
 {"TorDisabled": true}
 EOL
 
+# Cleanup
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+fi

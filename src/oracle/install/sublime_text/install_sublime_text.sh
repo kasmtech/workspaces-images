@@ -11,11 +11,15 @@ rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/$(arch)/sublime-text.repo
   dnf install -y sublime-text
-  dnf clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
+  fi
 else
   yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/$(arch)/sublime-text.repo
   yum install -y sublime-text
-  yum clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    yum clean all
+  fi
 fi
 cp /usr/share/applications/sublime_text.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/sublime_text.desktop

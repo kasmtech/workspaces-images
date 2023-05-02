@@ -1,58 +1,63 @@
 #!/usr/bin/env bash
 set -ex
+ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
+# Enable Docker repo
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+echo "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > \
+    /etc/apt/sources.list.d/docker.list && \
+
+# Install deps
 apt-get update
 apt-get install -y \
     ca-certificates \
     curl \
     dbus-user-session \
+    docker-buildx-plugin \
+    docker-ce \
+    docker-ce-cli \
+    docker-compose-plugin \
     fuse-overlayfs \
-    kmod \
     iptables \
+    kmod \
     openssh-client \
     sudo \
     supervisor \
     uidmap \
     wget
-rm -rf /var/lib/apt/list/*
 
-mkdir -p /var/log/supervisor
-chown -R 1000:1000 /var/log/supervisor
+# Install dind init and hacks
+useradd -U dockremap
+usermod -G dockremap dockremap
+echo 'dockremap:165536:65536' >> /etc/subuid
+echo 'dockremap:165536:65536' >> /etc/subgid
+curl -o \
+    /usr/local/bin/dind -L \
+    https://raw.githubusercontent.com/moby/moby/master/hack/dind
+chmod +x /usr/local/bin/dind
+curl -o \
+    /usr/local/bin/dockerd-entrypoint.sh -L \
+    https://kasm-ci.s3.amazonaws.com/dockerd-entrypoint.sh
+chmod +x /usr/local/bin/dockerd-entrypoint.sh
+echo 'hosts: files dns' > /etc/nsswitch.conf
+usermod -aG docker kasm-user
 
-arch="$(uname --m)"; 
-case "$arch" in 
-    # amd64
-    x86_64) dockerArch='x86_64' ;; 
-    # arm32v6
-    armhf) dockerArch='armel' ;;
-    # arm32v7
-    armv7) dockerArch='armhf' ;;
-    # arm64v8
-    aarch64) dockerArch='aarch64' ;;
-    *) echo >&2 "error: unsupported architecture ($arch)"; exit 1 ;;
-esac;
+# Install k3d tools
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+curl -o \
+    /usr/local/bin/kubectl -L \
+    "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
+chmod +x /usr/local/bin/kubectl
 
-curl -o docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}.tgz"
-
-tar --extract \
-    --file docker.tgz \
-    --strip-components 1 \
-    --directory /usr/local/bin/
-rm docker.tgz
-
-dockerd --version
-docker --version
-
-echo "Installing Docker Compose"
-mkdir -p /usr/local/lib/docker/cli-plugins
-COMPOSE_RELEASE=$(curl -sX GET "https://api.github.com/repos/docker/compose/releases/latest" \
-    | awk '/tag_name/{print $4;exit}' FS='[""]');
-COMPOSE_OS=$(uname -s)
-curl -L https://github.com/docker/compose/releases/download/${COMPOSE_RELEASE}/docker-compose-${COMPOSE_OS,,}-$(uname -m) -o /usr/local/lib/docker/cli-plugins/docker-compose
-chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-
+# Passwordless Sudo
 echo 'kasm-user:kasm-user' | chpasswd
 echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-groupadd docker
-adduser kasm-user docker
+# Cleanup
+if [ -z ${SKIP_CLEAN+x} ]; then
+    apt-get autoclean
+    rm -rf \
+        /var/lib/apt/lists/* \
+        /var/tmp/* \
+        /tmp/*
+fi
