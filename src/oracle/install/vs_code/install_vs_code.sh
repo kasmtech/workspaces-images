@@ -22,8 +22,12 @@ rm vs_code.rpm
 # Conveniences for python development
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   dnf install -y python3-setuptools python3-virtualenv
-  dnf clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
+  fi
 else
   yum install -y python3-setuptools python3-virtualenv
-  yum clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    yum clean all
+  fi
 fi

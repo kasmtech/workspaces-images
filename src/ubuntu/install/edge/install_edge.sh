@@ -45,3 +45,9 @@ EOL
 mkdir -p /etc/opt/chrome/policies/
 ln -s /etc/opt/edge/policies/managed  /etc/opt/chrome/policies/
 
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+fi

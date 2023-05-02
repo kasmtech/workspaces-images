@@ -51,8 +51,9 @@ cat >>/etc/opt/chrome/policies/managed/default_managed_policy.json <<EOL
 EOL
 
 # Cleanup
-apt-get autoclean
-rm -rf \
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
     /var/lib/apt/lists/* \
-    /var/tmp/* \
-    /tmp/*
+    /var/tmp/*
+fi

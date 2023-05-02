@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -xe
 
+# Add icon
+if [ -f /dockerstartup/install/ubuntu/install/firefox/firefox.desktop ]; then
+  mv /dockerstartup/install/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+fi
+
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
 set_desktop_icon() {
@@ -50,12 +55,18 @@ fi
 
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
-    dnf clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      dnf clean all
+    fi
   else
-    yum clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      yum clean all
+    fi
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper clean --all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    zypper clean --all
+  fi
 else
   if [ "$ARCH" == "arm64" ] && [ "$(lsb_release -cs)" == "focal" ] ; then
     echo "Firefox flash player not supported on arm64 Ubuntu Focal Skipping"
@@ -66,7 +77,12 @@ else
     apt-get update
     apt-get install -y browser-plugin-freshplayer-pepperflash
     apt-mark hold firefox
-    apt-get clean -y
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      apt-get autoclean
+      rm -rf \
+        /var/lib/apt/lists/* \
+        /var/tmp/*
+    fi
   fi
 fi
 

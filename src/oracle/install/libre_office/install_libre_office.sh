@@ -14,7 +14,9 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almali
     libreoffice-impress \
     libreoffice-calc \
     libreoffice-base
-  dnf clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
+  fi
 else
   yum install -y \
     libreoffice-core \
@@ -22,7 +24,9 @@ else
     libreoffice-impress \
     libreoffice-calc \
     libreoffice-base
-  yum clean all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    yum clean all
+  fi
 fi
 cp /usr/share/applications/libreoffice-startcenter.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/libreoffice-startcenter.desktop
