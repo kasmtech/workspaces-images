@@ -9,7 +9,9 @@ if [ "${ARCH}" == "arm64" ] ; then
 fi
 
 zypper install -yn xz
-zypper clean --all
+if [ -z ${SKIP_CLEAN+x} ]; then
+  zypper clean --all
+fi
 
 wget -q https://telegram.org/dl/desktop/linux -O /tmp/telegram.tgz
 tar -xvf /tmp/telegram.tgz -C /opt/

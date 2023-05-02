@@ -27,8 +27,9 @@ apt-get install -y \
 rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
 
 # Cleanup
-rm -rf \
-  /var/lib/apt/lists/* \
-  /var/tmp/* \
-  /tmp/*
-
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+fi

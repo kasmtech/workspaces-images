@@ -2,8 +2,6 @@
 set -ex
 START_COMMAND="/usr/bin/supervisord"
 PGREP="supervisord"
-MAXIMIZE="false"
-MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="-n"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
@@ -27,25 +25,6 @@ done
 
 FORCE=$2
 
-kasm_exec() {
-    if [ -n "$OPT_URL" ] ; then
-        URL=$OPT_URL
-    elif [ -n "$1" ] ; then
-        URL=$1
-    fi
-
-    # Since we are execing into a container that already has the browser running from startup,
-    #  when we don't have a URL to open we want to do nothing. Otherwise a second browser instance would open.
-    if [ -n "$URL" ] ; then
-        /usr/bin/filter_ready
-        /usr/bin/desktop_ready
-        bash ${MAXIMIZE_SCRIPT} &
-        sudo /usr/bin/supervisord -n &
-    else
-        echo "No URL specified for exec command. Doing nothing."
-    fi
-}
-
 kasm_startup() {
     if [ -n "$KASM_URL" ] ; then
         URL=$KASM_URL
@@ -64,7 +43,6 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
-                bash ${MAXIMIZE_SCRIPT} &
                 sudo /usr/bin/supervisord -n &
                 set -e
             fi
@@ -76,8 +54,4 @@ kasm_startup() {
 
 } 
 
-if [ -n "$GO" ] || [ -n "$ASSIGN" ] ; then
-    kasm_exec
-else
-    kasm_startup
-fi
+kasm_startup

@@ -2,4 +2,6 @@
 set -ex
 
 zypper install -yn ansible
-zypper clean --all
+if [ -z ${SKIP_CLEAN+x} ]; then
+  zypper clean --all
+fi

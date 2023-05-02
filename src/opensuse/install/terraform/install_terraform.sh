@@ -8,4 +8,6 @@ zypper install -yn \
   terraform-provider-google \
   terraform-provider-kubernetes \
   terraform-provider-openstack
-zypper clean --all
+if [ -z ${SKIP_CLEAN+x} ]; then
+  zypper clean --all
+fi

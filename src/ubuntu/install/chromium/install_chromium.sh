@@ -4,20 +4,37 @@ set -ex
 CHROME_ARGS="--password-store=basic --no-sandbox  --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
+if [[ "${DISTRO}" == @(debian|opensuse|ubuntu) ]] && [ ${ARCH} = 'amd64' ] && [ -n ${SKIP_CLEAN+x} ]; then
+  echo "not installing chromium on x86_64 desktop build"
+  exit 0
+fi
+
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
     dnf install -y chromium
-    dnf clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      dnf clean all
+    fi
   else
     yum install -y chromium
-    yum clean all
+    if [ -z ${SKIP_CLEAN+x} ]; then
+      yum clean all
+    fi
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn chromium
-  zypper clean --all
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    zypper clean --all
+  fi
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   apt-get update
   apt-get install -y chromium
+  if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+  fi
 else
   apt-get update
   apt-get install -y software-properties-common ttf-mscorefonts-installer
@@ -27,7 +44,7 @@ else
   # currently compatible with docker containers. The new install will pull
   # deb files from archive.ubuntu.com for ubuntu 18.04 and install them.
   # This will work until 18.04 goes to an unsupported status.
-  if [[ ${ARCH} == "amd64" ]] ;
+  if [ ${ARCH} = 'amd64' ] ;
   then
     chrome_url="http://archive.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/"
   else
@@ -62,6 +79,12 @@ else
 
   rm "${chromium_codecs_data}"
   rm "${chromium_data}"
+  if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+  fi
 fi
 
 if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then

@@ -14,8 +14,12 @@ apt-get purge -y \
 rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
 rm -rf \
   /root \
-  /var/lib/apt/lists/* \
-  /var/tmp/* \
   /tmp/*
 mkdir /root
 export HOME=/home/kasm-default-profile
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+fi
