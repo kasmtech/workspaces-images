@@ -5,7 +5,7 @@ variables:
   KASM_RELEASE: "1.13.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   PLATFORM: "linux/amd64"
-  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,ubuntu-focal-dind,ubuntu-focal-dind-rootless,ubuntu-jammy-dind,ubuntu-jammy-dind-rootless,almalinux-8-desktop,almalinux-9-desktop,alpine-317-desktop,debian-bullseye-desktop,fedora-37-desktop,kali-rolling-desktop,oracle-9-desktop,parrotos-5-desktop,rockylinux-8-desktop,rockylinux-9-desktop,"
+  ARM_BUILDS: ",chromium,firefox,gimp,remmina,terminal,ubuntu-bionic-desktop,ubuntu-focal-desktop,ubuntu-jammy-desktop,vlc,vs-code,doom,sublime-text,tor-browser,java-dev,telegram,opensuse-15-desktop,oracle-8-desktop,libre-office,thunderbird,audacity,deluge,filezilla,inkscape,pinta,qbittorrent,vivaldi,minetest,retroarch,super-tux-kart,ubuntu-focal-dind,ubuntu-focal-dind-rootless,ubuntu-jammy-dind,ubuntu-jammy-dind-rootless,almalinux-8-desktop,almalinux-9-desktop,alpine-317-desktop,debian-bullseye-desktop,fedora-37-desktop,kali-rolling-desktop,oracle-9-desktop,parrotos-5-desktop,rockylinux-8-desktop,rockylinux-9-desktop,brave,"
   CORE_IMAGE_TAG: "develop"
   CORE_IMAGE: "core-ubuntu-focal"
   USE_PRIVATE_IMAGES: 0
@@ -43,6 +43,7 @@ variables:
   - almalinux-8-desktop
   - almalinux-9-desktop
   - alpine-317-desktop
+  - brave
   - debian-bullseye-desktop
   - fedora-37-desktop
   - kali-rolling-desktop
@@ -62,7 +63,6 @@ variables:
 .SINGLE_ARCH_BUILDS: &SINGLE_ARCH_BUILDS
   - atom
   - blender
-  - brave
   - centos-7-desktop
   - chrome
   - desktop
