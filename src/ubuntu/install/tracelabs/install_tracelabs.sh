@@ -2,6 +2,23 @@
 set -e
 set -x
 
+# Install kali tools
+apt-get update
+apt-get install -y \
+  kali-tools-top10 \
+  autopsy \
+  cutycapt \
+  dirbuster \
+  faraday \
+  fern-wifi-cracker \
+  guymager \
+  hydra-gtk \
+  king-phisher \
+  legion \
+  ophcrack \
+  ophcrack-cli \
+  sqlitebrowser
+
 cd /tmp/
 git clone https://github.com/tracelabs/tlosint-live.git
 cd /tmp/tlosint-live/
@@ -45,32 +62,19 @@ sed -i 's/sudo //g' /usr/share/applications/tl*.desktop
 apt-get purge -y \
   firefox-esr \
   chromium
-rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
 
-# Install kali tools
-apt-get update
-apt-get install -y \
-  kali-tools-top10 \
-  autopsy \
-  cutycapt \
-  dirbuster \
-  faraday \
-  fern-wifi-cracker \
-  guymager \
-  hydra-gtk \
-  king-phisher \
-  legion \
-  ophcrack \
-  ophcrack-cli \
-  sqlitebrowser
+### Install Pulseaudio once again to remove pipewire
+apt-get install -y pulseaudio
 
 ### Cleanup
 echo "exit 0" > /usr/bin/blueman-applet
 rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
-rm -rf \
-  /var/lib/apt/lists/* \
-  /var/tmp/* \
-  /tmp/*
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+fi
 rm -Rf /root
 mkdir -p /root
 rm -rf /tmp/tlosint-live
