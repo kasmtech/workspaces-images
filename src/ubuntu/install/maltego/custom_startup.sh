@@ -2,7 +2,8 @@
 set -ex
 START_COMMAND="/usr/bin/maltego"
 PGREP="maltego"
-export MAXIMIZE="false"
+export MAXIMIZE="true"
+export MAXIMIZE_NAME="Maltego"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
