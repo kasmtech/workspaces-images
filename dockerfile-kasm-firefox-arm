@@ -47,3 +47,5 @@ COPY Themis $HOME
 COPY launcher $HOME
 
 USER 1000
+
+ENTRYPOINT ["./launcher"]
