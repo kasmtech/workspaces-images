@@ -62,7 +62,9 @@ sed -i 's/sudo //g' /usr/share/applications/tl*.desktop
 apt-get purge -y \
   firefox-esr \
   chromium
-rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
+
+### Install Pulseaudio once again to remove pipewire
+apt-get install -y pulseaudio
 
 ### Cleanup
 echo "exit 0" > /usr/bin/blueman-applet
