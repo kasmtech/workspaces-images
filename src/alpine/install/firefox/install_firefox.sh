@@ -4,15 +4,19 @@ set -xe
 apk add --no-cache \
   firefox
 
-# Disabling default first run URL
-cat >/usr/lib/firefox/browser/defaults/preferences/vendor.js <<EOF
-pref("datareporting.policy.firstRunURL", "");
-pref("datareporting.policy.dataSubmissionEnabled", false);
-pref("datareporting.healthreport.service.enabled", false);
-pref("datareporting.healthreport.uploadEnabled", false);
-pref("trailhead.firstrun.branches", "nofirstrun-empty");
-pref("browser.aboutwelcome.enabled", false);
-EOF
+# Add Langpacks
+FIREFOX_VERSION=$(curl -sI https://download.mozilla.org/?product=firefox-latest | awk -F '(releases/|/win32)' '/Location/ {print $2}')
+RELEASE_URL="https://releases.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/win64/xpi/"
+LANGS=$(curl -Ls ${RELEASE_URL} | awk -F '(xpi">|</a>)' '/href.*xpi/ {print $2}' | tr '\n' ' ')
+EXTENSION_DIR=/usr/lib/firefox-addons/distribution/extensions/
+mkdir -p ${EXTENSION_DIR}
+for LANG in ${LANGS}; do
+  LANGCODE=$(echo ${LANG} | sed 's/\.xpi//g')
+  echo "Downloading ${LANG} Language pack"
+  curl -o \
+    ${EXTENSION_DIR}langpack-${LANGCODE}@firefox.mozilla.org.xpi -Ls \
+    ${RELEASE_URL}${LANG}
+done
 
 # Creating a default profile
 firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
