@@ -53,6 +53,21 @@ else
   apt-get install -y firefox p11-kit-modules
 fi
 
+# Add Langpacks
+FIREFOX_VERSION=$(curl -sI https://download.mozilla.org/?product=firefox-latest | awk -F '(releases/|/win32)' '/Location/ {print $2}')
+RELEASE_URL="https://releases.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/win64/xpi/"
+LANGS=$(curl -Ls ${RELEASE_URL} | awk -F '(xpi">|</a>)' '/href.*xpi/ {print $2}' | tr '\n' ' ')
+EXTENSION_DIR=/usr/lib/firefox-addons/distribution/extensions/
+mkdir -p ${EXTENSION_DIR}
+for LANG in ${LANGS}; do
+  LANGCODE=$(echo ${LANG} | sed 's/\.xpi//g')
+  echo "Downloading ${LANG} Language pack"
+  curl -o \
+    ${EXTENSION_DIR}langpack-${LANGCODE}@firefox.mozilla.org.xpi -Ls \
+    ${RELEASE_URL}${LANG}
+done
+
+# Cleanup and install flash if supported
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
     if [ -z ${SKIP_CLEAN+x} ]; then
@@ -104,7 +119,9 @@ elif [ "${DISTRO}" == "opensuse" ]; then
 else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
-# Disabling default first run URL
+
+# Disabling default first run URL for Debian based images
+if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
 cat >"$preferences_file" <<EOF
 pref("datareporting.policy.firstRunURL", "");
 pref("datareporting.policy.dataSubmissionEnabled", false);
@@ -113,6 +130,7 @@ pref("datareporting.healthreport.uploadEnabled", false);
 pref("trailhead.firstrun.branches", "nofirstrun-empty");
 pref("browser.aboutwelcome.enabled", false);
 EOF
+fi
 
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
   # Creating a default profile
