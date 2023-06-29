@@ -11,7 +11,7 @@ stages:
   - test
   - manifest
 variables:
-  BASE_TAG: "develop"
+  BASE_TAG: "0.0.1"
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.14.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
