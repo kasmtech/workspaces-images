@@ -22,3 +22,17 @@ cat >/etc/opt/chrome/policies/managed/hunchly_extension.json <<EOL
 }
 EOL
 
+# Install archive tools
+apt-get install -y \
+  p7zip-full \
+  p7zip-rar \
+  thunar-archive-plugin \
+  xarchiver
+
+# Cleanup
+apt-get -y autoremove && \
+apt-get clean && \
+rm -rf \
+  /tmp/* \
+  /var/lib/apt/lists/* \
+  /var/tmp/*
