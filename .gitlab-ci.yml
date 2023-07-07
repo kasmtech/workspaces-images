@@ -111,6 +111,7 @@ build_multi_containers:
       - $REVERT_IS_ROLLING
   tags:
     - ${TAG}
+  retry: 1
   parallel:
     matrix:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
@@ -129,6 +130,7 @@ build_multi_containers2:
       - $REVERT_IS_ROLLING
   tags:
     - ${TAG}
+  retry: 1
   parallel:
     matrix:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
@@ -147,6 +149,7 @@ build_single_containers:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale
+  retry: 1
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
@@ -168,6 +171,7 @@ test_multi:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -187,6 +191,7 @@ test_multi2:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -206,6 +211,7 @@ test_single:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
