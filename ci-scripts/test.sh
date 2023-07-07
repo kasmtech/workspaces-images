@@ -215,3 +215,9 @@ docker run --rm \
 
 # Shutdown Instances
 turnoff
+
+# Exit 1 if test failed or file does not exist
+STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-core-${NAME1}-${NAME2}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}/ci-status.yml | awk -F'"' '{print $2}')
+if [ ! "${STATUS}" == "PASS" ]; then
+  exit 1
+fi
