@@ -15,7 +15,7 @@ variables:
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.14.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
-  TEST_INSTALLER: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/642f6a032aacc41decd1d782262d1b59cec216c5/kasm_workspaces_develop_1.13.0.642f6a.tar.gz"
+  TEST_INSTALLER: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/7cbc7854255820c60cfecb2dee5177c1663af43a/kasm_workspaces_feature_KASM-4513-slim-upgrades_1.14.0.7cbc78.tar.gz"
 before_script:
   - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
@@ -111,6 +111,7 @@ build_multi_containers:
       - $REVERT_IS_ROLLING
   tags:
     - ${TAG}
+  retry: 1
   parallel:
     matrix:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
@@ -129,6 +130,7 @@ build_multi_containers2:
       - $REVERT_IS_ROLLING
   tags:
     - ${TAG}
+  retry: 1
   parallel:
     matrix:
       - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
@@ -147,6 +149,7 @@ build_single_containers:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale
+  retry: 1
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
@@ -168,6 +171,7 @@ test_multi:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -187,6 +191,7 @@ test_multi2:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -206,6 +211,7 @@ test_single:
       - $REVERT_IS_ROLLING
   tags:
     - aws-autoscale-nano
+  retry: 1
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
