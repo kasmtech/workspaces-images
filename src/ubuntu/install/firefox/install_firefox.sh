@@ -13,8 +13,8 @@ set_desktop_icon() {
 }
 
 echo "Install Firefox"
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
+  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
     dnf install -y firefox p11-kit
   else
     yum install -y firefox p11-kit
@@ -68,8 +68,8 @@ for LANG in ${LANGS}; do
 done
 
 # Cleanup and install flash if supported
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
+  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
     fi
@@ -101,14 +101,14 @@ else
   fi
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
   rm -f /usr/lib/firefox/libnssckbi.so
   ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37) ]]; then
-  if [ "${DISTRO}" == "fedora37" ]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
+  if [[ "${DISTRO}" == @(fedora37|fedora38) ]]; then
     preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox-redhat-default-prefs.js
   else
     preferences_file=/usr/lib64/firefox/browser/defaults/preferences/all-redhat.js
@@ -132,7 +132,7 @@ pref("browser.aboutwelcome.enabled", false);
 EOF
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
   # Creating a default profile
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
   # Generate a certdb to be detected on squid start
@@ -154,7 +154,7 @@ else
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
   set_desktop_icon
 fi
 
@@ -162,13 +162,13 @@ fi
 #   based off the installation path. Because that path will be static for our deployments we can assume the hash
 #   and thus assign our profile to the default for the installation
 
-if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
+if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
 Default=kasm
 Locked=1
 EOL
-elif [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37) ]]; then
+elif [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install11457493C5A56847]
 Default=kasm
