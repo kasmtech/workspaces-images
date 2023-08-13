@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 # Install kali tools
 apt-get update
@@ -12,7 +12,6 @@ apt-get install -y \
   fern-wifi-cracker \
   guymager \
   hydra-gtk \
-  king-phisher \
   legion \
   ophcrack \
   ophcrack-cli \
