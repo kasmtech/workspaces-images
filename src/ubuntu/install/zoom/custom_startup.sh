@@ -5,7 +5,7 @@ PGREP="zoom"
 export MAXIMIZE="true"
 export MAXIMIZE_NAME="Zoom"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
-DEFAULT_ARGS="--no-sandbox"
+DEFAULT_ARGS=""
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
