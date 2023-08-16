@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-remnux-focal"
+ARG BASE_IMAGE="core-ubuntu-focal"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
@@ -9,6 +9,9 @@ ENV INST_SCRIPTS $STARTUPDIR/install
 WORKDIR $HOME
 
 ######### Customize Container Here ###########
+
+# Add Background
+ADD /src/common/resources/images/bg_remnux.png  /usr/share/extra/backgrounds/bg_default.png
 
 # Install Remnux Utils
 COPY ./src/ubuntu/install/remnux $INST_SCRIPTS/remnux/
