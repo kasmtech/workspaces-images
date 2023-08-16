@@ -88,6 +88,7 @@ before_script:
   - "only-office|core-ubuntu-focal|dockerfile-kasm-only-office"
   - "oracle-7-desktop|core-oracle-7|dockerfile-kasm-oracle-7-desktop"
   - "postman|core-ubuntu-focal|dockerfile-kasm-postman"
+  - "remnux-focal-desktop|core-ubuntu-focal|dockerfile-kasm-remnux-focal-desktop"
   - "signal|core-ubuntu-focal|dockerfile-kasm-signal"
   - "steam|core-ubuntu-focal|dockerfile-kasm-steam"
   - "tracelabs|core-kali-rolling|dockerfile-kasm-tracelabs"
