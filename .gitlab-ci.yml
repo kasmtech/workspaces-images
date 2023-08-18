@@ -83,7 +83,7 @@ before_script:
   - "discord|core-ubuntu-focal|dockerfile-kasm-discord"
   - "edge|core-ubuntu-focal|dockerfile-kasm-edge"
   - "hunchly|core-ubuntu-focal|dockerfile-kasm-hunchly"
-  - "insomnia|core-ubuntu-focal|dockerfile-kasm-insomnia"
+  - "insomnia|core-ubuntu-jammy|dockerfile-kasm-insomnia"
   - "maltego|core-ubuntu-focal|dockerfile-kasm-maltego"
   - "only-office|core-ubuntu-focal|dockerfile-kasm-only-office"
   - "oracle-7-desktop|core-oracle-7|dockerfile-kasm-oracle-7-desktop"
