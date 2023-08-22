@@ -188,12 +188,11 @@ ssh \
 ready_check
 
 # Pull tester image
-docker pull ${ORG_NAME}/kasm-tester:1.14.0
+docker pull ${ORG_NAME}/kasm-tester:1.14.2
 
 # Run test
 cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
 chmod 777 $(dirname ${CI_PROJECT_DIR})/sshkey
-docker pull kasmweb/kasm-tester:1.14.0
 docker run --rm \
   -e TZ=US/Pacific \
   -e KASM_HOST=${IPS[0]} \
@@ -211,7 +210,7 @@ docker run --rm \
   -e REPO=workspaces-images \
   -e AUTOMATED=true \
   -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
-  kasmweb/kasm-tester:1.14.0
+  kasmweb/kasm-tester:1.14.2
 
 # Shutdown Instances
 turnoff
