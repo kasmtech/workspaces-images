@@ -15,7 +15,7 @@ variables:
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.14.0"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
-  TEST_INSTALLER: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/7cbc7854255820c60cfecb2dee5177c1663af43a/kasm_workspaces_feature_KASM-4513-slim-upgrades_1.14.0.7cbc78.tar.gz"
+  TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.14.0.7f3582.tar.gz"
 before_script:
   - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
