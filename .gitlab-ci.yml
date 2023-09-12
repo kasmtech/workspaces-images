@@ -55,7 +55,6 @@ variables:
   - postman
   - signal
   - steam
-  - tracelabs
   - ubuntu-focal-dind
   - ubuntu-focal-dind-rootless
   - vmware-horizon
@@ -179,7 +178,6 @@ build_non_ubuntu:
     - ls docs/$KASM_IMAGE/description.txt
     # Set base image based on kasm_image variable
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
     - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
@@ -197,7 +195,7 @@ build_non_ubuntu:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+      - KASM_IMAGE: [centos-7-desktop, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
 
 # These jobs should run on the feature/bugfix branches - anything that is not the develop or release branches. It should only push images to the private repos
 build_multi_arch_dev:
@@ -209,7 +207,6 @@ build_multi_arch_dev:
     - ls docs/$KASM_IMAGE/description.txt
     # Set core image names
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
     - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
@@ -242,7 +239,6 @@ build_single_arch_dev:
     - ls docs/$KASM_IMAGE/description.txt
     # Set core image names
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
     - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
@@ -475,7 +471,6 @@ build_schedules_non_ubuntu:
     - ls docs/$KASM_IMAGE/description.txt
     # Set base image based on kasm_image variable
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
-    - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
     - if [[ $KASM_IMAGE =~ 'oracle-8-desktop' ]]; then CORE_IMAGE=core-oracle-8; fi
     - if [[ $KASM_IMAGE =~ 'opensuse-15-desktop' ]]; then CORE_IMAGE=core-opensuse-15; fi
@@ -491,7 +486,7 @@ build_schedules_non_ubuntu:
     - aws-autoscale
   parallel:
     matrix:
-      - KASM_IMAGE: [centos-7-desktop, tracelabs, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
+      - KASM_IMAGE: [centos-7-desktop, opensuse-15-desktop, oracle-7-desktop, oracle-8-desktop]
 
 
 update_readmes:
@@ -564,7 +559,6 @@ update_readmes:
           - terminal
           - thunderbird
           - tor-browser
-          - tracelabs
           - ubuntu-focal-desktop
           - ubuntu-jammy-desktop
           - ubuntu-focal-dind
