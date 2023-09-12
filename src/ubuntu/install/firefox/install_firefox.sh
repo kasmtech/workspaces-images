@@ -27,6 +27,7 @@ Pin-Priority: 1001
   fi
   apt-get install -y firefox p11-kit-modules
 else
+  apt-get update
   apt-mark unhold firefox
   apt-get remove firefox
   apt-get update
