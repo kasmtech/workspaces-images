@@ -75,7 +75,6 @@ variables:
   - only-office
   - oracle-7-desktop
   - postman
-  - remnux-focal-desktop
   - signal
   - steam
   - tracelabs
@@ -126,7 +125,6 @@ variables:
 .UBUNTU_IMAGES: &UBUNTU_IMAGES
   - desktop
   - desktop-deluxe
-  - remnux-focal-desktop
   - ubuntu-focal-desktop
   - ubuntu-jammy-desktop
   - ubuntu-focal-dind
@@ -260,7 +258,6 @@ build_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Check for private variable to build against private core images
-    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
@@ -518,7 +515,6 @@ build_single_arch_dev:
     - if [[ $KASM_IMAGE =~ 'centos-7-desktop' ]]; then CORE_IMAGE=core-centos-7; fi
     - if [[ $KASM_IMAGE =~ 'tracelabs' ]]; then CORE_IMAGE=core-kali-rolling; fi
     - if [[ $KASM_IMAGE =~ 'oracle-7-desktop' ]]; then CORE_IMAGE=core-oracle-7; fi
-    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     # Check for private variable to build against private core images
     - if [[ $USE_PRIVATE_IMAGES -eq 1 ]]; then CORE_IMAGE=$CORE_IMAGE-private; fi;
     - >
@@ -803,7 +799,6 @@ build_schedules_ubuntu_desktop_images:
     - ls docs/$KASM_IMAGE/README.md
     - ls docs/$KASM_IMAGE/description.txt
     # Set base image based on kasm_image variable
-    - if [[ $KASM_IMAGE =~ 'remnux-focal-desktop' ]]; then CORE_IMAGE=core-remnux-focal; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-desktop' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
     - if [[ $KASM_IMAGE =~ 'ubuntu-jammy-dind-rootless' ]]; then CORE_IMAGE=core-ubuntu-jammy; fi
