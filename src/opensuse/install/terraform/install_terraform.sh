@@ -6,6 +6,5 @@ zypper install -yn \
   terraform-provider-aws \
   terraform-provider-azurerm \
   terraform-provider-google \
-  terraform-provider-kubernetes \
-  terraform-provider-openstack
+  terraform-provider-kubernetes 
 zypper clean --all
