@@ -9,6 +9,7 @@ echo "Install Firefox"
 if [ "$DISTRO" = centos ]; then
   yum install -y firefox p11-kit
 else
+  apt-get update
   apt-mark unhold firefox
   apt-get remove firefox
   apt-get update

@@ -62,10 +62,6 @@ RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmi
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
 RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
 
-### Install Signal
-COPY ./src/ubuntu/install/signal $INST_SCRIPTS/signal/
-RUN bash $INST_SCRIPTS/signal/install_signal.sh  && rm -rf $INST_SCRIPTS/signal/
-
 ### Install GIMP
 COPY ./src/ubuntu/install/gimp $INST_SCRIPTS/gimp/
 RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
