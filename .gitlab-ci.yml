@@ -14,6 +14,8 @@ variables:
   BASE_TAG: "develop"
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.14.0"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
   TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.14.0.7f3582.tar.gz"
 before_script:
@@ -115,7 +117,7 @@ build_multi_containers:
   retry: 1
   parallel:
     matrix:
-      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+      - TAG: [ oci-fixed-amd, oci-fixed-arm ]
         BUILD_META: *MULTI_ARCH_BUILDS
 
 build_multi_containers2:
@@ -134,7 +136,7 @@ build_multi_containers2:
   retry: 1
   parallel:
     matrix:
-      - TAG: [ aws-autoscale, aws-autoscale-arm64 ]
+      - TAG: [ oci-fixed-amd, oci-fixed-arm ]
         BUILD_META: *MULTI_ARCH_BUILDS2
 
 build_single_containers:
@@ -149,7 +151,7 @@ build_single_containers:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale
+    - oci-fixed-amd
   retry: 1
   parallel:
     matrix:
@@ -171,7 +173,7 @@ test_multi:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   retry: 1
   parallel:
     matrix:
@@ -191,7 +193,7 @@ test_multi2:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   retry: 1
   parallel:
     matrix:
@@ -211,7 +213,7 @@ test_single:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   retry: 1
   parallel:
     matrix:
@@ -233,7 +235,7 @@ manifest_multi:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *MULTI_ARCH_BUILDS
@@ -251,7 +253,7 @@ manifest_multi2:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *MULTI_ARCH_BUILDS2
@@ -269,7 +271,7 @@ manifest_single:
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
@@ -289,7 +291,7 @@ update_readmes_multi:
       - $README_USERNAME
       - $README_PASSWORD
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *MULTI_ARCH_BUILDS
@@ -304,7 +306,7 @@ update_readmes_multi2:
       - $README_USERNAME
       - $README_PASSWORD
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *MULTI_ARCH_BUILDS2
@@ -319,7 +321,7 @@ update_readmes_single:
       - $README_USERNAME
       - $README_PASSWORD
   tags:
-    - aws-autoscale-nano
+    - oci-fixed-amd
   parallel:
     matrix:
       - BUILD_META: *SINGLE_ARCH_BUILDS
