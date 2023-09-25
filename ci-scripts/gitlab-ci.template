@@ -1,0 +1,243 @@
+############
+# Settings #
+############
+image: docker:24.0.6
+services:
+  - docker:24.0.6-dind
+stages:
+  - readme
+  - revert
+  - build
+  - test
+  - manifest
+variables:
+  BASE_TAG: "{{ BASE_TAG }}"
+  USE_PRIVATE_IMAGES: {{ USE_PRIVATE_IMAGES }}
+  KASM_RELEASE: "{{ KASM_RELEASE }}"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  TEST_INSTALLER: "{{ TEST_INSTALLER }}"
+before_script:
+  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+  - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
+
+###############################################
+# Build Containers and push to cache endpoint #
+###############################################
+{% for IMAGE in multiImages %}
+build_{{ IMAGE.name }}:
+  stage: build
+  script:
+    - apk add bash
+    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  tags:
+    - ${TAG}
+  retry: 1
+  parallel:
+    matrix:
+      - TAG: [ oci-fixed-amd, oci-fixed-arm ]
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+build_{{ IMAGE.name }}:
+  stage: build
+  script:
+    - apk add bash
+    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  tags:
+    - oci-fixed-amd
+  retry: 1
+{% endfor %}
+
+######################################
+# Test containers and upload results #
+######################################
+{% for IMAGE in multiImages %}
+test_{{ IMAGE.name }}:
+  stage: test
+  when: always
+  script:
+    - apk add bash
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  needs:
+    - build_{{ IMAGE.name }}
+  when: on_success
+  tags:
+    - oci-fixed-amd
+  retry: 1
+  parallel:
+    matrix:
+      - ARCH: [ "x86_64", "aarch64" ]
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+test_{{ IMAGE.name }}:
+  stage: test
+  when: always
+  script:
+    - apk add bash
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  needs:
+    - build_{{ IMAGE.name }}
+  when: on_success
+  tags:
+    - oci-fixed-amd
+  retry: 1
+{% endfor %}
+
+############################################
+# Manifest Containers if their test passed #
+############################################
+{% for IMAGE in multiImages %}
+manifest_{{ IMAGE.name }}:
+  stage: manifest
+  when: always
+  script:
+    - apk add bash
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  needs:
+    - test_{{ IMAGE.name }}
+  when: on_success
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+manifest_{{ IMAGE.name }}:
+  stage: manifest
+  when: always
+  script:
+    - apk add bash
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"
+  {% if FILE_LIMITS %}only:
+    changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+  except:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  needs:
+    - test_{{ IMAGE.name }}
+  when: on_success
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+####################
+# Helper Functions #
+####################
+
+## Update Readmes ##
+{% for IMAGE in multiImages %}
+update_readmes_{{ IMAGE.name }}:
+  stage: readme
+  script:
+    - apk add bash
+    - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
+  only:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+update_readmes_{{ IMAGE.name }}:
+  stage: readme
+  script:
+    - apk add bash
+    - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
+  only:
+    variables:
+      - $README_USERNAME
+      - $README_PASSWORD
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+## Revert Images to specific build id ##
+{% for IMAGE in multiImages %}
+dockerhub_revert_{{ IMAGE.name }}:
+  stage: revert
+  script:
+    - /bin/bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi" "${DOCKERHUB_REVERT}" "${REVERT_IS_ROLLING}"
+  only:
+    variables:
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+dockerhub_revert_{{ IMAGE.name }}:
+  stage: revert
+  script:
+    - /bin/bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single" "${DOCKERHUB_REVERT}" "${REVERT_IS_ROLLING}"
+  only:
+    variables:
+      - $DOCKERHUB_REVERT
+      - $REVERT_IS_ROLLING
+  tags:
+    - oci-fixed-amd
+{% endfor %}

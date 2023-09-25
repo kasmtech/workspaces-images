@@ -2,12 +2,12 @@
 set -e
 
 ## Parse input ##
-NAME=$(echo $1| awk -F'|' '{print $1}')
-BASE=$(echo $1| awk -F'|' '{print $2}')
-DOCKERFILE=$(echo $1| awk -F'|' '{print $3}')
-ARCH=$2
-AWS_ID=$3
-AWS_KEY=$4
+NAME=$1
+BASE=$2
+DOCKERFILE=$3
+ARCH=$4
+AWS_ID=$5
+AWS_KEY=$6
 
 # Setup aws cli
 export AWS_ACCESS_KEY_ID="${AWS_ID}"
