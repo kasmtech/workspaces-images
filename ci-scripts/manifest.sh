@@ -5,7 +5,7 @@ FAILED="false"
 
 # Ingest cli variables
 ## Parse input ##
-NAME=$(echo $1| awk -F'|' '{print $1}')
+NAME=$1
 TYPE=$2
 REVERT_PIPELINE_ID=$3
 IS_ROLLING=$4

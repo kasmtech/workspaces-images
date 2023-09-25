@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ## Parse input ##
-NAME=$(echo $1| awk -F'|' '{print $1}')
-BASE=$(echo $1| awk -F'|' '{print $2}')
-DOCKERFILE=$(echo $1| awk -F'|' '{print $3}')
+NAME=$1
+BASE=$2
+DOCKERFILE=$3
 
 # Determine if we are using private images
 if [ ${USE_PRIVATE_IMAGES} -eq 1 ]; then
