@@ -1,0 +1,624 @@
+files: &UNIVERSAL_CHANGE_FILES
+  - src/common/**
+  - ci-scripts/**
+  - .gitlab-ci.yml
+
+multiImages:
+  - name: audacity
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-audacity
+    changeFiles:
+      - dockerfile-kasm-audacity
+      - src/ubuntu/install/audacity/**
+  - name: chromium
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-chromium
+    changeFiles:
+      - dockerfile-kasm-chromium
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/certificates/**
+  - name: deluge
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-deluge
+    changeFiles:
+      - dockerfile-kasm-deluge
+      - src/ubuntu/install/deluge/**
+  - name: doom
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-doom
+    changeFiles:
+      - dockerfile-kasm-doom
+      - src/ubuntu/install/doom/**
+  - name: filezilla
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-filezilla
+    changeFiles:
+      - dockerfile-kasm-filezilla
+      - src/ubuntu/install/filezilla/**
+  - name: firefox
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-firefox
+    changeFiles:
+      - dockerfile-kasm-firefox
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/certificates/**
+  - name: gimp
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-gimp
+    changeFiles:
+      - dockerfile-kasm-gimp
+      - src/ubuntu/install/gimp/**
+  - name: inkscape
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-inkscape
+    changeFiles:
+      - dockerfile-kasm-inkscape
+      - src/ubuntu/install/inkscape/**
+  - name: java-dev
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-java-dev
+    changeFiles:
+      - dockerfile-kasm-java-dev
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/eclipse/**
+  - name: libre-office
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-libre-office
+    changeFiles:
+      - dockerfile-kasm-libre-office
+      - src/ubuntu/install/libre_office/**
+  - name: opensuse-15-desktop
+    base: core-opensuse-15
+    dockerfile: dockerfile-kasm-opensuse-15-desktop
+    changeFiles:
+      - dockerfile-kasm-opensuse-15-desktop
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+      - src/opensuse/install/**
+  - name: oracle-8-desktop
+    base: core-oracle-8
+    dockerfile: dockerfile-kasm-oracle-8-desktop
+    changeFiles:
+      - dockerfile-kasm-oracle-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: pinta
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-pinta
+    changeFiles:
+      - dockerfile-kasm-pinta
+      - src/ubuntu/install/pinta/**
+  - name: qbittorrent
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-qbittorrent
+    changeFiles:
+      - dockerfile-kasm-qbittorrent
+      - src/ubuntu/install/qbittorrent/**
+  - name: remmina
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-remmina
+    changeFiles:
+      - dockerfile-kasm-remmina
+      - src/ubuntu/install/remmina/**
+  - name: sublime-text
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-sublime-text
+    changeFiles:
+      - dockerfile-kasm-sublime-text
+      - src/ubuntu/install/sublime_text/**
+  - name: telegram
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-telegram
+    changeFiles:
+      - dockerfile-kasm-telegram
+      - src/ubuntu/install/telegram/**
+  - name: terminal
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-terminal
+    changeFiles:
+      - dockerfile-kasm-terminal
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/terminal/**
+  - name: thunderbird
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-thunderbird
+    changeFiles:
+      - dockerfile-kasm-thunderbird
+      - src/ubuntu/install/thunderbird/**
+  - name: tor-browser
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-tor-browser
+    changeFiles:
+      - dockerfile-kasm-tor-browser
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/torbrowser/**
+  - name: ubuntu-focal-desktop
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-ubuntu-focal-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-focal-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-jammy-desktop
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: vlc
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-vlc
+    changeFiles:
+      - dockerfile-kasm-vlc
+      - src/ubuntu/install/vlc/**
+  - name: vs-code
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-vs-code
+    changeFiles:
+      - dockerfile-kasm-vs-code
+      - src/ubuntu/install/vs_code/**
+  - name: almalinux-8-desktop
+    base: core-almalinux-8
+    dockerfile: dockerfile-kasm-almalinux-8-desktop
+    changeFiles:
+      - dockerfile-kasm-almalinux-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: almalinux-9-desktop
+    base: core-almalinux-9
+    dockerfile: dockerfile-kasm-almalinux-9-desktop
+    changeFiles:
+      - dockerfile-kasm-almalinux-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: alpine-317-desktop
+    base: core-alpine-317
+    dockerfile: dockerfile-kasm-alpine-317-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-317-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: alpine-318-desktop
+    base: core-alpine-318
+    dockerfile: dockerfile-kasm-alpine-318-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-318-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: brave
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-brave
+    changeFiles:
+      - dockerfile-kasm-brave
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/brave/**
+  - name: debian-bullseye-desktop
+    base: core-debian-bullseye
+    dockerfile: dockerfile-kasm-debian-bullseye-desktop
+    changeFiles:
+      - dockerfile-kasm-debian-bullseye-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: debian-bookworm-desktop
+    base: core-debian-bookworm
+    dockerfile: dockerfile-kasm-debian-bookworm-desktop
+    changeFiles:
+      - dockerfile-kasm-debian-bookworm-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: fedora-37-desktop
+    base: core-fedora-37
+    dockerfile: dockerfile-kasm-fedora-37-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-37-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: fedora-38-desktop
+    base: core-fedora-38
+    dockerfile: dockerfile-kasm-fedora-38-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-38-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: kali-rolling-desktop
+    base: core-kali-rolling
+    dockerfile: dockerfile-kasm-kali-rolling-desktop
+    changeFiles:
+      - dockerfile-kasm-kali-rolling-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: minetest
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-minetest
+    changeFiles:
+      - dockerfile-kasm-minetest
+      - src/ubuntu/install/minetest/**
+  - name: oracle-9-desktop
+    base: core-oracle-9
+    dockerfile: dockerfile-kasm-oracle-9-desktop
+    changeFiles:
+      - dockerfile-kasm-oracle-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: parrotos-5-desktop
+    base: core-parrotos-5
+    dockerfile: dockerfile-kasm-parrotos-5-desktop
+    changeFiles:
+      - dockerfile-kasm-parrotos-5-desktop
+      - src/ubuntu/install/parrot/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: retroarch
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-retroarch
+    changeFiles:
+      - dockerfile-kasm-retroarch
+      - src/ubuntu/install/retroarch/**
+  - name: rockylinux-8-desktop
+    base: core-rockylinux-8
+    dockerfile: dockerfile-kasm-rockylinux-8-desktop
+    changeFiles:
+      - dockerfile-kasm-rockylinux-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: rockylinux-9-desktop
+    base: core-rockylinux-9
+    dockerfile: dockerfile-kasm-rockylinux-9-desktop
+    changeFiles:
+      - dockerfile-kasm-rockylinux-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: super-tux-kart
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-super-tux-kart
+    changeFiles:
+      - dockerfile-kasm-super-tux-kart
+      - src/ubuntu/install/super_tux_kart/**
+  - name: ubuntu-focal-dind
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-ubuntu-focal-dind
+    changeFiles:
+      - dockerfile-kasm-ubuntu-focal-dind
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-focal-dind-rootless
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-ubuntu-focal-dind-rootless
+    changeFiles:
+      - dockerfile-kasm-ubuntu-focal-dind-rootless
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind_rootless/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-jammy-dind
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-dind
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-dind
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-jammy-dind-rootless
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-dind-rootless
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-dind-rootless
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind_rootless/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: vivaldi
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-vivaldi
+    changeFiles:
+      - dockerfile-kasm-vivaldi
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/vivaldi/**
+singleImages:
+  - name: atom
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-atom
+    changeFiles:
+      - dockerfile-kasm-atom
+      - src/ubuntu/install/atom/**
+  - name: blender
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-blender
+    changeFiles:
+      - dockerfile-kasm-blender
+      - src/ubuntu/install/blender/**
+  - name: centos-7-desktop
+    base: core-centos-7
+    dockerfile: dockerfile-kasm-centos-7-desktop
+    changeFiles:
+      - dockerfile-kasm-centos-7-desktop
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chrome/**
+  - name: chrome
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-chrome
+    changeFiles:
+      - dockerfile-kasm-chrome
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/chrome/**
+  - name: desktop
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-desktop
+    changeFiles:
+      - dockerfile-kasm-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/chrome/**
+  - name: desktop-deluxe
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-desktop-deluxe
+    changeFiles:
+      - dockerfile-kasm-desktop-deluxe
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: discord
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-discord
+    changeFiles:
+      - dockerfile-kasm-discord
+      - src/ubuntu/install/discord/**
+  - name: edge
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-edge
+    changeFiles:
+      - dockerfile-kasm-edge
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/edge/**
+  - name: hunchly
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-hunchly
+    changeFiles:
+      - dockerfile-kasm-hunchly
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/hunchly/**
+  - name: insomnia
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-insomnia
+    changeFiles:
+      - dockerfile-kasm-insomnia
+      - src/ubuntu/install/insomnia/**
+  - name: maltego
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-maltego
+    changeFiles:
+      - dockerfile-kasm-maltego
+      - src/ubuntu/install/maltego/**
+      - src/ubuntu/install/firefox/**
+  - name: only-office
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-only-office
+    changeFiles:
+      - dockerfile-kasm-only-office
+  - name: oracle-7-desktop
+    base: core-oracle-7
+    dockerfile: dockerfile-kasm-oracle-7-desktop
+    changeFiles:
+      - dockerfile-kasm-oracle-7-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chrome/**
+  - name: postman
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-postman
+    changeFiles:
+      - dockerfile-kasm-postman
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/postman/**
+  - name: remnux-focal-desktop
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-remnux-focal-desktop
+    changeFiles:
+      - dockerfile-kasm-remnux-focal-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/remnux/**
+  - name: signal
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-signal
+    changeFiles:
+      - dockerfile-kasm-signal
+      - src/ubuntu/install/signal/**
+  - name: steam
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-steam
+    changeFiles:
+      - dockerfile-kasm-steam
+      - src/ubuntu/install/steam/**
+  - name: tracelabs
+    base: core-kali-rolling
+    dockerfile: dockerfile-kasm-tracelabs
+    changeFiles:
+      - dockerfile-kasm-tracelabs
+      - src/ubuntu/install/kali/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/tracelabs/**
+  - name: unityhub
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-unityhub
+    changeFiles:
+      - dockerfile-kasm-unityhub
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/unityhub/**
+  - name: zoom
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-zoom
+    changeFiles:
+      - dockerfile-kasm-zoom
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/chrome/**
+  - name: zsnes
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-zsnes
+    changeFiles:
+      - dockerfile-kasm-zsnes
+      - src/ubuntu/install/zsnes/**

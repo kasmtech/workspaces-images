@@ -88,7 +88,7 @@ else
   elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
     echo "Firefox flash player not supported on Debian"
   elif ! grep -q Jammy /etc/os-release; then
-    # Plugin to support running flash videos for sites like vimeo
+    # Plugin to support running flash videos for sites like vimeo 
     apt-get update
     apt-get install -y browser-plugin-freshplayer-pepperflash
     apt-mark hold firefox
