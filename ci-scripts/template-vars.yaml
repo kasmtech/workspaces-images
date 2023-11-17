@@ -119,6 +119,15 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-remmina
       - src/ubuntu/install/remmina/**
+  - name: spiderfoot
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-spiderfoot
+    changeFiles:
+      - dockerfile-kasm-spiderfoot
+      - src/ubuntu/install/spiderfoot/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
   - name: sublime-text
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-sublime-text
