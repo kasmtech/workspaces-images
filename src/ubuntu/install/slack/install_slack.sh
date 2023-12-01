@@ -7,24 +7,35 @@ if [ "${ARCH}" == "arm64" ] ; then
     exit 0
 fi
 
-# This might prove fragile depending on how often slack changes it's
-# website though they don't have a link to always getting the latest version.
-# Perhaps a python script that parses the XML could be more robust
-#slack_data=$(curl "https://slack.com/downloads/linux")
-#version_data=$(grep -oPm1 '(?<=<span class="page-downloads__hero__meta-text__version">)[^<]+' <<< $slack_data)
-#version=$(sed -n -e 's/Version //p' <<< $version_data)
-#echo "Determined slack latest version to be: ${version}"
-
-# slack latest does not run with --no-sandbox, so we have to hard code to an older version.
-version=4.12.2
+# This might prove fragile depending on how often slack changes it's website.
+version=$(curl -q https://slack.com/downloads/linux | grep page-downloads__hero__meta-text__version | sed 's/.*Version //g' | cut -d "<" -f1 | head -1)
+echo Detected slack version $version
 
 
-# This path may not be accurate once arm64 support arrives. Specifically I don't know if it will still be under x64
-wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-desktop-${version}-${ARCH}.deb
-apt-get update
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|opensuse) ]]; then
 
-apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
-rm slack-desktop-${version}-${ARCH}.deb
+  wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-${version}-0.1.el8.x86_64.rpm
+
+  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
+    dnf localinstall -y slack-${version}-0.1.el8.x86_64.rpm
+  elif [[ "${DISTRO}" == "opensuse" ]]; then
+    wget https://slack.com/gpg/slack_pubkey_20230710.gpg
+    rpm --import slack_pubkey_20230710.gpg
+    zypper install -yn slack-${version}-0.1.el8.x86_64.rpm
+  else
+    yum localinstall -y slack-${version}-0.1.el8.x86_64.rpm
+  fi
+
+  rm slack-${version}-0.1.el8.x86_64.rpm
+
+else
+  wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-desktop-${version}-${ARCH}.deb
+  apt-get update
+  apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
+  rm slack-desktop-${version}-${ARCH}.deb
+fi
+
+
 sed -i 's,/usr/bin/slack,/usr/bin/slack --no-sandbox,g' /usr/share/applications/slack.desktop
 cp /usr/share/applications/slack.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/slack.desktop
