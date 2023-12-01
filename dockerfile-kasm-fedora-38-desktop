@@ -28,6 +28,7 @@ ENV SKIP_CLEAN=true \
                   /oracle/install/terraform/install_terraform.sh \
                   /oracle/install/telegram/install_telegram.sh \
                   /ubuntu/install/thunderbird/install_thunderbird.sh \
+                  /ubuntu/install/slack/install_slack.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
