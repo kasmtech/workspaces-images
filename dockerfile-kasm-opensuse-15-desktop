@@ -29,6 +29,7 @@ ENV SKIP_CLEAN=true \
                   /opensuse/install/terraform/install_terraform.sh \
                   /opensuse/install/telegram/install_telegram.sh \
                   /ubuntu/install/thunderbird/install_thunderbird.sh \
+                  /ubuntu/install/slack/install_slack.sh \
                   /ubuntu/install/langpacks/install_langpacks.sh \
                   /ubuntu/install/cleanup/cleanup.sh" 
 

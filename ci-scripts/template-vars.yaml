@@ -88,6 +88,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
       - src/opensuse/install/**
   - name: oracle-8-desktop
     base: core-oracle-8
@@ -101,6 +102,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: pinta
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-pinta
@@ -119,6 +121,15 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-remmina
       - src/ubuntu/install/remmina/**
+  - name: slack
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-slack
+    changeFiles:
+      - dockerfile-kasm-slack
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/chrone/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
   - name: spiderfoot
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-spiderfoot
@@ -186,6 +197,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: ubuntu-focal-desktop-vpn
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-ubuntu-focal-desktop-vpn
@@ -211,6 +223,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
       - src/ubuntu/install/vpn/**
   - name: ubuntu-jammy-desktop
     base: core-ubuntu-jammy
@@ -237,6 +250,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: vlc
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-vlc
@@ -261,6 +275,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: almalinux-9-desktop
     base: core-almalinux-9
     dockerfile: dockerfile-kasm-almalinux-9-desktop
@@ -272,6 +287,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: alpine-317-desktop
     base: core-alpine-317
     dockerfile: dockerfile-kasm-alpine-317-desktop
@@ -318,6 +334,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: debian-bookworm-desktop
     base: core-debian-bookworm
     dockerfile: dockerfile-kasm-debian-bookworm-desktop
@@ -341,6 +358,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: fedora-37-desktop
     base: core-fedora-37
     dockerfile: dockerfile-kasm-fedora-37-desktop
@@ -352,6 +370,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: fedora-38-desktop
     base: core-fedora-38
     dockerfile: dockerfile-kasm-fedora-38-desktop
@@ -363,6 +382,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: kali-rolling-desktop
     base: core-kali-rolling
     dockerfile: dockerfile-kasm-kali-rolling-desktop
@@ -388,6 +408,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: parrotos-5-desktop
     base: core-parrotos-5
     dockerfile: dockerfile-kasm-parrotos-5-desktop
@@ -415,6 +436,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: rockylinux-9-desktop
     base: core-rockylinux-9
     dockerfile: dockerfile-kasm-rockylinux-9-desktop
@@ -426,6 +448,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: super-tux-kart
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-super-tux-kart
