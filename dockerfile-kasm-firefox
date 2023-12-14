@@ -21,6 +21,10 @@ RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME
 RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
 RUN apt-get remove -y xfce4-panel
 
+# Security modifications
+COPY ./src/ubuntu/install/misc/single_app_security.sh $INST_SCRIPTS/misc/
+RUN  bash $INST_SCRIPTS/misc/single_app_security.sh -t && rm -rf $INST_SCRIPTS/misc/
+
 # Setup the custom startup script that will be invoked when the container starts
 #ENV LAUNCH_URL  http://kasmweb.com
 
