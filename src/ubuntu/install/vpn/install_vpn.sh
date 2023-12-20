@@ -9,37 +9,43 @@ if [[ "${DISTRO}" == @(ubuntu|kali|debian|parrotos5) ]]; then
     openvpn \
     resolvconf \
     wireguard-tools \
-    zenity
+    zenity \
+    jq
 elif [ "${DISTRO}" == "alpine" ]; then
   apk add --no-cache \
     openresolv \
     openvpn \
     tailscale \
     wireguard-tools \
-    zenity
+    zenity \
+    jq
 elif [[ "${DISTRO}" == @(oracle8|oracle9|rockylinux8|rockylinux9|almalinux8|almalinux9) ]] ; then
   dnf install -y epel-release
   dnf install -y \
     openvpn \
-    wireguard-tools
+    wireguard-tools \
+    jq
 elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
   yum install -y epel-release
   yum install -y \
     openvpn \
     wireguard-tools \
-    zenity
+    zenity \
+    jq
 elif [[ "${DISTRO}" == @(fedora37|fedora38) ]] ; then
   dnf install -y \
     openresolv \
     openvpn \
     wireguard-tools \
-    zenity
+    zenity \
+    jq
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -y \
     openresolv \
     openvpn \
     wireguard-tools \
-    zenity
+    zenity \
+    jq
 fi
 
 # Install tailscale
@@ -90,5 +96,5 @@ fi
 sed -i '/cmd sysctl -q/d' $(which wg-quick)
 
 # Copy startup script
-cp ${INST_DIR}/ubuntu/install/vpn/start_vpn.sh /
-chmod +x /start_vpn.sh
+cp ${INST_DIR}/ubuntu/install/vpn/start_vpn.sh /dockerstartup/start_vpn.sh
+chmod +x /dockerstartup/start_vpn.sh
