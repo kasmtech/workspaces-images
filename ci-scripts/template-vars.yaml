@@ -75,6 +75,15 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-libre-office
       - src/ubuntu/install/libre_office/**
+  - name: nessus
+    base: core-ubuntu-focal
+    dockerfile: dockerfile-kasm-nessus
+    changeFiles:
+      - dockerfile-kasm-nessus
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/nessus/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
   - name: opensuse-15-desktop
     base: core-opensuse-15
     dockerfile: dockerfile-kasm-opensuse-15-desktop
