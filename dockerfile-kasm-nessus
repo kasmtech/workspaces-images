@@ -18,6 +18,9 @@ RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chr
 COPY ./src/ubuntu/install/nessus $INST_SCRIPTS/nessus/
 RUN bash $INST_SCRIPTS/nessus/install_nessus.sh  && rm -rf $INST_SCRIPTS/nessus/
 
+COPY ./src/ubuntu/install/cleanup $INST_SCRIPTS/cleanup/
+RUN bash $INST_SCRIPTS/cleanup/cleanup.sh  && rm -rf $INST_SCRIPTS/cleanup/
+
 COPY ./src/ubuntu/install/nessus/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh
 RUN chmod 755 $STARTUPDIR/custom_startup.sh
