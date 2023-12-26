@@ -82,7 +82,6 @@ multiImages:
       - dockerfile-kasm-nessus
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/nessus/**
-      - src/ubuntu/install/tools/**
       - src/ubuntu/install/cleanup/**
   - name: opensuse-15-desktop
     base: core-opensuse-15
