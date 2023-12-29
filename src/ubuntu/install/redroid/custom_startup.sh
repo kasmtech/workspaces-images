@@ -7,11 +7,14 @@ DEFAULT_ARGS="-n"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 ANDROID_VERSION=${ANDROID_VERSION:-"13.0.0"}
 REDROID_GPU_GUEST_MODE=${REDROID_GPU_GUEST_MODE:-"guest"}
-REDROID_FPS=${REDROID_FPS:-"60"}
+REDROID_FPS=${REDROID_FPS:-"30"}
 REDROID_WIDTH=${REDROID_WIDTH:-"720"}
 REDROID_HEIGHT=${REDROID_HEIGHT:-"1280"}
 REDROID_DPI=${REDROID_DPI:-"320"}
 REDROID_SHOW_CONSOLE=${REDROID_SHOW_CONSOLE:-"1"}
+
+ICON_ERROR="/usr/share/icons/ubuntu-mono-dark/status/22/system-devices-panel-alert.svg"
+
 
 LAUNCH_CONFIG='/dockerstartup/redroid_launch_selections.json'
 # Launch Config Based Workflow
@@ -19,20 +22,29 @@ if [ -e ${LAUNCH_CONFIG} ]; then
   ANDROID_VERSION="$(jq -r '.android_version' ${LAUNCH_CONFIG})"
 fi
 
-function audio_patch() {
-  # The devices start with audio quite low
-  set +e
-    for ((i=1; i<=10; i++)); do
-      adb -s localhost:5555 shell input keyevent KEYCODE_VOLUME_UP &
-      sleep 0.2
-    done
-  set -e
 
+function check_modules() {
+  if lsmod | grep -q binder_linux; then
+    echo "binder_linux module is loaded."
+  else
+      msg="Host level module binder_linux is not loaded. Cannot continue.\nSee https://github.com/remote-android/redroid-doc?tab=readme-ov-file#getting-started for more details."
+      echo msg
+      notify-send -u critical -t 0 -i "${ICON_ERROR}" "Redroid Error" "${msg}"
+      exit 1
+  fi
+
+  # Check for ashmem_linux module
+  if lsmod | grep -q ashmem_linux; then
+      echo "ashmem_linux module is loaded."
+  else
+      msg="Host level module ashmem_linux is not loaded. Cannot continue.\nSee https://github.com/remote-android/redroid-doc?tab=readme-ov-file#getting-started for more details."
+      echo msg
+      notify-send -u critical -t 0 -i "${ICON_ERROR}" "Redroid Error" "${msg}"
+      exit 1
+  fi
 }
 
 start_android() {
-  /usr/bin/filter_ready
-  /usr/bin/desktop_ready
   sleep 5
   xfce4-terminal --hide-menubar --command "bash -c \"sudo docker pull redroid/redroid:${ANDROID_VERSION}-latest \""
   sudo docker run -itd --rm --privileged \
@@ -48,7 +60,6 @@ start_android() {
     sleep 2
     adb connect localhost:5555
     sleep 5
-    audio_patch
 }
 start_scrcpy() {
 
@@ -74,8 +85,6 @@ kasm_startup() {
         do
             if ! pgrep -x $DOCKER_PGREP > /dev/null
             then
-                /usr/bin/filter_ready
-                /usr/bin/desktop_ready
                 set +e
                 sudo /usr/bin/supervisord -n &
                 set -e
@@ -83,8 +92,6 @@ kasm_startup() {
             fi
             if ! pgrep -x $SCRCPY_PGREP > /dev/null
             then
-                /usr/bin/filter_ready
-                /usr/bin/desktop_ready
                 start_scrcpy
             fi
             sleep 1
@@ -95,4 +102,7 @@ kasm_startup() {
 
 } 
 
+/usr/bin/filter_ready
+/usr/bin/desktop_ready
+check_modules
 kasm_startup
