@@ -19,3 +19,5 @@ See [Redroid Docs](https://github.com/remote-android/redroid-doc?tab=readme-ov-f
 * `REDROID_HEIGHT` - Set the desired height of the redroid device
 * `REDROID_DPI` - Set the desired DPI of the redroid device
 * `REDROID_SHOW_CONSOLE` - Display the scrcpy console after launching the redroid device.
+* `REDROID_DISABLE_AUTOSTART` - If set to "1", the container will not automatically pull and start the redroid container and scrcpy.
+* `REDROID_DISABLE_HOST_CHECKS` - If set to "1", the container will not check for the presence of required host level kernel modules.

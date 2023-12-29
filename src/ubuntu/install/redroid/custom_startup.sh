@@ -12,6 +12,8 @@ REDROID_WIDTH=${REDROID_WIDTH:-"720"}
 REDROID_HEIGHT=${REDROID_HEIGHT:-"1280"}
 REDROID_DPI=${REDROID_DPI:-"320"}
 REDROID_SHOW_CONSOLE=${REDROID_SHOW_CONSOLE:-"1"}
+REDROID_DISABLE_AUTOSTART=${REDROID_DISABLE_AUTOSTART:-"0"}
+REDROID_DISABLE_HOST_CHECKS=${REDROID_DISABLE_HOST_CHECKS:-"0"}
 
 ICON_ERROR="/usr/share/icons/ubuntu-mono-dark/status/22/system-devices-panel-alert.svg"
 
@@ -88,11 +90,15 @@ kasm_startup() {
                 set +e
                 sudo /usr/bin/supervisord -n &
                 set -e
-                start_android
+                if [ "$REDROID_DISABLE_AUTOSTART" == "0" ]; then
+                  start_android
+                fi
             fi
-            if ! pgrep -x $SCRCPY_PGREP > /dev/null
-            then
-                start_scrcpy
+            if [ "$REDROID_DISABLE_AUTOSTART" == "0" ]; then
+                  if ! pgrep -x $SCRCPY_PGREP > /dev/null
+                  then
+                      start_scrcpy
+                  fi
             fi
             sleep 1
         done
@@ -104,5 +110,9 @@ kasm_startup() {
 
 /usr/bin/filter_ready
 /usr/bin/desktop_ready
-check_modules
+
+
+if [ "$REDROID_DISABLE_HOST_CHECKS" == "0" ]; then
+  check_modules
+fi
 kasm_startup
