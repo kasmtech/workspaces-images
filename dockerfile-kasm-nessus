@@ -11,7 +11,7 @@ WORKDIR $HOME
 ######### Customize Container Here ###########
 
 
-# Install Google Chrome
+# Install Chromium
 COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
 RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chromium/
 
