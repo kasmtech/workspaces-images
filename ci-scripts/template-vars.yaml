@@ -115,6 +115,20 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-qbittorrent
       - src/ubuntu/install/qbittorrent/**
+  - name: redroid
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-redroid
+    changeFiles:
+      - dockerfile-kasm-redroid
+      - src/ubuntu/install/redroid/**
+      - src/ubuntu/install/android_studio/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
   - name: remmina
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-remmina
