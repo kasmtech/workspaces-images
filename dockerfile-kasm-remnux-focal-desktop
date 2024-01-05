@@ -11,7 +11,7 @@ WORKDIR $HOME
 ######### Customize Container Here ###########
 
 # Add Background
-ADD /src/common/resources/images/bg_remnux.png  /usr/share/extra/backgrounds/bg_default.png
+ADD /src/common/resources/images/bg_remnux.png  /usr/share/backgrounds/bg_default.png
 
 # Install Remnux Utils
 COPY ./src/ubuntu/install/remnux $INST_SCRIPTS/remnux/
