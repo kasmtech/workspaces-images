@@ -41,3 +41,20 @@ EOF
 chmod +x /usr/bin/blender
 
 rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+
+# Desktop icon
+sed -i 's#Icon=blender#Icon=/blender/blender.svg#g' /blender/blender.desktop
+cp /blender/blender.desktop /usr/share/applications/
+cp /usr/share/applications/blender.desktop $HOME/Desktop/
+chmod +x $HOME/Desktop/blender.desktop
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
+    /tmp/*
+fi
