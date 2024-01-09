@@ -24,3 +24,7 @@ if [ -z ${SKIP_CLEAN+x} ]; then
         /var/tmp/* \
         /tmp/*
 fi
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
