@@ -151,6 +151,7 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   rm -Rf /root/.mozilla
 else
   # Creating Default Profile
+  chown -R 0:0 $HOME
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 fi
 
@@ -174,6 +175,13 @@ cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 Default=kasm
 Locked=1
 EOL
+fi
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -f $HOME/Desktop/firefox.desktop ]; then
+  chmod +x $HOME/Desktop/firefox.desktop
 fi
 
 chown -R 1000:1000 $HOME/.mozilla

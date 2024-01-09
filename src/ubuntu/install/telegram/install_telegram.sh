@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 set -ex
 
+# Install Telegram
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
-
 if [ "${ARCH}" == "arm64" ] ; then
   apt-get update
   apt-get install -y telegram-desktop
   cp /usr/share/applications/telegramdesktop.desktop $HOME/Desktop/telegram.desktop
+  chmod +x $HOME/Desktop/telegram.desktop
 else
-  wget -q https://telegram.org/dl/desktop/linux -O /tmp/telegram.tgz
+  curl -L https://telegram.org/dl/desktop/linux -o /tmp/telegram.tgz
   tar -xvf /tmp/telegram.tgz -C /opt/
   rm -rf /tmp/telegram.tgz
 
-  wget -q https://kasm-static-content.s3.amazonaws.com/icons/telegram.png -O /opt/Telegram/telegram_icon.png
-
+  curl -L https://kasm-static-content.s3.amazonaws.com/icons/telegram.png -o /opt/Telegram/telegram_icon.png
   cat >/usr/share/applications/telegram.desktop <<EOL
 [Desktop Entry]
 Version=1.0
@@ -33,4 +33,14 @@ EOL
   chmod +x /usr/share/applications/telegram.desktop
   cp /usr/share/applications/telegram.desktop $HOME/Desktop/telegram.desktop
 fi
-chown 1000:1000 $HOME/Desktop/telegram.desktop
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
+    /tmp/*
+fi

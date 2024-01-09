@@ -102,3 +102,7 @@ mkdir -p /etc/opt/chrome/policies/managed/
 cat >>/etc/opt/chrome/policies/managed/default_managed_policy.json <<EOL
 {"CommandLineFlagSecurityWarningsEnabled": false, "DefaultBrowserSettingEnabled": false}
 EOL
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
