@@ -7,7 +7,7 @@ TOR_HOME=$HOME/tor-browser/
 mkdir -p $TOR_HOME
 if [ "$(arch)" == "aarch64" ]; then
   SF_VERSION=$(curl -sI https://sourceforge.net/projects/tor-browser-ports/files/latest/download | awk -F'(ports/|/tor)' '/location/ {print $3}')
-  FULL_TOR_URL="https://downloads.sourceforge.net/project/tor-browser-ports/${SF_VERSION}/tor-browser-linux-arm64-${SF_VERSION}_ALL.tar.xz"
+  FULL_TOR_URL="https://downloads.sourceforge.net/project/tor-browser-ports/${SF_VERSION}/tor-browser-linux-arm64-${SF_VERSION}.tar.xz"
 else
   TOR_URL=$(curl -q https://www.torproject.org/download/ | grep downloadLink | grep linux | sed 's/.*href="//g'  | cut -d '"' -f1 | head -1)
   FULL_TOR_URL="https://www.torproject.org/${TOR_URL}"
@@ -51,3 +51,14 @@ chown -R 1000:0 $TOR_HOME/
 
 cp $TOR_HOME/tor-browser/start-tor-browser.desktop $HOME/Desktop/
 chown 1000:0  $HOME/Desktop/start-tor-browser.desktop
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
+    /tmp/*
+fi

@@ -181,4 +181,7 @@ shareparallel=0
 viewmode=4
 EOF
 
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
 chown -R 1000:1000 $DEFAULT_PROFILE_DIR

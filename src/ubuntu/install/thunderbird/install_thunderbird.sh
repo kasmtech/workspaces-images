@@ -55,3 +55,7 @@ else
   cp /usr/share/applications/thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/thunderbird.desktop
 fi
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;

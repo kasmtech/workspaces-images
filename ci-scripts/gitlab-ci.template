@@ -137,8 +137,9 @@ manifest_{{ IMAGE.name }}:
   stage: manifest
   when: always
   script:
-    - apk add bash
-    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"
+    - apk add bash tar
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"{% if IMAGE.singleapp %}
+    - bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
   {% if FILE_LIMITS %}only:
     changes:
       {% for FILE in files %}- {{ FILE }}
@@ -162,8 +163,9 @@ manifest_{{ IMAGE.name }}:
   stage: manifest
   when: always
   script:
-    - apk add bash
-    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"
+    - apk add bash tar
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"{% if IMAGE.singleapp %}
+    - bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "single" "{{ IMAGE.base }}"{% endif %}
   {% if FILE_LIMITS %}only:
     changes:
       {% for FILE in files %}- {{ FILE }}
