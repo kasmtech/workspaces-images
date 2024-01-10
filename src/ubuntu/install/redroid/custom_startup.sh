@@ -34,16 +34,6 @@ function check_modules() {
       notify-send -u critical -t 0 -i "${ICON_ERROR}" "Redroid Error" "${msg}"
       exit 1
   fi
-
-  # Check for ashmem_linux module
-  if lsmod | grep -q ashmem_linux; then
-      echo "ashmem_linux module is loaded."
-  else
-      msg="Host level module ashmem_linux is not loaded. Cannot continue.\nSee https://github.com/remote-android/redroid-doc?tab=readme-ov-file#getting-started for more details."
-      echo msg
-      notify-send -u critical -t 0 -i "${ICON_ERROR}" "Redroid Error" "${msg}"
-      exit 1
-  fi
 }
 
 start_android() {
