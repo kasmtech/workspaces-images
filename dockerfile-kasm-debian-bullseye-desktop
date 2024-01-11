@@ -41,7 +41,7 @@ COPY ./src/ $INST_DIR
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    bash ${INST_DIR}${SCRIPT}; \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
   rm -f /etc/X11/xinit/Xclients && \
