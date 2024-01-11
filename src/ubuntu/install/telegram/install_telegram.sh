@@ -6,7 +6,11 @@ ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 if [ "${ARCH}" == "arm64" ] ; then
   apt-get update
   apt-get install -y telegram-desktop
-  cp /usr/share/applications/telegramdesktop.desktop $HOME/Desktop/telegram.desktop
+  if grep -q bookworm /etc/os-release; then
+    cp /usr/share/applications/org.telegram.desktop.desktop $HOME/Desktop/telegram.desktop
+  else
+    cp /usr/share/applications/telegramdesktop.desktop $HOME/Desktop/telegram.desktop
+  fi
   chmod +x $HOME/Desktop/telegram.desktop
 else
   curl -L https://telegram.org/dl/desktop/linux -o /tmp/telegram.tgz
