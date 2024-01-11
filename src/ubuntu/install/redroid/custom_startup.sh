@@ -53,6 +53,7 @@ start_android() {
     adb connect localhost:5555
     sleep 5
 }
+
 start_scrcpy() {
 
   if [ "$REDROID_SHOW_CONSOLE" == "1" ]; then
@@ -61,7 +62,32 @@ start_scrcpy() {
     scrcpy --audio-codec=aac -s localhost:5555 --shortcut-mod=lalt --print-fps --max-fps=${REDROID_FPS}
   fi
 
+  wait_for_process $SCRCPY_PGREP
 }
+
+wait_for_process() {
+  process_match=$1
+  timeout=60
+  interval=1
+  elapsed_time=0
+
+  echo "Waiting for $process_match..."
+  while [[ $elapsed_time -lt $timeout ]]; do
+      if pgrep -x $process_match > /dev/null; then
+          echo "$process_match is running, continuing..."
+          break
+      fi
+      sleep $interval
+      elapsed_time=$((elapsed_time + interval))
+  done
+
+  if ! pgrep -x $process_match > /dev/null
+  then
+      echo "Did not find process $process_match"
+  fi
+
+}
+
 kasm_startup() {
     if [ -n "$KASM_URL" ] ; then
         URL=$KASM_URL
