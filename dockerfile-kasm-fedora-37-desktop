@@ -25,7 +25,6 @@ ENV SKIP_CLEAN=true \
                   /oracle/install/gimp/install_gimp.sh \
                   /oracle/install/zoom/install_zoom.sh \
                   /oracle/install/ansible/install_ansible.sh \
-                  /oracle/install/terraform/install_terraform.sh \
                   /oracle/install/telegram/install_telegram.sh \
                   /ubuntu/install/thunderbird/install_thunderbird.sh \
                   /ubuntu/install/slack/install_slack.sh \
@@ -37,7 +36,7 @@ COPY ./src/ $INST_DIR
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    bash ${INST_DIR}${SCRIPT}; \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
   rm -f /etc/X11/xinit/Xclients && \

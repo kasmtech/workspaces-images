@@ -1,21 +1,34 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-parrotos-5"
+ARG BASE_IMAGE="core-fedora-39"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
 USER root
 
+ENV DISTRO=fedora39
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
 
 ### Envrionment config
-ENV DEBIAN_FRONTEND=noninteractive \
-    SKIP_CLEAN=true \
+ENV SKIP_CLEAN=true \
     KASM_RX_HOME=$STARTUPDIR/kasmrx \
     DONT_PROMPT_WSL_INSTALL="No_Prompt_please" \
     INST_DIR=$STARTUPDIR/install \
-    INST_SCRIPTS="/ubuntu/install/parrot/install_parrot.sh \
+    INST_SCRIPTS="/oracle/install/tools/install_tools_deluxe.sh \
+                  /oracle/install/misc/install_tools.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
                   /ubuntu/install/firefox/install_firefox.sh \
+                  /oracle/install/sublime_text/install_sublime_text.sh \
+                  /oracle/install/vs_code/install_vs_code.sh \
+                  /ubuntu/install/remmina/install_remmina.sh \
+                  /oracle/install/only_office/install_only_office.sh \
+                  /oracle/install/gimp/install_gimp.sh \
+                  /oracle/install/zoom/install_zoom.sh \
+                  /oracle/install/ansible/install_ansible.sh \
+                  /oracle/install/terraform/install_terraform.sh \
+                  /oracle/install/telegram/install_telegram.sh \
+                  /ubuntu/install/thunderbird/install_thunderbird.sh \
+                  /ubuntu/install/slack/install_slack.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
