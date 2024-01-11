@@ -4,7 +4,7 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-ENV DISTRO=fedora37
+ENV DISTRO=fedora38
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
@@ -37,7 +37,7 @@ COPY ./src/ $INST_DIR
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    bash ${INST_DIR}${SCRIPT}; \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
   rm -f /etc/X11/xinit/Xclients && \

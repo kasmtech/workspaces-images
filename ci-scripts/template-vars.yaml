@@ -340,6 +340,15 @@ multiImages:
       - src/ubuntu/install/langpacks/**
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
+  - name: alpine-319-desktop
+    singleapp: false
+    base: core-alpine-319
+    dockerfile: dockerfile-kasm-alpine-319-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-319-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
   - name: brave
     singleapp: true
     base: core-ubuntu-focal
@@ -417,6 +426,19 @@ multiImages:
     dockerfile: dockerfile-kasm-fedora-38-desktop
     changeFiles:
       - dockerfile-kasm-fedora-38-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: fedora-39-desktop
+    singleapp: false
+    base: core-fedora-39
+    dockerfile: dockerfile-kasm-fedora-39-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-39-desktop
       - src/oracle/install/**
       - src/ubuntu/install/thunderbird/**
       - src/ubuntu/install/remmina/**

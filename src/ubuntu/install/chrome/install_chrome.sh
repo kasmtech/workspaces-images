@@ -63,6 +63,9 @@ chmod +x $HOME/Desktop/google-chrome.desktop
 mv /usr/bin/google-chrome /usr/bin/google-chrome-orig
 cat >/usr/bin/google-chrome <<EOL
 #!/usr/bin/env bash
+if ! pgrep chrome > /dev/null;then
+  rm -f \$HOME/.config/google-chrome/Singleton*
+fi
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/google-chrome/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/google-chrome/Default/Preferences
 if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
