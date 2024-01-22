@@ -475,12 +475,12 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: parrotos-5-desktop
+  - name: parrotos-6-desktop
     singleapp: false
-    base: core-parrotos-5
-    dockerfile: dockerfile-kasm-parrotos-5-desktop
+    base: core-parrotos-6
+    dockerfile: dockerfile-kasm-parrotos-6-desktop
     changeFiles:
-      - dockerfile-kasm-parrotos-5-desktop
+      - dockerfile-kasm-parrotos-6-desktop
       - src/ubuntu/install/parrot/**
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
