@@ -21,7 +21,8 @@ apt-get install -y \
   parrot-tools-forensics \
   parrot-tools-reversing \
   parrot-tools-cloud \
-  powershell-empire-
+  powershell-empire- \
+  codium-
 
 # Disable power manager
 rm -f /usr/share/xfce4/panel/plugins/power-manager-plugin.desktop
