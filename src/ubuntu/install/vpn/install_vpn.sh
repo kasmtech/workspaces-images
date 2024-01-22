@@ -2,7 +2,7 @@
 set -ex
 
 # Install OpenVPN/Wireguard deps
-if [[ "${DISTRO}" == @(ubuntu|kali|debian|parrotos5) ]]; then
+if [[ "${DISTRO}" == @(ubuntu|kali|debian|parrotos6) ]]; then
   echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
   apt-get update
   apt-get install -y --no-install-recommends \

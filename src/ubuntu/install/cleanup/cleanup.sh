@@ -8,7 +8,7 @@ elif [[ "${DISTRO}" == @(almalinux8|almalinux9|fedora37|fedora38|fedora39|oracle
   dnf clean all
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
-elif [[ "${DISTRO}" == @(debian|kali|parrotos5|ubuntu) ]]; then
+elif [[ "${DISTRO}" == @(debian|kali|parrotos6|ubuntu) ]]; then
   apt-get autoremove -y
   apt-get autoclean -y
 fi
