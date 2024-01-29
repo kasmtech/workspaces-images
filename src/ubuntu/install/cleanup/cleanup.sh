@@ -4,11 +4,11 @@ set -ex
 # Distro package cleanup
 if [[ "${DISTRO}" == @(centos|oracle7) ]] ; then
   yum clean all
-elif [[ "${DISTRO}" == @(almalinux8|almalinux9|fedora37|fedora38|oracle8|oracle9|rockylinux8|rockylinux9) ]]; then
+elif [[ "${DISTRO}" == @(almalinux8|almalinux9|fedora37|fedora38|fedora39|oracle8|oracle9|rockylinux8|rockylinux9) ]]; then
   dnf clean all
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
-elif [[ "${DISTRO}" == @(debian|kali|parrotos5|ubuntu) ]]; then
+elif [[ "${DISTRO}" == @(debian|kali|parrotos6|ubuntu) ]]; then
   apt-get autoremove -y
   apt-get autoclean -y
 fi

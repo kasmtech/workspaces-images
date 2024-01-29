@@ -21,6 +21,7 @@ set -e
 # Add Desktop Icon
 cp /usr/share/applications/vivaldi-stable.desktop $HOME/Desktop/
 chown 1000:1000 $HOME/Desktop/vivaldi-stable.desktop
+chmod +x $HOME/Desktop/vivaldi-stable.desktop
 
 # Use wrapper to launch application
 mv /opt/vivaldi/vivaldi /opt/vivaldi/vivaldi-orig
@@ -57,3 +58,7 @@ if [ -z ${SKIP_CLEAN+x} ]; then
     /var/lib/apt/lists/* \
     /var/tmp/*
 fi
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;

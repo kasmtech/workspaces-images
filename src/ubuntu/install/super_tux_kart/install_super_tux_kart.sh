@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -ex
+
+# 
 VERSION="1.3"
 ARCH=$(uname -m | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 build=64bit
@@ -49,3 +51,14 @@ cat >/usr/bin/desktop_ready <<EOL
 until pids=\$(pidof Thunar); do sleep .5; done
 EOL
 chmod +x /usr/bin/desktop_ready
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
+    /tmp/*
+fi

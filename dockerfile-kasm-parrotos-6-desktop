@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-parrotos-5"
+ARG BASE_IMAGE="core-parrotos-6"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
@@ -15,6 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     INST_DIR=$STARTUPDIR/install \
     INST_SCRIPTS="/ubuntu/install/parrot/install_parrot.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
+                  /ubuntu/install/vs_code/install_vs_code.sh \
                   /ubuntu/install/firefox/install_firefox.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
@@ -24,7 +25,7 @@ COPY ./src/ $INST_DIR
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    bash ${INST_DIR}${SCRIPT}; \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
   rm -f /etc/X11/xinit/Xclients && \
