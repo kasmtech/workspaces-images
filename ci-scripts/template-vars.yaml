@@ -86,6 +86,7 @@ multiImages:
       - dockerfile-kasm-libre-office
       - src/ubuntu/install/libre_office/**
   - name: nessus
+    singleapp: false
     base: core-ubuntu-focal
     dockerfile: dockerfile-kasm-nessus
     changeFiles:
