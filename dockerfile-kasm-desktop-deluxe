@@ -15,7 +15,7 @@ ENV INST_SCRIPTS $STARTUPDIR/install
 ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
 
 # Add Kasm Branding
-RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
 RUN cp /usr/share/extra/icons/icon_kasm.png /usr/share/extra/icons/icon_default.png
 RUN sed -i 's/ubuntu-mono-dark/elementary-xfce/g' $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 

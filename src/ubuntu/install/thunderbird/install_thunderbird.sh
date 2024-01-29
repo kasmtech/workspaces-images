@@ -2,8 +2,8 @@
 set -ex
 
 # Install
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39) ]]; then
+  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39) ]]; then
     dnf install -y thunderbird
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
@@ -48,10 +48,14 @@ Pin-Priority: 1001
 fi
 
 # Desktop icon
-if [[ "${DISTRO}" == @(fedora37|fedora38) ]]; then
+if [[ "${DISTRO}" == @(fedora37|fedora38|fedora39) ]]; then
   cp /usr/share/applications/mozilla-thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/mozilla-thunderbird.desktop
 else
   cp /usr/share/applications/thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/thunderbird.desktop
 fi
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;

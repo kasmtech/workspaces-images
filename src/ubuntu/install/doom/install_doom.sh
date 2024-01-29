@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -ex
+
+# Install Doom
 apt-get update
 apt-get install -y chocolate-doom doom-wad-shareware prboom-plus freedoom
 
+# Custom settings
 mkdir -p $HOME/.local/share/chocolate-doom
 cat >$HOME/.local/share/chocolate-doom/chocolate-doom.cfg <<EOL
 force_software_renderer    1
@@ -49,3 +52,23 @@ cat >/usr/bin/desktop_ready <<EOL
 until pids=\$(pidof Thunar); do sleep .5; done
 EOL
 chmod +x /usr/bin/desktop_ready
+
+# Desktop icon
+DESKTOP_FILE="chocolate-doom.desktop"
+if [ "$(lsb_release -cs)" == "jammy" ]; then
+  DESKTOP_FILE="org.chocolate_doom.Doom.desktop"
+fi
+sed -i 's#Exec=chocolate-doom#Exec=/usr/games/chocolate-doom#g' /usr/share/applications/${DESKTOP_FILE}
+cp /usr/share/applications/${DESKTOP_FILE} $HOME/Desktop
+chmod +x $HOME/Desktop/${DESKTOP_FILE}
+
+# Cleanup for app layer
+chown -R 1000:0 $HOME
+find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/* \
+    /tmp/*
+fi
