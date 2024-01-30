@@ -54,3 +54,8 @@ rm -f \
   /etc/xdg/autostart/xfce4-screensaver.desktop \
   /etc/xdg/autostart/xfce-polkit.desktop \
   /etc/xdg/autostart/xscreensaver.desktop
+
+# Bins we don't want in the final image
+if which gnome-keyring-daemon; then
+  rm -f $(which gnome-keyring-daemon)
+fi
