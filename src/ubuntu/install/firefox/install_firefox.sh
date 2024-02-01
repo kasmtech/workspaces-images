@@ -179,7 +179,7 @@ EOL
 fi
 
 # Desktop Icon FIxes
-if [ "${DISTRO}" == "fedora39" ]; then
+if [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9|fedora39) ]]; then
   sed -i 's#Icon=/usr/lib/firefox#Icon=/usr/lib64/firefox#g' $HOME/Desktop/firefox.desktop
 fi
 
