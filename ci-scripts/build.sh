@@ -10,11 +10,6 @@ if [ ${USE_PRIVATE_IMAGES} -eq 1 ]; then
   BASE=${BASE}-private
 fi
 
-# Determine if this is a rolling build
-if [ "${CI_PIPELINE_SOURCE}" == "schedule" ]; then
-  BASE_TAG=${BASE_TAG}-rolling
-fi
-
 ## Build/Push image to cache endpoint by pipeline ID ##
 docker build \
   -t ${ORG_NAME}/image-cache-private:$(arch)-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID} \

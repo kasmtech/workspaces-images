@@ -136,6 +136,9 @@ test_{{ IMAGE.name }}:
 manifest_{{ IMAGE.name }}:
   stage: manifest
   when: always
+  variables:
+    SCHEDULED: "{{ SCHEDULED }}"
+    SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
   script:
     - apk add bash tar
     - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"{% if IMAGE.singleapp %}
@@ -162,6 +165,9 @@ manifest_{{ IMAGE.name }}:
 manifest_{{ IMAGE.name }}:
   stage: manifest
   when: always
+  variables:
+    SCHEDULED: "{{ SCHEDULED }}"
+    SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
   script:
     - apk add bash tar
     - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"{% if IMAGE.singleapp %}
