@@ -17,14 +17,14 @@ ln -s libOpenCL.so.1 /usr/lib/x86_64-linux-gnu/libOpenCL.so
 mkdir /blender
 if [ -z ${BLENDER_VERSION+x} ]
 then
-    BLENDER_VERSION=$(curl -sL https://mirror.clarkson.edu/blender/source/ \
-    | awk -F'"|/"' '/blender-[0-9]*\.[0-9]*\.[0-9]*\.tar\.xz/ && !/md5sum/ {print $2}' \
+    BLENDER_VERSION=$(curl -sL https://mirrors.iu13.net/blender/source/ \
+    | awk -F'"|/"' '/blender-[0-9]*\.[0-9]*\.[0-9]*\.tar\.xz/ && !/md5sum/ {print $8}' \
     | tail -1 \
     | sed 's|blender-||' \
-    | sed 's|\.tar\.xz||')
+    | sed 's|\.tar\.xz||');
 fi
 BLENDER_FOLDER=$(echo "Blender${BLENDER_VERSION}" | sed -r 's|(Blender[0-9]*\.[0-9]*)\.[0-9]*|\1|')
-curl -o /tmp/blender.tar.xz -L "https://mirror.clarkson.edu/blender/release/${BLENDER_FOLDER}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
+curl -o /tmp/blender.tar.xz -L "https://mirrors.iu13.net/blender/release/${BLENDER_FOLDER}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
 tar xf /tmp/blender.tar.xz -C /blender/ --strip-components=1
 
 cat >/usr/bin/blender <<EOF
