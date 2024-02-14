@@ -8,7 +8,7 @@ stages:
   - template
   - run
 variables:
-  BASE_TAG: "1.15.0"
+  BASE_TAG: "1.15.0-rolling"
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.14.0"
   TEST_INSTALLER: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/1e99090dadb026f1e37e34e53334da20061bc21c/kasm_workspaces_feature_tester-1.15-pre-release_1.15.0.1e9909.tar.gz"
