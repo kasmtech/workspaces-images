@@ -796,3 +796,19 @@ singleImages:
     changeFiles:
       - dockerfile-kasm-zsnes
       - src/ubuntu/install/zsnes/**
+  - name: forensic-osint
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-forensic-osint
+    changeFiles:
+      - dockerfile-kasm-forensic-osint
+      - src/ubuntu/install/forensic_osint/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/torbrowser/**
+      - src/ubuntu/install/cleanup/**
