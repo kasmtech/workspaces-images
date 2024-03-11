@@ -17,8 +17,12 @@ else
 fi
 
 # Determine if this is a rolling build
-if [[ "${CI_PIPELINE_SOURCE}" == "schedule" ]] || [[ "${IS_ROLLING}" == "true" ]]; then
-  SANITIZED_BRANCH=${SANITIZED_BRANCH}-rolling
+if [[ "${SCHEDULED}" != "NO" ]]; then
+  if [[ "${SCHEDULE_NAME}" == "NO" ]]; then
+    SANITIZED_BRANCH=${SANITIZED_BRANCH}-rolling
+  else
+    SANITIZED_BRANCH=${SANITIZED_BRANCH}-rolling-${SCHEDULE_NAME}
+  fi
 fi
 
 # Create workspace and base dockerfile
