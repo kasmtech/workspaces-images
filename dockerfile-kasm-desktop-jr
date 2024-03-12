@@ -1,0 +1,93 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-focal"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV KASM_RX_HOME $STARTUPDIR/kasmrx
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+# Add Kasm Branding
+RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/extra/icons/icon_kasm.png /usr/share/extra/icons/icon_default.png
+RUN sed -i 's/ubuntu-mono-dark/elementary-xfce/g' $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+
+### Install Tools
+COPY ./src/ubuntu/install/tools $INST_SCRIPTS/tools/
+RUN bash $INST_SCRIPTS/tools/install_tools_deluxe.sh  && rm -rf $INST_SCRIPTS/tools/
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+
+### Install Visual Studio Code
+COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
+RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
+
+
+### Install NextCloud
+COPY ./src/ubuntu/install/nextcloud $INST_SCRIPTS/nextcloud/
+RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/nextcloud/
+
+
+### Install Remmina
+COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
+RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
+
+
+### Install Only Office
+COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
+RUN bash $INST_SCRIPTS/only_office/install_only_office.sh  && rm -rf $INST_SCRIPTS/only_office/
+
+### Install GIMP
+COPY ./src/ubuntu/install/gimp $INST_SCRIPTS/gimp/
+RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
+
+### Install Ansible
+COPY ./src/ubuntu/install/ansible $INST_SCRIPTS/ansible/
+RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansible/
+
+# Install Brave
+COPY ./src/ubuntu/install/brave $INST_SCRIPTS/brave/
+RUN bash $INST_SCRIPTS/brave/install_brave.sh  && rm -rf $INST_SCRIPTS/brave/
+
+
+### Install Java
+RUN apt-get update && apt-get install -y default-jdk default-jre
+
+COPY ./src/ubuntu/install/realvnc_vncviewer $INST_SCRIPTS/realvnc_vncviewer/
+RUN bash $INST_SCRIPTS/realvnc_vncviewer/install_realvnc_vncviewer.sh  && rm -rf $INST_SCRIPTS/realvnc_vncviewer/
+### Install WINE
+COPY ./src/ubuntu/install/wine $INST_SCRIPTS/wine/
+RUN bash $INST_SCRIPTS/wine/install_wine.sh  && rm -rf $INST_SCRIPTS/wine/
+
+
+COPY ./src/ubuntu/install/steam $INST_SCRIPTS/steam/
+RUN bash $INST_SCRIPTS/steam/install_steam.sh  && rm -rf $INST_SCRIPTS/steam/
+
+
+COPY ./src/ubuntu/install/discord $INST_SCRIPTS/discord/
+RUN bash $INST_SCRIPTS/discord/install_discord.sh  && rm -rf $INST_SCRIPTS/discord/
+
+
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]
