@@ -1,0 +1,45 @@
+ARG BASE_TAG="1.11.0"
+ARG BASE_IMAGE="ubuntu-focal-desktop"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV KASM_RX_HOME $STARTUPDIR/kasmrx
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+######### Customize Container Here ###########
+
+### Install sudo cifs-utils inetutils-ping net-tools tools package
+RUN apt-get update \
+    && apt-get install -y sudo cifs-utils inetutils-ping net-tools iftop dnsutils iperf3 \
+    && echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && rm -rf /var/lib/apt/list/*
+
+### Install Golang and relevant extension for Visual Studio Code
+COPY ./src/ubuntu/install/golang $INST_SCRIPTS/golang/
+RUN bash $INST_SCRIPTS/golang/install_golang.sh
+
+## Install vscode golang extensions, It will using none root user home directory to install for the convenience of updating.
+USER 1000
+RUN bash $INST_SCRIPTS/golang/install_vs_code_ext.sh
+USER root
+RUN rm -rf $INST_SCRIPTS/golang/
+
+#ADD ./src/common/scripts $STARTUPDIR
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]
