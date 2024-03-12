@@ -71,7 +71,7 @@ function process_tailscale(){
   tailscaled &
   sleep 2
   set +e
-  tailscale up --authkey=${tailscale_key}
+  tailscale up --authkey=${tailscale_key} --accept-routes
   if [ $? -ne 0 ]; then
       msg="Failed to establish tailscale connection. Please review the log at ${LOGFILE}"
       echo msg
