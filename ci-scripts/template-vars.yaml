@@ -723,6 +723,26 @@ singleImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chrome/**
+  - name: kasmos-desktop
+    singleapp: false
+    base: core-kasmos
+    dockerfile: dockerfile-kasmos-desktop
+    changeFiles:
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/intall/only_office/**
+      - src/ubuntu/install/libre_office/**
+      - src/ubuntu/install/misc/**
+      - src/kasmos/install/browser/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/remmina/**
+      - src/kasmos/install/office/**
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/cleanup/**
   - name: postman
     singleapp: true
     base: core-ubuntu-focal
