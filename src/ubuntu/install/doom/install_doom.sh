@@ -55,7 +55,7 @@ chmod +x /usr/bin/desktop_ready
 
 # Desktop icon
 DESKTOP_FILE="chocolate-doom.desktop"
-if [ "$(lsb_release -cs)" == "jammy" ]; then
+if [[ "$(lsb_release -cs)" == @(jammy|noble) ]]; then
   DESKTOP_FILE="org.chocolate_doom.Doom.desktop"
 fi
 sed -i 's#Exec=chocolate-doom#Exec=/usr/games/chocolate-doom#g' /usr/share/applications/${DESKTOP_FILE}

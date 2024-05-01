@@ -2,8 +2,8 @@
 
 set -e
 
-# Just remove xdg-open for Jammy
-if [ "$(lsb_release -cs)" == "jammy" ]; then
+# Just remove xdg-open for Jammy and Noble
+if [[ "$(lsb_release -cs)" == @(jammy|noble) ]]; then
   rm -f /usr/bin/xdg-open
   exit 0
 fi
