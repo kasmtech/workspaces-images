@@ -32,7 +32,7 @@ elif [[ "${DISTRO}" == @(centos|oracle7) ]]; then
     wireguard-tools \
     zenity \
     jq
-elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39) ]] ; then
+elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40) ]] ; then
   dnf install -y \
     openresolv \
     openvpn \

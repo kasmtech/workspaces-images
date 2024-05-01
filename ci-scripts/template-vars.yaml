@@ -290,6 +290,33 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
+  - name: ubuntu-noble-desktop
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-noble-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-noble-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: vlc
     singleapp: true
     base: core-ubuntu-focal
@@ -448,6 +475,19 @@ multiImages:
     dockerfile: dockerfile-kasm-fedora-39-desktop
     changeFiles:
       - dockerfile-kasm-fedora-39-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: fedora-40-desktop
+    singleapp: false
+    base: core-fedora-40
+    dockerfile: dockerfile-kasm-fedora-40-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-40-desktop
       - src/oracle/install/**
       - src/ubuntu/install/thunderbird/**
       - src/ubuntu/install/remmina/**
