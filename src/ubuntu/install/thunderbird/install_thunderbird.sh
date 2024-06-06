@@ -48,9 +48,12 @@ Pin-Priority: 1001
 fi
 
 # Desktop icon
-if [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(fedora37|fedora38|fedora39) ]]; then
   cp /usr/share/applications/mozilla-thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/mozilla-thunderbird.desktop
+elif [[ "${DISTRO}" == "fedora40" ]]; then
+  cp /usr/share/applications/org.mozilla.thunderbird.desktop $HOME/Desktop/
+  chmod +x $HOME/Desktop/org.mozilla.thunderbird.desktop
 else
   cp /usr/share/applications/thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/thunderbird.desktop
