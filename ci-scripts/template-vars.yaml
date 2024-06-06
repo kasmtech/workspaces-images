@@ -385,6 +385,15 @@ multiImages:
       - src/ubuntu/install/langpacks/**
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
+  - name: alpine-320-desktop
+    singleapp: false
+    base: core-alpine-320
+    dockerfile: dockerfile-kasm-alpine-320-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-320-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
   - name: brave
     singleapp: true
     base: core-ubuntu-focal
@@ -650,13 +659,6 @@ multiImages:
       - src/ubuntu/install/certificates/**
       - src/ubuntu/install/vivaldi/**
 singleImages:
-  - name: atom
-    singleapp: true
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-atom
-    changeFiles:
-      - dockerfile-kasm-atom
-      - src/ubuntu/install/atom/**
   - name: blender
     singleapp: true
     base: core-ubuntu-focal

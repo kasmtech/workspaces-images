@@ -45,7 +45,7 @@ Pin: release a=unstable
 Pin-Priority: 10
 EOF
   apt-get update
-  apt-get install -y -t unstable firefox p11-kit-modules
+  apt-get install -o Dpkg::Options::="--force-confnew" -y -t unstable firefox p11-kit-modules
 else
   apt-mark unhold firefox || :
   apt-get remove firefox
