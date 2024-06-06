@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="$DOCKER_BIN/dockerd-rootless.sh"
+START_COMMAND="dockerd-rootless.sh"
 PGREP="dockerd"
 export MAXIMIZE="false"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
