@@ -2,8 +2,7 @@
 set -ex
 
 # Install Hunchly
-#wget https://downloadmirror.hunch.ly/currentversion/hunchly.deb -O /tmp/hunchly.deb
-wget https://kasm-static-content.s3.amazonaws.com/hunchly/hunchly-kasm-linux_installer.deb -O /tmp/hunchly.deb
+wget https://downloadmirror.hunch.ly/currentversion/hunchly.deb -O /tmp/hunchly.deb
 apt-get update
 apt-get install -y /tmp/hunchly.deb
 rm -rf /tmp/hunchly.deb
