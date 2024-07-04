@@ -14,7 +14,7 @@ echo Detected slack version $version
 
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40|opensuse) ]]; then
 
-  wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-${version}-0.1.el8.x86_64.rpm
+  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-${version}-0.1.el8.x86_64.rpm
 
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
     dnf localinstall -y slack-${version}-0.1.el8.x86_64.rpm
@@ -38,7 +38,7 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   rm slack-${version}-0.1.el8.x86_64.rpm
 
 else
-  wget -q https://downloads.slack-edge.com/releases/linux/${version}/prod/x64/slack-desktop-${version}-${ARCH}.deb
+  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}slack-desktop-${version}-amd64.deb
   apt-get update
   apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
   rm slack-desktop-${version}-${ARCH}.deb
