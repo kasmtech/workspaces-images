@@ -38,7 +38,7 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   rm slack-${version}-0.1.el8.x86_64.rpm
 
 else
-  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}slack-desktop-${version}-amd64.deb
+  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-desktop-${version}-amd64.deb
   apt-get update
   apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
   rm slack-desktop-${version}-${ARCH}.deb
