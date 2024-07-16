@@ -1,0 +1,9 @@
+# Live Demo
+
+**Launch a real-time demo in a new browser window:** <a href="https://app.kasmweb.com/#/cast/kasmos" target="_blank">Live Demo</a>.
+
+<a href="https://app.kasmweb.com/#/cast/kasmos" target="_blank"><img src="https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/Kasm_Cube_Square.png" width="300" height="104"></a>
+
+&lowast;*This demo links to a KasmOS Desktop image to show the basic functionality of Kasm Workspaces.*
+
+&lowast;*Note: Demo is limited to 3 minutes and has upload/downloads restricted for security purposes.*
