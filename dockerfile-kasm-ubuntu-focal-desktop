@@ -1,13 +1,10 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="core-ubuntu-focal"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
-
 USER root
-
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
-
 ### Envrionment config
 ENV DEBIAN_FRONTEND=noninteractive \
     SKIP_CLEAN=true \
@@ -34,6 +31,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/thunderbird/install_thunderbird.sh \
                   /ubuntu/install/slack/install_slack.sh \
                   /ubuntu/install/gamepad_utils/install_gamepad_utils.sh \
+                  /valence/install/python/install_python.sh \
+                  /valence/install/python_libraries/install_requirements.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
@@ -55,6 +54,4 @@ RUN \
 ENV HOME /home/kasm-user
 WORKDIR $HOME
 USER 1000
-
 CMD ["--tail-log"]
-
