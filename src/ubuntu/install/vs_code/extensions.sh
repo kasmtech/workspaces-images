@@ -5,7 +5,7 @@ set -e
 
 # Function to install an extension
 install_extension() {
-    code --install-extension "$1"
+    code --no-sandbox --user-data-dir="." --install-extension "$1"
 }
 
 # List of extensions to install
