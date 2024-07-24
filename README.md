@@ -10,6 +10,19 @@ For more information about building custom images please review the  [**How To G
 The Kasm team publishes applications and desktop images for use inside the platform. More information, including source can be found in the [**Default Images List**](https://kasmweb.com/docs/latest/guide/custom_images.html?utm_campaign=Github&utm_source=github)
 
 
+# Build Image
+
+
+```
+docker build -t <docker-username>/<image-name> -f <dockerfile-name> .
+
+```
+
+With lab support:
+```
+docker build --build-arg GITHUB_PAT=<github-pat> -t <docker-username>/<image-name> -f <dockerfile-name> .
+```
+
 # Manual Deployment
 
 To build the provided images:

@@ -12,7 +12,7 @@ unset PAT
 mkdir -p $HOME/Desktop/ilabguide
 mkdir -p /opt/suss/customscripts/ict133/.encrypted_ict133_solution
 
-cp ilabguide/ict133/ict133_questions/lab1-6.ipynb $HOME/Desktop/ilabguide/
+cp ilabguide/ict133/ict133_questions/* $HOME/Desktop/ilabguide/
 cp ilabguide/ict133/config_ict133.yml /opt/suss/customscripts/.config.yml
 cp -r ilabguide/ict133/.encrypted_ict133_solution/* /opt/suss/customscripts/ict133/.encrypted_ict133_solution/
 
