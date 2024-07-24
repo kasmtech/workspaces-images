@@ -16,9 +16,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/chrome/install_chrome.sh \
                   /ubuntu/install/chromium/install_chromium.sh \
                   /ubuntu/install/vs_code/install_vs_code.sh \
+                  /ubuntu/install/vs_code/extensions.sh \
                   /valence/install/python/install_python.sh \
                   /valence/install/python_libraries/install_requirements.sh \
                   /valence/install/labs/ict133.sh \
+                  /valence/install/wallpaper/wallpaper.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
@@ -31,13 +33,7 @@ ENV PAT=$GITHUB_PAT
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    if [[ $SCRIPT == */labs/* ]]; then \
-      echo "Executing lab script: $SCRIPT"; \
-      bash ${INST_DIR}${SCRIPT} $PAT || exit 1; \
-    else \
-      echo "Executing regular script: $SCRIPT"; \
-      bash ${INST_DIR}${SCRIPT} || exit 1; \
-    fi; \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
   unset PAT && \
   unset GITHUB_PAT && \
