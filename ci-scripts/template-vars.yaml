@@ -184,6 +184,7 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-telegram
       - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/chrome/**
   - name: terminal
     singleapp: false
     base: core-ubuntu-focal
