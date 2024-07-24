@@ -18,22 +18,38 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/vs_code/install_vs_code.sh \
                   /valence/install/python/install_python.sh \
                   /valence/install/python_libraries/install_requirements.sh \
+                  /valence/install/labs/ict133.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
 COPY ./src/ $INST_DIR
 
+# Add GitHub PAT as build argument
+ARG GITHUB_PAT
+ENV PAT=$GITHUB_PAT
+
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
-    bash ${INST_DIR}${SCRIPT} || exit 1; \
+    if [[ $SCRIPT == */labs/* ]]; then \
+      echo "Executing lab script: $SCRIPT"; \
+      bash ${INST_DIR}${SCRIPT} $PAT || exit 1; \
+    else \
+      echo "Executing regular script: $SCRIPT"; \
+      bash ${INST_DIR}${SCRIPT} || exit 1; \
+    fi; \
   done && \
+  unset PAT && \
+  unset GITHUB_PAT && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
   rm -f /etc/X11/xinit/Xclients && \
   chown 1000:0 $HOME && \
   mkdir -p /home/kasm-user && \
   chown -R 1000:0 /home/kasm-user && \
   rm -Rf ${INST_DIR}
+
+
+
 
 # Userspace Runtime
 ENV HOME /home/kasm-user
