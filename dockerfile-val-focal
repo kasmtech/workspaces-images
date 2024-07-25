@@ -20,11 +20,12 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /valence/install/python/install_python.sh \
                   /valence/install/python_libraries/install_requirements.sh \
                   /valence/install/labs/ict133.sh \
-                  /valence/install/wallpaper/wallpaper.sh \
+                  # /valence/install/wallpaper/wallpaper.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts
 COPY ./src/ $INST_DIR
+COPY ./src/valence/install/wallpaper/official_suss_wallpaper.png /usr/share/images/desktop-base/
 
 # Add GitHub PAT as build argument
 ARG GITHUB_PAT
@@ -35,6 +36,8 @@ RUN \
   for SCRIPT in $INST_SCRIPTS; do \
     bash ${INST_DIR}${SCRIPT} || exit 1; \
   done && \
+  chmod 644 /usr/share/images/desktop-base/official_suss_wallpaper.png && \
+  ln -sf /usr/share/images/desktop-base/official_suss_wallpaper.png /etc/alternatives/desktop-background && \
   unset PAT && \
   unset GITHUB_PAT && \
   $STARTUPDIR/set_user_permission.sh $HOME && \
@@ -43,8 +46,6 @@ RUN \
   mkdir -p /home/kasm-user && \
   chown -R 1000:0 /home/kasm-user && \
   rm -Rf ${INST_DIR}
-
-
 
 
 # Userspace Runtime
