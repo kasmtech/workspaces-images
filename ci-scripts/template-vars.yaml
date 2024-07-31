@@ -332,6 +332,7 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-vs-code
       - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/chrome/**
   - name: almalinux-8-desktop
     singleapp: false
     base: core-almalinux-8
