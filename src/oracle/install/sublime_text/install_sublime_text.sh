@@ -8,7 +8,7 @@ fi
 
 rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
 
-if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/$(arch)/sublime-text.repo
   dnf install -y sublime-text
   if [ -z ${SKIP_CLEAN+x} ]; then
