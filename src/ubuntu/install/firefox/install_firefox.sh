@@ -13,12 +13,8 @@ set_desktop_icon() {
 }
 
 echo "Install Firefox"
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-    dnf install -y firefox p11-kit
-  else
-    yum install -y firefox p11-kit
-  fi
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+  dnf install -y firefox p11-kit
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn p11-kit-tools MozillaFirefox
 elif grep -q Jammy /etc/os-release || grep -q Noble /etc/os-release; then
@@ -78,15 +74,9 @@ for LANG in ${LANGS}; do
 done
 
 # Cleanup and install flash if supported
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      dnf clean all
-    fi
-  else
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      yum clean all
-    fi
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   if [ -z ${SKIP_CLEAN+x} ]; then
@@ -111,7 +101,7 @@ else
   fi
 fi
 
-if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
   if grep -q "bullseye" /etc/os-release; then
     rm -f /usr/lib/firefox-esr/libnssckbi.so
@@ -122,8 +112,8 @@ if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   fi
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-  if [[ "${DISTRO}" == @(fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+  if [[ "${DISTRO}" == @(fedora39|fedora40) ]]; then
     preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox-redhat-default-prefs.js
   else
     preferences_file=/usr/lib64/firefox/browser/defaults/preferences/all-redhat.js
@@ -138,7 +128,7 @@ else
 fi
 
 # Disabling default first run URL for Debian based images
-if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >"$preferences_file" <<EOF
 pref("datareporting.policy.firstRunURL", "");
 pref("datareporting.policy.dataSubmissionEnabled", false);
@@ -149,7 +139,7 @@ pref("browser.aboutwelcome.enabled", false);
 EOF
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   # Creating a default profile
   chown -R root:root $HOME
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
@@ -173,7 +163,7 @@ else
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   set_desktop_icon
 fi
 
@@ -181,13 +171,13 @@ fi
 #   based off the installation path. Because that path will be static for our deployments we can assume the hash
 #   and thus assign our profile to the default for the installation
 
-if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
 Default=kasm
 Locked=1
 EOL
-elif [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+elif [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install11457493C5A56847]
 Default=kasm

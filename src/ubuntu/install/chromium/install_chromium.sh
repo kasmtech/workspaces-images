@@ -9,17 +9,10 @@ if [[ "${DISTRO}" == @(debian|opensuse|ubuntu) ]] && [ ${ARCH} = 'amd64' ] && [ 
   exit 0
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-    dnf install -y chromium
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      dnf clean all
-    fi
-  else
-    yum install -y chromium
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      yum clean all
-    fi
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+  dnf install -y chromium
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn chromium
@@ -124,7 +117,7 @@ if [ "${DISTRO}" != "opensuse" ] && ! grep -q "ID=debian" /etc/os-release && ! g
   cp /usr/bin/chromium-browser /usr/bin/chromium
 fi
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   cat >> $HOME/.config/mimeapps.list <<EOF
     [Default Applications]
     x-scheme-handler/http=${REAL_BIN}.desktop
