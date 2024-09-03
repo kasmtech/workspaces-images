@@ -7,10 +7,6 @@ wget -q "https://downloader.cursor.sh/linux/appImage/x64" -O cursor.AppImage
 chmod +x cursor.AppImage
 ./cursor.AppImage --appimage-extract
 mv squashfs-root /usr/share/cursor
-cp .config/Cursor $HOME/.config/ -a
-cp .cursor $HOME/ -a
-chown 1000:1000 $HOME/.config/Cursor
-chown 1000:1000 $HOME/.cursor
 
 # Desktop icon
 mkdir -p /usr/share/icons/hicolor/apps
