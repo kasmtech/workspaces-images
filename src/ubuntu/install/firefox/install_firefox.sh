@@ -109,7 +109,7 @@ fi
 
 if [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39|fedora40) ]]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
-  if grep -q "bullseye" /etc/os-release; then
+  if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release && [ "${ARCH}" == "arm64" ]; then
     rm -f /usr/lib/firefox-esr/libnssckbi.so
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
   else
