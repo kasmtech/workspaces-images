@@ -41,20 +41,16 @@ elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release ||
       $HOME/Desktop/
     chmod +x $HOME/Desktop/firefox-esr.desktop
   else
-    echo \
-      "deb http://deb.debian.org/debian/ unstable main contrib non-free" >> \
-      /etc/apt/sources.list
-cat > /etc/apt/preferences.d/99pin-unstable <<EOF
+    install -d -m 0755 /etc/apt/keyrings
+    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- > /etc/apt/keyrings/packages.mozilla.org.asc
+    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list
+echo '
 Package: *
-Pin: release a=stable
-Pin-Priority: 900
-
-Package: *
-Pin: release a=unstable
-Pin-Priority: 10
-EOF
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+' > /etc/apt/preferences.d/mozilla
     apt-get update
-    apt-get install -o Dpkg::Options::="--force-confnew" -y -t unstable firefox p11-kit-modules
+    apt-get install -y firefox p11-kit-modules
   fi
 else
   apt-mark unhold firefox || :
@@ -133,6 +129,8 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
 elif grep -q "bullseye" /etc/os-release; then
   preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+elif grep -q "bookworm" /etc/os-release; then
+  preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
 else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
