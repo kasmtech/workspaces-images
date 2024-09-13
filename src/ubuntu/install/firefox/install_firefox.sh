@@ -32,15 +32,7 @@ Pin-Priority: 1001
   fi
   apt-get install -y firefox p11-kit-modules
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
-  if grep -q "bullseye" /etc/os-release; then
-    apt-get update
-    apt-get install -y firefox-esr p11-kit-modules
-    rm -f $HOME/Desktop/firefox.desktop
-    cp \
-      /usr/share/applications/firefox-esr.desktop \
-      $HOME/Desktop/
-    chmod +x $HOME/Desktop/firefox-esr.desktop
-  else
+  if [ "${ARCH}" == "amd64" ]; then
     install -d -m 0755 /etc/apt/keyrings
     wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- > /etc/apt/keyrings/packages.mozilla.org.asc
     echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list
@@ -51,6 +43,14 @@ Pin-Priority: 1000
 ' > /etc/apt/preferences.d/mozilla
     apt-get update
     apt-get install -y firefox p11-kit-modules
+  else
+    apt-get update
+    apt-get install -y firefox-esr p11-kit-modules
+    rm -f $HOME/Desktop/firefox.desktop
+    cp \
+      /usr/share/applications/firefox-esr.desktop \
+      $HOME/Desktop/
+    chmod +x $HOME/Desktop/firefox-esr.desktop
   fi
 else
   apt-mark unhold firefox || :
@@ -127,10 +127,12 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
   sed -i -e '/homepage/d' "$preferences_file"
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
-elif grep -q "bullseye" /etc/os-release; then
-  preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
-elif grep -q "bookworm" /etc/os-release; then
-  preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+  if [ "${ARCH}" == "amd64" ]; then
+    preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
+  else
+    preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+  fi
 else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
