@@ -23,15 +23,15 @@ rm -f assets.zip info.zip
 chown -R 1000:1000 $HOME/.config/retroarch
 
 # Wrap with VGL
-rm /usr/bin/retroarch
+mv /usr/bin/retroarch /usr/bin/retroarch-real
 cat >/usr/bin/retroarch <<EOL
 #!/usr/bin/env bash
 if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
     echo "Starting Retroarch with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
-    vglrun -d "\${KASM_EGL_CARD}" /usr/games/retroarch "\$@"
+    vglrun -d "\${KASM_EGL_CARD}" /usr/bin/retroarch-real "\$@"
 else
     echo "Starting Retroarch"
-    /usr/games/retroarch "\$@"
+    /usr/bin/retroarch-real "\$@"
 fi
 EOL
 chmod +x /usr/bin/retroarch
