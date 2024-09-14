@@ -28,7 +28,18 @@ Pin-Priority: 1001
   fi
   apt-get install -y firefox p11-kit-modules
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
-  if grep -q "bullseye" /etc/os-release; then
+  if [ "${ARCH}" == "amd64" ]; then
+    install -d -m 0755 /etc/apt/keyrings
+    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- > /etc/apt/keyrings/packages.mozilla.org.asc
+    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list
+echo '
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+' > /etc/apt/preferences.d/mozilla
+    apt-get update
+    apt-get install -y firefox p11-kit-modules
+  else
     apt-get update
     apt-get install -y firefox-esr p11-kit-modules
     rm -f $HOME/Desktop/firefox.desktop
@@ -36,21 +47,6 @@ elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release ||
       /usr/share/applications/firefox-esr.desktop \
       $HOME/Desktop/
     chmod +x $HOME/Desktop/firefox-esr.desktop
-  else
-    echo \
-      "deb http://deb.debian.org/debian/ unstable main contrib non-free" >> \
-      /etc/apt/sources.list
-cat > /etc/apt/preferences.d/99pin-unstable <<EOF
-Package: *
-Pin: release a=stable
-Pin-Priority: 900
-
-Package: *
-Pin: release a=unstable
-Pin-Priority: 10
-EOF
-    apt-get update
-    apt-get install -o Dpkg::Options::="--force-confnew" -y -t unstable firefox p11-kit-modules
   fi
 else
   apt-mark unhold firefox || :
@@ -103,7 +99,7 @@ fi
 
 if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
-  if grep -q "bullseye" /etc/os-release; then
+  if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release && [ "${ARCH}" == "arm64" ]; then
     rm -f /usr/lib/firefox-esr/libnssckbi.so
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
   else
@@ -121,8 +117,12 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almali
   sed -i -e '/homepage/d' "$preferences_file"
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
-elif grep -q "bullseye" /etc/os-release; then
-  preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+  if [ "${ARCH}" == "amd64" ]; then
+    preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
+  else
+    preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+  fi
 else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
