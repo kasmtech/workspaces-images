@@ -5,22 +5,15 @@ set -ex
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
 add-apt-repository -y ppa:libretro/stable
 apt-get update
-apt-get install -y retroarch unzip
+apt-get install -y retroarch unzip retroarch-assets libretro-core-info
 
 # Deskto icon
-cp /usr/share/applications/retroarch.desktop $HOME/Desktop/
-chmod +x $HOME/Desktop/retroarch.desktop
+cp /usr/share/applications/com.libretro.RetroArch.desktop $HOME/Desktop/
+chmod +x $HOME/Desktop/com.libretro.RetroArch.desktop
 
-# Assets install
-mkdir -p $HOME/.config/retroarch/{assets,cores}
+# Config setup
+mkdir -p $HOME/.config/retroarch/cores
 cp $SCRIPT_PATH/retroarch.cfg $HOME/.config/retroarch/retroarch.cfg
-echo "Downloading Assets"
-wget -q https://buildbot.libretro.com/assets/frontend/assets.zip
-wget -q https://buildbot.libretro.com/assets/frontend/info.zip
-unzip assets.zip -d $HOME/.config/retroarch/assets
-unzip info.zip -d $HOME/.config/retroarch/cores
-rm -f assets.zip info.zip
-chown -R 1000:1000 $HOME/.config/retroarch
 
 # Wrap with VGL
 mv /usr/bin/retroarch /usr/bin/retroarch-real
