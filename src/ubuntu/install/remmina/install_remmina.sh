@@ -1,21 +1,16 @@
 #!/usr/bin/env bash
 set -ex
 
-if [[ "${DISTRO}" == @(centos|oracle7|oracle8|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|oracle9|rockylinux9|rockylinux8|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
     dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret remmina-plugins-spice xdotool
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
     fi
-  elif [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9|fedora37|fedora38|fedora39|fedora40) ]]; then
+  elif [[ "${DISTRO}" == @(rockylinux9|oracle9|almalinux9|fedora39|fedora40) ]]; then
     dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret xdotool
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
-    fi
-  else
-    yum install -y remmina remmina-plugins-rdp remmina-plugins-secret remmina-plugins-spice xdotool
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      yum clean all
     fi
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then

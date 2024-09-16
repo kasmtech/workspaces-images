@@ -2,17 +2,10 @@
 set -ex
 
 # Install
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora37|fedora38|fedora39|fedora40) ]]; then
-    dnf install -y thunderbird
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      dnf clean all
-    fi
-  else
-    yum install -y thunderbird
-    if [ -z ${SKIP_CLEAN+x} ]; then
-      yum clean all
-    fi
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+  dnf install -y thunderbird
+  if [ -z ${SKIP_CLEAN+x} ]; then
+    dnf clean all
   fi
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn MozillaThunderbird
@@ -48,7 +41,7 @@ Pin-Priority: 1001
 fi
 
 # Desktop icon
-if [[ "${DISTRO}" == @(fedora37|fedora38|fedora39) ]]; then
+if [[ "${DISTRO}" == "fedora39" ]]; then
   cp /usr/share/applications/mozilla-thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/mozilla-thunderbird.desktop
 elif [[ "${DISTRO}" == "fedora40" ]]; then

@@ -454,32 +454,6 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
-  - name: fedora-37-desktop
-    singleapp: false
-    base: core-fedora-37
-    dockerfile: dockerfile-kasm-fedora-37-desktop
-    changeFiles:
-      - dockerfile-kasm-fedora-37-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/slack/**
-  - name: fedora-38-desktop
-    singleapp: false
-    base: core-fedora-38
-    dockerfile: dockerfile-kasm-fedora-38-desktop
-    changeFiles:
-      - dockerfile-kasm-fedora-38-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/slack/**
   - name: fedora-39-desktop
     singleapp: false
     base: core-fedora-39
@@ -697,16 +671,6 @@ singleImages:
     changeFiles:
       - dockerfile-kasm-blender
       - src/ubuntu/install/blender/**
-  - name: centos-7-desktop
-    singleapp: false
-    base: core-centos-7
-    dockerfile: dockerfile-kasm-centos-7-desktop
-    changeFiles:
-      - dockerfile-kasm-centos-7-desktop
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: chrome
     singleapp: true
     base: core-ubuntu-focal
@@ -784,18 +748,6 @@ singleImages:
     dockerfile: dockerfile-kasm-only-office
     changeFiles:
       - dockerfile-kasm-only-office
-  - name: oracle-7-desktop
-    singleapp: false
-    base: core-oracle-7
-    dockerfile: dockerfile-kasm-oracle-7-desktop
-    changeFiles:
-      - dockerfile-kasm-oracle-7-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: kasmos-desktop
     singleapp: false
     base: core-kasmos
