@@ -529,7 +529,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
   - name: retroarch
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-retroarch
     changeFiles:
       - dockerfile-kasm-retroarch
