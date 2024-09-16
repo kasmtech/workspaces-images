@@ -1,6 +1,6 @@
 # About This Image
 
-This Image contains a browser-accessible Ubuntu Bionic Desktop with various productivity and development apps installed.
+This Image contains a browser-accessible Ubuntu Focal Desktop with various productivity and development apps installed.
 
 ![Screenshot][Image_Screenshot]
 

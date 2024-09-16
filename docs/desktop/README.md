@@ -1,6 +1,6 @@
 # About This Image
 
-This Image contains a browser-accessible Ubuntu Bionic Desktop with Chrome and Firefox installed.
+This Image contains a browser-accessible Ubuntu Focal Desktop with Chrome and Firefox installed.
 
 ![Screenshot][Image_Screenshot]
 
