@@ -10,8 +10,8 @@ stages:
 variables:
   BASE_TAG: "develop"
   USE_PRIVATE_IMAGES: 0
-  KASM_RELEASE: "1.14.0"
-  TEST_INSTALLER: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/1e99090dadb026f1e37e34e53334da20061bc21c/kasm_workspaces_feature_tester-1.15-pre-release_1.15.0.1e9909.tar.gz"
+  KASM_RELEASE: "1.16.0"
+  TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.16.0.f2d6e1.tar.gz"
 before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
