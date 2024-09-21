@@ -1,0 +1,9 @@
+# Live Demo
+
+<a href="" target="_blank"><img src="" width="640" height="360"></a>
+
+**Launch a real-time demo in a new browser window:** <a href="" target="_blank">Live Demo</a>.
+
+<a href="" target="_blank"><img src="https://link.storjshare.io/jx6gv37i63qy6dkntovoxsaj4j2q/readme-photos%2Fkasmweb%2Fobsidian.ico?view=1" width="300" height="104"></a>
+
+&lowast;*Note: Demo is limited to 3 minutes and has upload/downloads restricted for security purposes.*
