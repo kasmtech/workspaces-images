@@ -28,6 +28,7 @@ ENV SKIP_CLEAN=true \
                   /alpine/install/pinta/install_pinta.sh \
                   /alpine/install/obs/install_obs.sh \
                   /alpine/install/filezilla/install_filezilla.sh \
+                  /alpine/install/chromium/install_chromium.sh \
                   /ubuntu/install/langpacks/install_langpacks.sh \
                   /ubuntu/install/cleanup/cleanup.sh" 
 
