@@ -6,11 +6,6 @@ CHROME_ARGS="--password-store=basic --no-sandbox  --ignore-gpu-blocklist --user-
 apk add --no-cache \
   chromium 
 
-if [ "$(arch)" == "x86_64" ]; then
-  apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-    virtualgl
-fi
-
 REAL_BIN=chromium
 
 cp /usr/share/applications/chromium.desktop $HOME/Desktop/
@@ -21,13 +16,8 @@ cat >/usr/bin/chromium-browser <<EOL
 #!/usr/bin/env bash
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/chromium/Default/Preferences
-if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
-    echo "Starting Chrome with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
-    vglrun -d "\${KASM_EGL_CARD}" /usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@" 
-else
-    echo "Starting Chrome"
-    /usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@"
-fi
+echo "Starting Chrome"
+/usr/bin/chromium-browser-orig ${CHROME_ARGS} "\$@"
 EOL
 chmod +x /usr/bin/chromium-browser
 
