@@ -2,12 +2,13 @@
 set -x
 
 
-# Install Salt
-wget -nv -O - https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg | apt-key add -
-echo deb [arch=amd64] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/3004 focal main > /etc/apt/sources.list.d/saltstack.list
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://packages.broadcom.com/artifactory/api/security/keypair/SaltProjectKey/public | sudo tee /etc/apt/keyrings/salt-archive-keyring.pgp
+curl -fsSL https://github.com/saltstack/salt-install-guide/releases/latest/download/salt.sources | sudo tee /etc/apt/sources.list.d/salt.sources
 apt-get update
 apt-get install -y salt-common 
 git clone https://github.com/REMnux/salt-states.git /srv/salt
+
 
 # Install remnux tools
 export HOME=/root
