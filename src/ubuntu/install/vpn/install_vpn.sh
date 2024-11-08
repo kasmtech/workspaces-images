@@ -19,7 +19,7 @@ elif [ "${DISTRO}" == "alpine" ]; then
     wireguard-tools \
     zenity \
     jq
-elif [[ "${DISTRO}" == @(oracle8|oracle9|rockylinux8|rockylinux9|almalinux8|almalinux9) ]] ; then
+elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux8|rockylinux9|almalinux8|almalinux9) ]] ; then
   dnf install -y epel-release
   dnf install -y \
     openvpn \

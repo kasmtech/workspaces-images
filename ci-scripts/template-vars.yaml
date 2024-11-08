@@ -517,6 +517,19 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
+  - name: rhel-9-desktop
+    singleapp: false
+    base: core-rhel-9
+    dockerfile: dockerfile-kasm-rhel-9-desktop
+    changeFiles:
+      - dockerfile-kasm-rhel-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
   - name: parrotos-6-desktop
     singleapp: false
     base: core-parrotos-6
