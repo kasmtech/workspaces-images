@@ -10,13 +10,13 @@ if [ "$ARCH" == "arm64" ] ; then
   exit 0
 fi	
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8) ]]; then
   if [ ! -z "${CHROME_VERSION}" ]; then
     wget https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome-stable-${CHROME_VERSION}.x86_64.rpm -O chrome.rpm
   else
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm -O chrome.rpm
   fi
-  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8) ]]; then
+  if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8) ]]; then
     dnf localinstall -y chrome.rpm
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
@@ -79,7 +79,7 @@ EOL
 chmod +x /usr/bin/google-chrome
 cp /usr/bin/google-chrome /usr/bin/chrome
 
-if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse) ]]; then
+if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse) ]]; then
   cat >> $HOME/.config/mimeapps.list <<EOF
     [Default Applications]
     x-scheme-handler/http=google-chrome.desktop
