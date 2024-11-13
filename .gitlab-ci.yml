@@ -8,7 +8,7 @@ stages:
   - template
   - run
 variables:
-  BASE_TAG: "develop"
+  BASE_TAG: "1.16.1-rolling-daily"
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.16.0"
   TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.16.0.a1d5b7.tar.gz"
