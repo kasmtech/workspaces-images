@@ -107,12 +107,15 @@ fi
 
 if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   # Update firefox to utilize the system certificate store instead of the one that ships with firefox
-  if grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release && [ "${ARCH}" == "amd64" ]; then
-    rm -f /usr/lib/firefox/libnssckbi.so
-    ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
-  else
+  if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release && [ "${ARCH}" == "arm64" ]; then
     rm -f /usr/lib/firefox-esr/libnssckbi.so
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
+  elif grep -q "ID=kali" /etc/os-release  && [ "${ARCH}" == "amd64" ]; then
+    rm -f /usr/lib/firefox-esr/libnssckbi.so
+    ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
+  else
+    rm -f /usr/lib/firefox/libnssckbi.so
+    ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
   fi
 fi
 
@@ -125,7 +128,9 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   sed -i -e '/homepage/d' "$preferences_file"
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
-elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+elif grep -q "ID=kali" /etc/os-release; then
+  preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   if [ "${ARCH}" == "amd64" ]; then
     preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
   else
