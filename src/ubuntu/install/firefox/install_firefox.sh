@@ -27,7 +27,15 @@ Pin-Priority: 1001
 ' > /etc/apt/preferences.d/mozilla-firefox
   fi
   apt-get install -y firefox p11-kit-modules
-elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+elif grep -q "ID=kali" /etc/os-release; then
+  apt-get update
+  apt-get install -y firefox-esr p11-kit-modules
+  rm -f $HOME/Desktop/firefox.desktop
+  cp \
+    /usr/share/applications/firefox-esr.desktop \
+    $HOME/Desktop/
+  chmod +x $HOME/Desktop/firefox-esr.desktop
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   if [ "${ARCH}" == "amd64" ]; then
     install -d -m 0755 /etc/apt/keyrings
     wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- > /etc/apt/keyrings/packages.mozilla.org.asc
@@ -102,6 +110,9 @@ if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release && [ "${ARCH}" == "arm64" ]; then
     rm -f /usr/lib/firefox-esr/libnssckbi.so
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
+  elif grep -q "ID=kali" /etc/os-release  && [ "${ARCH}" == "amd64" ]; then
+    rm -f /usr/lib/firefox-esr/libnssckbi.so
+    ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
   else
     rm -f /usr/lib/firefox/libnssckbi.so
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
@@ -117,7 +128,9 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   sed -i -e '/homepage/d' "$preferences_file"
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
-elif grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+elif grep -q "ID=kali" /etc/os-release; then
+  preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   if [ "${ARCH}" == "amd64" ]; then
     preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
   else
