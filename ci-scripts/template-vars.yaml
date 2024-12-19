@@ -396,6 +396,15 @@ multiImages:
       - src/ubuntu/install/langpacks/**
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
+  - name: alpine-321-desktop
+    singleapp: false
+    base: core-alpine-321
+    dockerfile: dockerfile-kasm-alpine-321-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-321-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
   - name: brave
     singleapp: true
     base: core-ubuntu-focal

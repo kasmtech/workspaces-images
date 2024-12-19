@@ -22,8 +22,8 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
       dnf clean all
     fi
   elif [[ "${DISTRO}" == "opensuse" ]]; then
-    wget https://slack.com/gpg/slack_pubkey_20230710.gpg
-    rpm --import slack_pubkey_20230710.gpg
+    wget https://slack.com/gpg/slack_pubkey_20240822.gpg
+    rpm --import slack_pubkey_20240822.gpg
     zypper install -yn slack-${version}-0.1.el8.x86_64.rpm
     if [ -z ${SKIP_CLEAN+x} ]; then
       zypper clean --all
