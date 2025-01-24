@@ -7,7 +7,7 @@ CYBERBRO_VERSION=$(curl -sX GET "https://api.github.com/repos/stanfrbd/cyberbro/
 echo "Install Cyberbro"
 apt-get update
 apt-get install -y python3-pip git supervisor
-CYBERBRO_HOME=$HOME/spiderfoot
+CYBERBRO_HOME=$HOME/cyberbro
 mkdir -p $CYBERBRO_HOME
 cd $CYBERBRO_HOME
 wget https://github.com/stanfrbd/cyberbro/archive/${CYBERBRO_VERSION}.tar.gz
