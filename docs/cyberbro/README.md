@@ -4,7 +4,7 @@ This Image contains a browser-accessible version of [Cyberbro](https://github.co
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/image-screenshots/<TO_BE_DEFINED> "Image Screenshot"
+[Image_Screenshot]: https://github.com/user-attachments/assets/f6ffb648-e161-4c59-9359-51183b0b0ca0 "Image Screenshot"
 
 # Environment Variables
 
