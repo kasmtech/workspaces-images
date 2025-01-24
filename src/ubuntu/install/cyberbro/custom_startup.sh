@@ -2,15 +2,13 @@
 set -ex
 START_COMMAND="firefox"
 PGREP="firefox"
-export MAXIMIZE="false"
+export MAXIMIZE="true"
 export MAXIMIZE_NAME="Mozilla Firefox"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_FIREFOX_ARGS=""
 FIREFOX_ARGS=${FIREFOX_APP_ARGS:-$DEFAULT_FIREFOX_ARGS}
 
 CYBERBRO_SERVER="127.0.0.1:5000"
-DEFAULT_SPIDERFOOT_ARGS="-l $CYBERBRO_SERVER"
-SPIDERFOOT_ARGS=${SPIDERFOOT_APP_ARGS:-$DEFAULT_SPIDERFOOT_ARGS}
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
 eval set -- "$options"
@@ -59,7 +57,8 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 cd $HOME/cyberbro/cyberbro-*
-                xfce4-terminal -x bash -c "supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+                # Start Cyberbro server in background
+                bash -c "source venv/bin/activate && gunicorn -b 0.0.0.0:5000 app:app &"
                 while ! check_web_server; do
                     sleep 1
                 done
