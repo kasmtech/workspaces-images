@@ -28,7 +28,7 @@ deactivate
 cat <<EOF > secrets.json
 {
   "proxy_url": "",
-  "gui_enabled_engines": ["reverse_dns", "rdap", "ipquery", "spur", "phishtank", "threatfox", "urlscan", "google", "github", "ioc_one_html", "ioc_one_pdf", "abusix"]
+  "gui_enabled_engines": ["reverse_dns", "rdap", "ipquery", "spur", "phishtank", "threatfox", "urlscan", "google", "github", "ioc_one_html", "ioc_one_pdf", "abusix", "hudsonrock"]
 }
 EOF
 
