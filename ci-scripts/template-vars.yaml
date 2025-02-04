@@ -695,7 +695,7 @@ singleImages:
       - src/ubuntu/install/blender/**
   - name: chrome
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chrome
     changeFiles:
       - dockerfile-kasm-chrome
