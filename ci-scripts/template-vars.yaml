@@ -6,7 +6,7 @@ files: &UNIVERSAL_CHANGE_FILES
 multiImages:
   - name: audacity
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-audacity
     changeFiles:
       - dockerfile-kasm-audacity
