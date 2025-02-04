@@ -407,7 +407,7 @@ multiImages:
       - src/alpine/install/**
   - name: brave
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-brave
     changeFiles:
       - dockerfile-kasm-brave
