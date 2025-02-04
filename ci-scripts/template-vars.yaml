@@ -688,7 +688,7 @@ multiImages:
 singleImages:
   - name: blender
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-blender
     changeFiles:
       - dockerfile-kasm-blender
