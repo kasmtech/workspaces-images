@@ -13,7 +13,7 @@ multiImages:
       - src/ubuntu/install/audacity/**
   - name: chromium
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chromium
     changeFiles:
       - dockerfile-kasm-chromium
@@ -22,14 +22,14 @@ multiImages:
       - src/ubuntu/install/certificates/**
   - name: deluge
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-deluge
     changeFiles:
       - dockerfile-kasm-deluge
       - src/ubuntu/install/deluge/**
   - name: doom
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-doom
     changeFiles:
       - dockerfile-kasm-doom
@@ -713,7 +713,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
   - name: desktop-deluxe
     singleapp: false
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-desktop-deluxe
     changeFiles:
       - dockerfile-kasm-desktop-deluxe
@@ -736,7 +736,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
   - name: discord
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-discord
     changeFiles:
       - dockerfile-kasm-discord
