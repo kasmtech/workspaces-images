@@ -14,8 +14,12 @@ apt-get update
 apt-get install -y signal-desktop
 
 # Desktop icon
+# Modify the desktop file to include --no-sandbox
+sed -i 's|Exec=/opt/Signal/signal-desktop %U|Exec=/opt/Signal/signal-desktop --no-sandbox %U|' /usr/share/applications/signal-desktop.desktop
 cp /usr/share/applications/signal-desktop.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/signal-desktop.desktop
+
+
 
 # Cleanup for app layer
 chown -R 1000:0 $HOME
