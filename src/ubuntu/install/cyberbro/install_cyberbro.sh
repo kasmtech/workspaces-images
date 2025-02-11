@@ -24,13 +24,6 @@ pip3 install -r requirements.txt
 
 deactivate
 
-# Check if GUI_ENABLED_ENGINES is set else apply default
-if [ -z ${GUI_ENABLED_ENGINES+x} ]; then
-  GUI_ENABLED_ENGINES=reverse_dns,rdap,ipquery,spur,phishtank,threatfox,urlscan,google,github,ioc_one_html,ioc_one_pdf,abusix,hudsonrock
-fi
-
-export GUI_ENABLED_ENGINES
-
 # Cleanup for app layer
 chown -R 1000:0 $HOME
 find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
