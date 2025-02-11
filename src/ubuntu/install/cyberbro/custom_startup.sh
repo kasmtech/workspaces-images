@@ -10,6 +10,14 @@ FIREFOX_ARGS=${FIREFOX_APP_ARGS:-$DEFAULT_FIREFOX_ARGS}
 
 CYBERBRO_SERVER="127.0.0.1:5000"
 
+# Check if GUI_ENABLED_ENGINES is set else apply default
+if [ -z ${GUI_ENABLED_ENGINES+x} ]; then
+  GUI_ENABLED_ENGINES=reverse_dns,rdap,ipquery,spur,phishtank,threatfox,urlscan,google,github,ioc_one_html,ioc_one_pdf,abusix,hudsonrock
+fi
+
+# Make GUI_ENABLED_ENGINES an environment variable
+export GUI_ENABLED_ENGINES
+
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
 eval set -- "$options"
 
