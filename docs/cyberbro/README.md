@@ -33,6 +33,11 @@ GUI_ENABLED_ENGINES=reverse_dns,rdap,hudsonrock,mde,shodan,opencti,virustotal
 CONFIG_PAGE_ENABLED=true
 ```
 
-Refer to https://github.com/stanfrbd/cyberbro/wiki for more information.
+> Note: if you set `GUI_ENABLED_ENGINES` to `""` then all engines will be enabled in the GUI. \
+> By default, all **free engines** will be enabled in the GUI.
 
-You must edit the config in your KASM Cyberbro Workspace settings to add these.
+Refer to [Cyberbro Wiki](https://github.com/stanfrbd/cyberbro/wiki) for more information.
+
+You must edit the config in your KASM Cyberbro Workspace settings to add these environment variables, according to [KASM official doc](https://kasmweb.com/docs/latest/guide/workspaces.html#examples)
+
+![image](https://github.com/user-attachments/assets/33125248-31e8-4315-a772-e0546a8be659)
