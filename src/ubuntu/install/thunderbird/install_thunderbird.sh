@@ -45,8 +45,8 @@ if [[ "${DISTRO}" == "fedora39" ]]; then
   cp /usr/share/applications/mozilla-thunderbird.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/mozilla-thunderbird.desktop
 elif [[ "${DISTRO}" == "fedora40" ]]; then
-  cp /usr/share/applications/org.mozilla.thunderbird.desktop $HOME/Desktop/
-  chmod +x $HOME/Desktop/org.mozilla.thunderbird.desktop
+  cp /usr/share/applications/net.thunderbird.Thunderbird.desktop $HOME/Desktop/
+  chmod +x $HOME/Desktop/net.thunderbird.Thunderbird.desktop
 elif [[ "${DISTRO}" == "opensuse" ]]; then
   cp /usr/share/applications/thunderbird-esr.desktop $HOME/Desktop/
   chmod +x $HOME/Desktop/thunderbird-esr.desktop
