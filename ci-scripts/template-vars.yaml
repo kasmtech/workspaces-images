@@ -36,14 +36,14 @@ multiImages:
       - src/ubuntu/install/doom/**
   - name: filezilla
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-filezilla
     changeFiles:
       - dockerfile-kasm-filezilla
       - src/ubuntu/install/filezilla/**
   - name: firefox
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-firefox
     changeFiles:
       - dockerfile-kasm-firefox
@@ -52,21 +52,21 @@ multiImages:
       - src/ubuntu/install/certificates/**
   - name: gimp
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-gimp
     changeFiles:
       - dockerfile-kasm-gimp
       - src/ubuntu/install/gimp/**
   - name: inkscape
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-inkscape
     changeFiles:
       - dockerfile-kasm-inkscape
       - src/ubuntu/install/inkscape/**
   - name: java-dev
     singleapp: false
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-java-dev
     changeFiles:
       - dockerfile-kasm-java-dev
@@ -80,14 +80,14 @@ multiImages:
       - src/ubuntu/install/eclipse/**
   - name: libre-office
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-libre-office
     changeFiles:
       - dockerfile-kasm-libre-office
       - src/ubuntu/install/libre_office/**
   - name: nessus
     singleapp: false
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-nessus
     changeFiles:
       - dockerfile-kasm-nessus
@@ -500,7 +500,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
   - name: maltego
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-maltego
     changeFiles:
       - dockerfile-kasm-maltego
@@ -508,7 +508,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
   - name: minetest
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-minetest
     changeFiles:
       - dockerfile-kasm-minetest
@@ -704,7 +704,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
   - name: desktop
     singleapp: false
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-desktop
     changeFiles:
       - dockerfile-kasm-desktop
@@ -743,7 +743,7 @@ singleImages:
       - src/ubuntu/install/discord/**
   - name: edge
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-edge
     changeFiles:
       - dockerfile-kasm-edge
@@ -751,7 +751,7 @@ singleImages:
       - src/ubuntu/install/edge/**
   - name: hunchly
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-hunchly
     changeFiles:
       - dockerfile-kasm-hunchly
@@ -766,7 +766,7 @@ singleImages:
       - src/ubuntu/install/insomnia/**
   - name: only-office
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-only-office
     changeFiles:
       - dockerfile-kasm-only-office
