@@ -16,8 +16,10 @@ if grep -q Jammy /etc/os-release;  then
   ./configure --prefix=/usr/local
   make install
 
-  # cleanup
+  # cleanup to reduce image size
   rm -rf /tmp/pinta-2.1.2.tar.gz /tmp/pinta-2.1.2
+  apt remove -y libgtk-3-dev autotools-dev autoconf-archive gettext intltool libadwaita-1-dev
+  apt autoremove -y
 
   # create desktop file
   cat >/usr/share/applications/pinta.desktop <<EOL
