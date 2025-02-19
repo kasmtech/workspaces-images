@@ -126,14 +126,14 @@ multiImages:
       - src/ubuntu/install/slack/**
   - name: pinta
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-pinta
     changeFiles:
       - dockerfile-kasm-pinta
       - src/ubuntu/install/pinta/**
   - name: qbittorrent
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-qbittorrent
     changeFiles:
       - dockerfile-kasm-qbittorrent
@@ -155,7 +155,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
   - name: remmina
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-remmina
     changeFiles:
       - dockerfile-kasm-remmina
@@ -792,7 +792,7 @@ singleImages:
       - src/ubuntu/install/cleanup/**
   - name: postman
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-postman
     changeFiles:
       - dockerfile-kasm-postman
