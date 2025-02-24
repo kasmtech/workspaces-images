@@ -162,7 +162,7 @@ multiImages:
       - src/ubuntu/install/remmina/**
   - name: spiderfoot
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-spiderfoot
     changeFiles:
       - dockerfile-kasm-spiderfoot
@@ -172,14 +172,14 @@ multiImages:
       - src/ubuntu/install/cleanup/**
   - name: sublime-text
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-sublime-text
     changeFiles:
       - dockerfile-kasm-sublime-text
       - src/ubuntu/install/sublime_text/**
   - name: telegram
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-telegram
     changeFiles:
       - dockerfile-kasm-telegram
@@ -187,7 +187,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
   - name: terminal
     singleapp: false
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-terminal
     changeFiles:
       - dockerfile-kasm-terminal
@@ -196,74 +196,19 @@ multiImages:
       - src/ubuntu/install/terminal/**
   - name: thunderbird
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-thunderbird
     changeFiles:
       - dockerfile-kasm-thunderbird
       - src/ubuntu/install/thunderbird/**
   - name: tor-browser
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-tor-browser
     changeFiles:
       - dockerfile-kasm-tor-browser
       - src/ubuntu/install/gtk/**
       - src/ubuntu/install/torbrowser/**
-  - name: ubuntu-focal-desktop
-    singleapp: false
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-ubuntu-focal-desktop
-    changeFiles:
-      - dockerfile-kasm-ubuntu-focal-desktop
-      - src/ubuntu/install/zoom/**
-      - src/ubuntu/install/vs_code/**
-      - src/ubuntu/install/tools/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/terraform/**
-      - src/ubuntu/install/telegram/**
-      - src/ubuntu/install/sublime_text/**
-      - src/ubuntu/install/signal/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/only_office/**
-      - src/ubuntu/install/obs/**
-      - src/ubuntu/install/nextcloud/**
-      - src/ubuntu/install/misc/**
-      - src/ubuntu/install/gimp/**
-      - src/ubuntu/install/gamepad_utils/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/ansible/**
-      - src/ubuntu/install/chrome/**
-      - src/ubuntu/install/slack/**
-  - name: ubuntu-focal-desktop-vpn
-    singleapp: false
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-ubuntu-focal-desktop-vpn
-    changeFiles:
-      - dockerfile-kasm-ubuntu-focal-desktop
-      - src/ubuntu/install/zoom/**
-      - src/ubuntu/install/vs_code/**
-      - src/ubuntu/install/tools/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/terraform/**
-      - src/ubuntu/install/telegram/**
-      - src/ubuntu/install/sublime_text/**
-      - src/ubuntu/install/signal/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/only_office/**
-      - src/ubuntu/install/obs/**
-      - src/ubuntu/install/nextcloud/**
-      - src/ubuntu/install/misc/**
-      - src/ubuntu/install/gimp/**
-      - src/ubuntu/install/gamepad_utils/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/ansible/**
-      - src/ubuntu/install/chrome/**
-      - src/ubuntu/install/slack/**
-      - src/ubuntu/install/vpn/**
   - name: ubuntu-jammy-desktop
     singleapp: false
     base: core-ubuntu-jammy
@@ -291,6 +236,34 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
+  - name: ubuntu-jammy-desktop-vpn
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-desktop-vpn
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-desktop-vpn
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/vpn/**
   - name: ubuntu-noble-desktop
     singleapp: false
     base: core-ubuntu-noble
@@ -320,14 +293,14 @@ multiImages:
       - src/ubuntu/install/slack/**
   - name: vlc
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vlc
     changeFiles:
       - dockerfile-kasm-vlc
       - src/ubuntu/install/vlc/**
   - name: vs-code
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vs-code
     changeFiles:
       - dockerfile-kasm-vs-code
@@ -585,39 +558,11 @@ multiImages:
       - src/ubuntu/install/slack/**
   - name: super-tux-kart
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-super-tux-kart
     changeFiles:
       - dockerfile-kasm-super-tux-kart
       - src/ubuntu/install/super_tux_kart/**
-  - name: ubuntu-focal-dind
-    singleapp: false
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-ubuntu-focal-dind
-    changeFiles:
-      - dockerfile-kasm-ubuntu-focal-dind
-      - src/ubuntu/install/vs_code/**
-      - src/ubuntu/install/tools/**
-      - src/ubuntu/install/sublime_text/**
-      - src/ubuntu/install/misc/**
-      - src/ubuntu/install/dind/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/chrome/**
-  - name: ubuntu-focal-dind-rootless
-    singleapp: false
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-ubuntu-focal-dind-rootless
-    changeFiles:
-      - dockerfile-kasm-ubuntu-focal-dind-rootless
-      - src/ubuntu/install/vs_code/**
-      - src/ubuntu/install/tools/**
-      - src/ubuntu/install/sublime_text/**
-      - src/ubuntu/install/misc/**
-      - src/ubuntu/install/dind_rootless/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/chrome/**
   - name: ubuntu-jammy-dind
     singleapp: false
     base: core-ubuntu-jammy
@@ -678,7 +623,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
   - name: vivaldi
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vivaldi
     changeFiles:
       - dockerfile-kasm-vivaldi
@@ -808,14 +753,14 @@ singleImages:
       - src/ubuntu/install/remnux/**
   - name: signal
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-signal
     changeFiles:
       - dockerfile-kasm-signal
       - src/ubuntu/install/signal/**
   - name: slack
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-slack
     changeFiles:
       - dockerfile-kasm-slack
@@ -825,7 +770,7 @@ singleImages:
       - src/ubuntu/install/cleanup/**
   - name: steam
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-steam
     changeFiles:
       - dockerfile-kasm-steam
@@ -841,7 +786,7 @@ singleImages:
       - src/ubuntu/install/tracelabs/**
   - name: unityhub
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-unityhub
     changeFiles:
       - dockerfile-kasm-unityhub
@@ -850,7 +795,7 @@ singleImages:
       - src/ubuntu/install/unityhub/**
   - name: zoom
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-zoom
     changeFiles:
       - dockerfile-kasm-zoom
@@ -858,7 +803,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
   - name: zsnes
     singleapp: true
-    base: core-ubuntu-focal
+    base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-zsnes
     changeFiles:
       - dockerfile-kasm-zsnes
