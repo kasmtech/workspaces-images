@@ -743,14 +743,6 @@ singleImages:
       - dockerfile-kasm-postman
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/postman/**
-  - name: remnux-focal-desktop
-    singleapp: false
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-remnux-focal-desktop
-    changeFiles:
-      - dockerfile-kasm-remnux-focal-desktop
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/remnux/**
   - name: signal
     singleapp: true
     base: core-ubuntu-jammy
