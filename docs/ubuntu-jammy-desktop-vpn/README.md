@@ -1,6 +1,6 @@
 # About This Image
 
-This Image contains a browser-accessible Ubuntu Focal Desktop with various productivity, development, and VPN  apps installed.
+This Image contains a browser-accessible Ubuntu Jammy Desktop with various productivity, development, and VPN  apps installed.
 
 ![Screenshot][Image_Screenshot]
 
