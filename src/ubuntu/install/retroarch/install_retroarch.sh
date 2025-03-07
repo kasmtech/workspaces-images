@@ -8,10 +8,9 @@ apt-get update
 apt-get install -y retroarch unzip retroarch-assets libretro-core-info
 
 # Desktop icon
-VERSION=$(retroarch --version | awk '/Version:/ {print $2}')
 cat >/usr/share/applications/RetroArch.desktop <<EOL
 [Desktop Entry]
-Version=$VERSION
+Version=1.0
 Name=RetroArch
 GenericName=RetroArch
 Type=Application
