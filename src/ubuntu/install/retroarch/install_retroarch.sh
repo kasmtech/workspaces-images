@@ -7,9 +7,25 @@ add-apt-repository -y ppa:libretro/stable
 apt-get update
 apt-get install -y retroarch unzip retroarch-assets libretro-core-info
 
-# Deskto icon
-cp /usr/share/applications/com.libretro.RetroArch.desktop $HOME/Desktop/
-chmod +x $HOME/Desktop/com.libretro.RetroArch.desktop
+# Desktop icon
+cat >/usr/share/applications/RetroArch.desktop <<EOL
+[Desktop Entry]
+Version=1.0
+Name=RetroArch
+GenericName=RetroArch
+Type=Application
+Comment=Frontend for emulators, game engines and media players
+Icon=retroarch
+Exec=retroarch
+Terminal=false
+StartupNotify=false
+Keywords=multi;engine;emulator;xmb;
+Categories=Game;Emulator;
+EOL
+
+cp /usr/share/applications/RetroArch.desktop $HOME/Desktop/
+chmod +x $HOME/Desktop/RetroArch.desktop
+
 
 # Config setup
 mkdir -p $HOME/.config/retroarch/cores
