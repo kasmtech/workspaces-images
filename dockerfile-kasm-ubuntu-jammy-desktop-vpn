@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-ubuntu-focal"
+ARG BASE_IMAGE="core-ubuntu-jammy"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
@@ -34,6 +34,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
                   /ubuntu/install/thunderbird/install_thunderbird.sh \
                   /ubuntu/install/slack/install_slack.sh \
                   /ubuntu/install/gamepad_utils/install_gamepad_utils.sh \
+                  /ubuntu/install/vpn/install_vpn.sh \
                   /ubuntu/install/cleanup/cleanup.sh"
 
 # Copy install scripts

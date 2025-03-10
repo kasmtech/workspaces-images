@@ -9,5 +9,9 @@ if [ "$ARCH" == "amd64" ] ; then
     cp ${INST_DIR}/kasmos/resources/onlyoffice/*.desktop /usr/share/applications/
 else
     apt update
-    apt install -y libreoffice-plasma
+    apt install -y libreoffice
+    # Replace built in launcher app shortcuts to launch libreoffice apps
+    sed -i  "s/^Exec=.*/Exec=libreoffice --writer/g" /usr/share/applications/docs-editor.desktop
+    sed -i  "s/^Exec=.*/Exec=libreoffice --calc/g" /usr/share/applications/sheets-editor.desktop
+    sed -i  "s/^Exec=.*/Exec=libreoffice --impress/g" /usr/share/applications/present-editor.desktop
 fi
