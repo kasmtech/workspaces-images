@@ -47,7 +47,6 @@ tar -xf \
   --directory /usr/local/bin/ \
   'docker-rootless-extras/dockerd-rootless.sh' \
   'docker-rootless-extras/rootlesskit' \
-  'docker-rootless-extras/rootlesskit-docker-proxy' \
   'docker-rootless-extras/vpnkit'
 
 # Cleanup
