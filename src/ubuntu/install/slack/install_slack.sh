@@ -8,7 +8,7 @@ if [ "${ARCH}" == "arm64" ] ; then
 fi
 
 # This might prove fragile depending on how often slack changes it's website.
-version=$(curl -q https://slack.com/downloads/linux | grep page-downloads__hero__meta-text__version | sed 's/.*Version //g' | cut -d "<" -f1 | head -1)
+version=$(wget -O- https://slack.com/downloads/linux | grep page-downloads__hero__meta-text__version | sed 's/.*Version //g' | cut -d "<" -f1 | head -1)
 echo Detected slack version $version
 
 
