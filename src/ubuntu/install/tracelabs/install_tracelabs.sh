@@ -34,7 +34,7 @@ mv /etc/skel/Desktop/*.pdf $HOME/Desktop/
 
 #### Install all tracelabs image packages ####
 #                                                              rm lines with # | Delete Empty lines | 
-cat kali-config/variant-tracelabs/package-lists/kali.list.chroot | sed '/^#/d' | sed '/^$/d' | xargs --no-run-if-empty apt-get install -y
+cat kali-config/variant-tracelabs/package-lists/kali.list.chroot | sed '/^#/d' | sed '/^$/d' | sed '/firefox-esr/d' | xargs --no-run-if-empty apt-get install -y
 sed -i '/m4ll0k/,+3d' kali-config/common/hooks/normal/osint-packages.chroot
 sh kali-config/common/hooks/normal/osint-packages.chroot
 
@@ -58,7 +58,6 @@ sed -i 's/sudo //g' /usr/share/applications/tl*.desktop
 
 ### Remove stuff we install later properly
 apt-get purge -y \
-  firefox-esr \
   chromium
 
 ### Install Pulseaudio once again to remove pipewire
