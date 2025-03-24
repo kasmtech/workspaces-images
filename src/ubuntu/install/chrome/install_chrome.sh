@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -ex
 
-CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --disable-search-engine-choice-screen --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT' --enable-features=WebContentsForceDark"
+CHROME_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --disable-search-engine-choice-screen --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 CHROME_VERSION=$1
 
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 if [ "$ARCH" == "arm64" ] ; then
   echo "Chrome not supported on arm64, skipping Chrome installation"
   exit 0
-fi
+fi	
 
 if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8) ]]; then
   if [ ! -z "${CHROME_VERSION}" ]; then
@@ -70,7 +70,7 @@ sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/google-chrome
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/google-chrome/Default/Preferences
 if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
     echo "Starting Chrome with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
-    vglrun -d "\${KASM_EGL_CARD}" /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@"
+    vglrun -d "\${KASM_EGL_CARD}" /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@" 
 else
     echo "Starting Chrome"
     /opt/google/chrome/google-chrome ${CHROME_ARGS} "\$@"
