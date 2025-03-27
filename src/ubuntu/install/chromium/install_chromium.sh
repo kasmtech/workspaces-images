@@ -32,55 +32,31 @@ else
   apt-get update
   apt-get install -y software-properties-common ttf-mscorefonts-installer
   apt-get remove -y chromium-browser-l10n chromium-codecs-ffmpeg chromium-browser
-  
-  # Chromium on Ubuntu 19.10 or newer uses snap to install which is not
-  # currently compatible with docker containers. The new install will pull
-  # deb files from archive.ubuntu.com for ubuntu 18.04 and install them.
-  # This will work until 18.04 goes to an unsupported status.
-  if [ ${ARCH} = 'amd64' ] ;
-  then
-    chrome_url="http://archive.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/"
-  else
-    chrome_url="http://ports.ubuntu.com/pool/universe/c/chromium-browser/"
-  fi
 
-  chromium_codecs_data=$(curl ${chrome_url})
-  chromium_codecs_data=$(grep "chromium-codecs-ffmpeg-extra_" <<< "${chromium_codecs_data}")
-  chromium_codecs_data=$(grep "18\.04" <<< "${chromium_codecs_data}")
-  chromium_codecs_data=$(grep "${ARCH}" <<< "${chromium_codecs_data}")
-  chromium_codecs_data=$(sed -n 's/.*<a href="//p' <<< "${chromium_codecs_data}")
-  chromium_codecs_data=$(sed -n 's/">.*//p' <<< "${chromium_codecs_data}")
-  echo "Chromium codec deb to download: ${chromium_codecs_data}"
+  # Install from debian bookworm repos
+  mkdir -p /etc/apt/keyrings
+  curl -fsSL https://ftp-master.debian.org/keys/archive-key-12.asc | sudo tee /etc/apt/keyrings/debian-archive-key-12.asc
+  echo "deb [signed-by=/etc/apt/keyrings/debian-archive-key-12.asc] http://deb.debian.org/debian bookworm main" | sudo tee /etc/apt/sources.list.d/debian-bookworm.list
+  echo -e "Package: *\nPin: release a=bookworm\nPin-Priority: 100" | sudo tee /etc/apt/preferences.d/debian-bookworm
+  apt-get update
+  apt install -y chromium --no-install-recommends
 
-  chromium_data=$(curl ${chrome_url})
-  chromium_data=$(grep "chromium-browser_" <<< "${chromium_data}")
-  chromium_data=$(grep "18\.04" <<< "${chromium_data}")
-  chromium_data=$(grep "${ARCH}" <<< "${chromium_data}")
-  chromium_data=$(sed -n 's/.*<a href="//p' <<< "${chromium_data}")
-  chromium_data=$(sed -n 's/">.*//p' <<< "${chromium_data}")
-  echo "Chromium browser deb to download: ${chromium_data}"
+  # Cleanup debian bookworm repos
+  rm /etc/apt/sources.list.d/debian-bookworm.list
+  rm /etc/apt/preferences.d/debian-bookworm
+  rm /etc/apt/keyrings/debian-archive-key-12.asc
+  apt-get update
 
-  echo "The things to download"
-  echo "${chrome_url}${chromium_codecs_data}"
-  echo "${chrome_url}${chromium_data}"
-
-  wget "${chrome_url}${chromium_codecs_data}"
-  wget "${chrome_url}${chromium_data}"
-
-  apt-get install -y ./"${chromium_codecs_data}"
-  apt-get install -y ./"${chromium_data}"
-
-  rm "${chromium_codecs_data}"
-  rm "${chromium_data}"
   if [ -z ${SKIP_CLEAN+x} ]; then
   apt-get autoclean
   rm -rf \
     /var/lib/apt/lists/* \
     /var/tmp/*
   fi
+
 fi
 
-if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+if grep -q "ID=debian" /etc/os-release || grep -q "ID=kali" /etc/os-release || grep -q "ID=parrot" /etc/os-release || grep -q "ID=ubuntu" /etc/os-release; then
   REAL_BIN=chromium
 else
   REAL_BIN=chromium-browser
@@ -113,7 +89,7 @@ fi
 EOL
 chmod +x /usr/bin/${REAL_BIN}
 
-if [ "${DISTRO}" != "opensuse" ] && ! grep -q "ID=debian" /etc/os-release && ! grep -q "ID=kali" /etc/os-release && ! grep -q "ID=parrot" /etc/os-release; then
+if [ "${DISTRO}" != "opensuse" ] && ! grep -q "ID=debian" /etc/os-release && ! grep -q "ID=kali" /etc/os-release && ! grep -q "ID=parrot" /etc/os-release && ! grep -q "ID=ubuntu" /etc/os-release; then
   cp /usr/bin/chromium-browser /usr/bin/chromium
 fi
 
