@@ -17,8 +17,11 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
   TEST_INSTALLER: "{{ TEST_INSTALLER }}"
+  MIRROR_ORG_NAME: "{{ MIRROR_ORG_NAME }}"
 before_script:
   - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+  - if [ -f "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi 
+  - if [ -f "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
   - export BASE_TAG="{{ BASE_TAG }}"
 
@@ -38,8 +41,9 @@ build_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
@@ -63,8 +67,9 @@ build_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
@@ -89,8 +94,9 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -118,8 +124,9 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -151,8 +158,9 @@ manifest_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -180,8 +188,9 @@ manifest_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -204,8 +213,11 @@ update_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+  variables:
+    README_USERNAME: $README_USERNAME_RUN
+    README_PASSWORD: $README_PASSWORD_RUN
   tags:
     - oci-fixed-amd
 {% endfor %}
@@ -218,8 +230,42 @@ update_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $README_USERNAME
-      - $README_PASSWORD
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+  variables:
+    README_USERNAME: $README_USERNAME_RUN
+    README_PASSWORD: $README_PASSWORD_RUN
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+## Update Quay Readmes ##
+{% for IMAGE in multiImages %}
+update_quay_readmes_{{ IMAGE.name }}:
+  stage: readme
+  script:
+    - apk add bash
+    - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
+  only:
+    variables:
+      - $QUAY_API_KEY_RUN
+  variables:
+    QUAY_API_KEY: $QUAY_API_KEY_RUN
+  tags:
+    - oci-fixed-amd
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+update_quay_readmes_{{ IMAGE.name }}:
+  stage: readme
+  script:
+    - apk add bash
+    - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
+  only:
+    variables:
+      - $QUAY_API_KEY_RUN
+  variables:
+    QUAY_API_KEY: $QUAY_API_KEY_RUN
   tags:
     - oci-fixed-amd
 {% endfor %}
