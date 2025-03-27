@@ -23,7 +23,7 @@ else
   apt-get install -y software-properties-common
   add-apt-repository -y ppa:nextcloud-devs/client
   apt update
-  apt install -y nextcloud-client
+  apt install -y nextcloud-desktop
   if [ -z ${SKIP_CLEAN+x} ]; then
     apt-get autoclean
     rm -rf \
