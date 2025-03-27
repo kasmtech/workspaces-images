@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 # Ingest cli variables
 ## Parse input ##
