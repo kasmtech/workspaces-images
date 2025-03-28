@@ -40,9 +40,9 @@ build_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
@@ -66,9 +66,9 @@ build_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   tags:
@@ -93,9 +93,9 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -123,9 +123,9 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -157,9 +157,9 @@ manifest_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -187,9 +187,9 @@ manifest_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   except:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
+      - $QUAY_API_KEY
       - $DOCKERHUB_REVERT
       - $REVERT_IS_ROLLING
   needs:
@@ -212,11 +212,8 @@ update_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-  variables:
-    README_USERNAME: $README_USERNAME_RUN
-    README_PASSWORD: $README_PASSWORD_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
   tags:
     - oci-fixed-amd
 {% endfor %}
@@ -229,11 +226,8 @@ update_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-  variables:
-    README_USERNAME: $README_USERNAME_RUN
-    README_PASSWORD: $README_PASSWORD_RUN
+      - $README_USERNAME
+      - $README_PASSWORD
   tags:
     - oci-fixed-amd
 {% endfor %}
@@ -247,9 +241,7 @@ update_quay_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $QUAY_API_KEY_RUN
-  variables:
-    QUAY_API_KEY: $QUAY_API_KEY_RUN
+      - $QUAY_API_KEY
   tags:
     - oci-fixed-amd
 {% endfor %}
@@ -262,9 +254,7 @@ update_quay_readmes_{{ IMAGE.name }}:
     - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
   only:
     variables:
-      - $QUAY_API_KEY_RUN
-  variables:
-    QUAY_API_KEY: $QUAY_API_KEY_RUN
+      - $QUAY_API_KEY
   tags:
     - oci-fixed-amd
 {% endfor %}
