@@ -34,8 +34,35 @@ pipeline:
   stage: run
   except:
     variables:
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+      - $QUAY_API_KEY_RUN
       - $DOCKERHUB_REVERT_RUN
       - $REVERT_IS_ROLLING_RUN
+  trigger:
+    include:
+      - artifact: gitlab-ci.yml
+        job: template
+pipeline_readme:
+  stage: run
+  only:
+    variables:
+      - $README_USERNAME_RUN
+      - $README_PASSWORD_RUN
+  variables:
+      README_USERNAME: $README_USERNAME_RUN
+      README_PASSWORD: $README_PASSWORD_RUN
+  trigger:
+    include:
+      - artifact: gitlab-ci.yml
+        job: template
+pipeline_readme_quay:
+  stage: run
+  only:
+    variables:
+      - $QUAY_API_KEY_RUN
+  variables:
+      QUAY_API_KEY: $QUAY_API_KEY_RUN
   trigger:
     include:
       - artifact: gitlab-ci.yml
