@@ -166,6 +166,7 @@ manifest_{{ IMAGE.name }}:
   needs:
     - test_{{ IMAGE.name }}
   when: on_success
+  retry: 1
   tags:
     - oci-fixed-amd
 {% endfor %}
@@ -196,6 +197,7 @@ manifest_{{ IMAGE.name }}:
   needs:
     - test_{{ IMAGE.name }}
   when: on_success
+  retry: 1
   tags:
     - oci-fixed-amd
 {% endfor %}
