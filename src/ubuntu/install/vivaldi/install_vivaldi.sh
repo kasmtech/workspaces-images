@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-VIVALDI_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
+VIVALDI_ARGS="--password-store=basic --no-sandbox --user-data-dir --no-first-run --simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'"
 
 # Install Vivaldi (Ubuntu)
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/vivaldi-browser.gpg
