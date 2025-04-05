@@ -353,24 +353,6 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: alpine-317-desktop
-    singleapp: false
-    base: core-alpine-317
-    dockerfile: dockerfile-kasm-alpine-317-desktop
-    changeFiles:
-      - dockerfile-kasm-alpine-317-desktop
-      - src/ubuntu/install/langpacks/**
-      - src/ubuntu/install/cleanup/**
-      - src/alpine/install/**
-  - name: alpine-318-desktop
-    singleapp: false
-    base: core-alpine-318
-    dockerfile: dockerfile-kasm-alpine-318-desktop
-    changeFiles:
-      - dockerfile-kasm-alpine-318-desktop
-      - src/ubuntu/install/langpacks/**
-      - src/ubuntu/install/cleanup/**
-      - src/alpine/install/**
   - name: alpine-319-desktop
     singleapp: false
     base: core-alpine-319
