@@ -146,7 +146,7 @@ multiImages:
       - src/ubuntu/install/slack/**
   - name: pinta
     singleapp: true
-    base: core-ubuntu-jammy
+    base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-pinta
     changeFiles:
       - dockerfile-kasm-pinta
