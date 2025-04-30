@@ -187,8 +187,13 @@ fi
 # Starting with version 67, Firefox creates a unique profile mapping per installation which is hash generated
 #   based off the installation path. Because that path will be static for our deployments we can assume the hash
 #   and thus assign our profile to the default for the installation
-
-if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
+if grep -q "ID=kali" /etc/os-release; then
+cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+[Install3B6073811A6ABF12]
+Default=kasm
+Locked=1
+EOL
+elif [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
 Default=kasm
