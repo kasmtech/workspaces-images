@@ -200,7 +200,13 @@ elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release;
 Default=kasm
 Locked=1
 EOL
-fi
+  else
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+  [Install4F96D1932A9F858E]
+  Default=kasm
+  Locked=1
+EOL
+  fi
 elif [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
