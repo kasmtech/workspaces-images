@@ -190,6 +190,14 @@ cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 Default=kasm
 Locked=1
 EOL
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+  if [ "${ARCH}" != "amd64" ]; then
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+[Install3B6073811A6ABF12]
+Default=kasm
+Locked=1
+EOL
+fi
 elif [[ "${DISTRO}" != @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9|almalinux8|opensuse|fedora37|fedora38|fedora39) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
