@@ -19,7 +19,7 @@ if grep -q Jammy /etc/os-release || grep -q Noble /etc/os-release;  then
   make install
 
   # cleanup to reduce image size
-  rm -rf /tmp/pinta.tar.gz /tmp/pinta
+  rm -rf /tmp/pinta-${PINTA_VERSION}.tar.gz /tmp/pinta-${PINTA_VERSION}
   apt remove -y libgtk-3-dev autotools-dev autoconf-archive gettext intltool libadwaita-1-dev jq build-essential
   apt autoremove -y
 
