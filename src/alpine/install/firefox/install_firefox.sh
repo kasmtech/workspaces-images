@@ -21,7 +21,7 @@ done
 # Creating a default profile
 firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 
-# For alpine 3.20 and later, firefox version shows a security nag. Silence it.
+# For alpine 3.20 and later, firefox version shows a security nag. Silence it..
 if [ "$(printf '%s\n' 3.20 $(cat /etc/alpine-release) | sort -V | head -n 1)" = "3.20" ]; then
   echo 'user_pref("security.sandbox.warn_unprivileged_namespaces", false);' > $HOME/.mozilla/firefox/kasm/user.js
   chown 1000:1000 $HOME/.mozilla/firefox/kasm/user.js

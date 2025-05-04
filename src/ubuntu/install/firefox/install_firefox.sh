@@ -176,7 +176,7 @@ else
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 fi
 
-# Silence Firefox security nag "Some of Firefox's features may offer less protection on your current operating system"
+# Silence Firefox security nag "Some of Firefox's features may offer less protection on your current operating system".
 echo 'user_pref("security.sandbox.warn_unprivileged_namespaces", false);' > $HOME/.mozilla/firefox/kasm/user.js
 chown 1000:1000 $HOME/.mozilla/firefox/kasm/user.js
 
