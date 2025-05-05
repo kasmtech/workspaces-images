@@ -1,0 +1,13 @@
+[remmina_pref]
+disable_tray_icon=true
+
+[usage_stats]
+periodic_usage_stats_permitted=false
+periodic_usage_stats_last_sent=0
+periodic_usage_stats_uuid_prefix=
+
+[remmina_news]
+periodic_news_permitted=false
+periodic_rmnews_last_get=1617502161
+periodic_rmnews_get_count=2
+periodic_rmnews_uuid_prefix=ONIZ7TTK015NCL

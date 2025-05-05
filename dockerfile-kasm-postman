@@ -1,5 +1,6 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
 ENV HOME /home/kasm-default-profile
@@ -9,9 +10,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-
+# Install Postman
 COPY ./src/ubuntu/install/postman $INST_SCRIPTS/postman/
 RUN bash $INST_SCRIPTS/postman/install_postman.sh  && rm -rf $INST_SCRIPTS/postman/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
 
 COPY ./src/ubuntu/install/postman/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh
@@ -20,7 +25,7 @@ RUN chmod 755 $STARTUPDIR/custom_startup.sh
 
 # Update the desktop environment to be optimized for a single application
 RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
-RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
 RUN apt-get remove -y xfce4-panel
 
 

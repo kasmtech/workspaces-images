@@ -9,7 +9,7 @@ set -ex
 # unclutter - Remove Mouse Cursor. This configuration will remove the cursor except for briefly when its clicked
 
 apt-get update
-apt-get install -y dconf-tools libglib2.0-bin mousetweaks onboard unclutter
+apt-get install -y dconf-cli dconf-editor libglib2.0-bin mousetweaks onboard unclutter
 
 rm -f /etc/xdg/autostart/orca-autostart.desktop
 

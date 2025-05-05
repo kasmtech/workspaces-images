@@ -1,0 +1,1 @@
+Ubuntu Java development desktop for Kasm Workspaces

@@ -1,0 +1,36 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+ENV LOCALE_ALL=
+ENV LANGUAGE=
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh  && rm -rf $INST_SCRIPTS/chrome/
+
+# Install Unity
+COPY ./src/ubuntu/install/unityhub $INST_SCRIPTS/unityhub/
+RUN bash $INST_SCRIPTS/unityhub/install_unityhub.sh  && rm -rf $INST_SCRIPTS/unityhub/
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000

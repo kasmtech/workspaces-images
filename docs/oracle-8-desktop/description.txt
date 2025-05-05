@@ -1,0 +1,1 @@
+Oracle Linux 8 desktop for Kasm Workspaces

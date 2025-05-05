@@ -1,0 +1,55 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-alpine-320"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+USER root
+
+ENV DISTRO=alpine320
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Envrionment config
+ENV SKIP_CLEAN=true \
+    INST_DIR=$STARTUPDIR/install \
+    INST_SCRIPTS="/alpine/install/tools/install_tools_deluxe.sh \
+                  /alpine/install/misc/install_tools.sh \
+                  /alpine/install/firefox/install_firefox.sh \
+                  /alpine/install/remmina/install_remmina.sh \
+                  /alpine/install/gimp/install_gimp.sh \
+                  /alpine/install/ansible/install_ansible.sh \
+                  /alpine/install/terraform/install_terraform.sh \
+                  /alpine/install/thunderbird/install_thunderbird.sh \
+                  /alpine/install/audacity/install_audacity.sh \
+                  /alpine/install/blender/install_blender.sh \
+                  /alpine/install/geany/install_geany.sh \
+                  /alpine/install/inkscape/install_inkscape.sh \
+                  /alpine/install/libre_office/install_libre_office.sh \
+                  /alpine/install/pinta/install_pinta.sh \
+                  /alpine/install/obs/install_obs.sh \
+                  /alpine/install/filezilla/install_filezilla.sh \
+                  /alpine/install/chromium/install_chromium.sh \
+                  /ubuntu/install/langpacks/install_langpacks.sh \
+                  /ubuntu/install/cleanup/cleanup.sh" 
+
+# Copy install scripts
+COPY ./src/ $INST_DIR
+
+# Run installations
+RUN \
+  for SCRIPT in $INST_SCRIPTS; do \
+    bash ${INST_DIR}${SCRIPT} || exit 1; \
+  done && \
+  $STARTUPDIR/set_user_permission.sh $HOME && \
+  rm -f /etc/X11/xinit/Xclients && \
+  chown 1000:0 $HOME && \
+  mkdir -p /home/kasm-user && \
+  chown -R 1000:0 /home/kasm-user && \
+  rm -Rf ${INST_DIR}
+
+# Userspace Runtime 
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+USER 1000
+
+CMD ["--tail-log"]

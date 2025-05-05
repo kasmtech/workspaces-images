@@ -1,5 +1,6 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
@@ -11,9 +12,10 @@ WORKDIR $HOME
 ENV DEBIAN_FRONTEND noninteractive
 ENV KASM_RX_HOME $STARTUPDIR/kasmrx
 ENV INST_SCRIPTS $STARTUPDIR/install
+ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
 
 # Add Kasm Branding
-RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
 RUN cp /usr/share/extra/icons/icon_kasm.png /usr/share/extra/icons/icon_default.png
 RUN sed -i 's/ubuntu-mono-dark/elementary-xfce/g' $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 
@@ -38,29 +40,17 @@ RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefo
 COPY ./src/ubuntu/install/sublime_text $INST_SCRIPTS/sublime_text/
 RUN bash $INST_SCRIPTS/sublime_text/install_sublime_text.sh  && rm -rf $INST_SCRIPTS/sublime_text/
 
-
 ### Install Visual Studio Code
 COPY ./src/ubuntu/install/vs_code $INST_SCRIPTS/vs_code/
 RUN bash $INST_SCRIPTS/vs_code/install_vs_code.sh  && rm -rf $INST_SCRIPTS/vs_code/
-
-
-### Install Slack
-COPY ./src/ubuntu/install/slack $INST_SCRIPTS/slack/
-RUN bash $INST_SCRIPTS/slack/install_slack.sh  && rm -rf $INST_SCRIPTS/slack/
-
 
 ### Install NextCloud
 COPY ./src/ubuntu/install/nextcloud $INST_SCRIPTS/nextcloud/
 RUN bash $INST_SCRIPTS/nextcloud/install_nextcloud.sh  && rm -rf $INST_SCRIPTS/nextcloud/
 
-
 ### Install Remmina
 COPY ./src/ubuntu/install/remmina $INST_SCRIPTS/remmina/
 RUN bash $INST_SCRIPTS/remmina/install_remmina.sh  && rm -rf $INST_SCRIPTS/remmina/
-
-### Install Teams
-COPY ./src/ubuntu/install/teams $INST_SCRIPTS/teams/
-RUN bash $INST_SCRIPTS/teams/install_teams.sh  && rm -rf $INST_SCRIPTS/teams/
 
 ### Install Only Office
 COPY ./src/ubuntu/install/only_office $INST_SCRIPTS/only_office/
@@ -90,8 +80,9 @@ RUN bash $INST_SCRIPTS/ansible/install_ansible.sh  && rm -rf $INST_SCRIPTS/ansib
 COPY ./src/ubuntu/install/terraform $INST_SCRIPTS/terraform/
 RUN bash $INST_SCRIPTS/terraform/install_terraform.sh  && rm -rf $INST_SCRIPTS/terraform/
 
-### Remove maxmius
-RUN apt-get remove -y maximus
+### Install Telegram
+COPY ./src/ubuntu/install/telegram $INST_SCRIPTS/telegram/
+RUN bash $INST_SCRIPTS/telegram/install_telegram.sh  && rm -rf $INST_SCRIPTS/telegram/
 
 #ADD ./src/common/scripts $STARTUPDIR
 RUN $STARTUPDIR/set_user_permission.sh $HOME

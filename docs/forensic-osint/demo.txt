@@ -1,0 +1,8 @@
+
+# Live Demo
+
+**Launch a real-time demo in a new browser window:** <a href="https://app.kasmweb.com/#/cast/30203108043" target="_blank">Live Demo</a>.
+
+<a href="https://app.kasmweb.com/#/cast/30203108043" target="_blank"><img src="https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/casting-buttons/Forensic_OSINT.png" width="300" height="104"></a>
+
+&lowast;*Note: Demo is limited to 3 minutes and has upload/downloads restricted for security purposes.*

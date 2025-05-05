@@ -1,0 +1,38 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+ENV INST_SCRIPTS $STARTUPDIR/install
+WORKDIR $HOME
+
+######### Customize Container Here ###########
+
+
+# Install Chromium
+COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
+RUN bash $INST_SCRIPTS/chromium/install_chromium.sh  && rm -rf $INST_SCRIPTS/chromium/
+
+COPY ./src/ubuntu/install/nessus $INST_SCRIPTS/nessus/
+RUN bash $INST_SCRIPTS/nessus/install_nessus.sh  && rm -rf $INST_SCRIPTS/nessus/
+
+COPY ./src/ubuntu/install/cleanup $INST_SCRIPTS/cleanup/
+RUN bash $INST_SCRIPTS/cleanup/cleanup.sh  && rm -rf $INST_SCRIPTS/cleanup/
+
+COPY ./src/ubuntu/install/nessus/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000

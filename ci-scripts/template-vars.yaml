@@ -1,0 +1,800 @@
+files: &UNIVERSAL_CHANGE_FILES
+  - src/common/**
+  - ci-scripts/**
+  - .gitlab-ci.yml
+
+multiImages:
+  - name: audacity
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-audacity
+    changeFiles:
+      - dockerfile-kasm-audacity
+      - src/ubuntu/install/audacity/**
+  - name: chromium
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-chromium
+    changeFiles:
+      - dockerfile-kasm-chromium
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/certificates/**
+  - name: deluge
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-deluge
+    changeFiles:
+      - dockerfile-kasm-deluge
+      - src/ubuntu/install/deluge/**
+  - name: doom
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-doom
+    changeFiles:
+      - dockerfile-kasm-doom
+      - src/ubuntu/install/doom/**
+  - name: filezilla
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-filezilla
+    changeFiles:
+      - dockerfile-kasm-filezilla
+      - src/ubuntu/install/filezilla/**
+  - name: firefox
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-firefox
+    changeFiles:
+      - dockerfile-kasm-firefox
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/certificates/**
+  - name: gimp
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-gimp
+    changeFiles:
+      - dockerfile-kasm-gimp
+      - src/ubuntu/install/gimp/**
+  - name: inkscape
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-inkscape
+    changeFiles:
+      - dockerfile-kasm-inkscape
+      - src/ubuntu/install/inkscape/**
+  - name: java-dev
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-java-dev
+    changeFiles:
+      - dockerfile-kasm-java-dev
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/eclipse/**
+  - name: kasmos-desktop
+    singleapp: false
+    base: core-kasmos
+    dockerfile: dockerfile-kasmos-desktop
+    changeFiles:
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/intall/only_office/**
+      - src/ubuntu/install/libre_office/**
+      - src/ubuntu/install/misc/**
+      - src/kasmos/install/browser/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/remmina/**
+      - src/kasmos/install/office/**
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/cleanup/**
+  - name: libre-office
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-libre-office
+    changeFiles:
+      - dockerfile-kasm-libre-office
+      - src/ubuntu/install/libre_office/**
+  - name: nessus
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-nessus
+    changeFiles:
+      - dockerfile-kasm-nessus
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/nessus/**
+      - src/ubuntu/install/cleanup/**
+  - name: opensuse-15-desktop
+    singleapp: false
+    base: core-opensuse-15
+    dockerfile: dockerfile-kasm-opensuse-15-desktop
+    changeFiles:
+      - dockerfile-kasm-opensuse-15-desktop
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+      - src/opensuse/install/**
+  - name: oracle-8-desktop
+    singleapp: false
+    base: core-oracle-8
+    dockerfile: dockerfile-kasm-oracle-8-desktop
+    changeFiles:
+      - dockerfile-kasm-oracle-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: pinta
+    singleapp: true
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-pinta
+    changeFiles:
+      - dockerfile-kasm-pinta
+      - src/ubuntu/install/pinta/**
+  - name: qbittorrent
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-qbittorrent
+    changeFiles:
+      - dockerfile-kasm-qbittorrent
+      - src/ubuntu/install/qbittorrent/**
+  - name: redroid
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-redroid
+    changeFiles:
+      - dockerfile-kasm-redroid
+      - src/ubuntu/install/redroid/**
+      - src/ubuntu/install/android_studio/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
+  - name: remmina
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-remmina
+    changeFiles:
+      - dockerfile-kasm-remmina
+      - src/ubuntu/install/remmina/**
+  - name: spiderfoot
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-spiderfoot
+    changeFiles:
+      - dockerfile-kasm-spiderfoot
+      - src/ubuntu/install/spiderfoot/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
+  - name: sublime-text
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-sublime-text
+    changeFiles:
+      - dockerfile-kasm-sublime-text
+      - src/ubuntu/install/sublime_text/**
+  - name: telegram
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-telegram
+    changeFiles:
+      - dockerfile-kasm-telegram
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/chrome/**
+  - name: terminal
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-terminal
+    changeFiles:
+      - dockerfile-kasm-terminal
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/terminal/**
+  - name: thunderbird
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-thunderbird
+    changeFiles:
+      - dockerfile-kasm-thunderbird
+      - src/ubuntu/install/thunderbird/**
+  - name: tor-browser
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-tor-browser
+    changeFiles:
+      - dockerfile-kasm-tor-browser
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/torbrowser/**
+  - name: ubuntu-jammy-desktop
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+  - name: ubuntu-jammy-desktop-vpn
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-desktop-vpn
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-desktop-vpn
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/vpn/**
+  - name: ubuntu-noble-desktop
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-noble-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-noble-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+  - name: vlc
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-vlc
+    changeFiles:
+      - dockerfile-kasm-vlc
+      - src/ubuntu/install/vlc/**
+  - name: vs-code
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-vs-code
+    changeFiles:
+      - dockerfile-kasm-vs-code
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/chrome/**
+  - name: almalinux-8-desktop
+    singleapp: false
+    base: core-almalinux-8
+    dockerfile: dockerfile-kasm-almalinux-8-desktop
+    changeFiles:
+      - dockerfile-kasm-almalinux-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: almalinux-9-desktop
+    singleapp: false
+    base: core-almalinux-9
+    dockerfile: dockerfile-kasm-almalinux-9-desktop
+    changeFiles:
+      - dockerfile-kasm-almalinux-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: alpine-319-desktop
+    singleapp: false
+    base: core-alpine-319
+    dockerfile: dockerfile-kasm-alpine-319-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-319-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: alpine-320-desktop
+    singleapp: false
+    base: core-alpine-320
+    dockerfile: dockerfile-kasm-alpine-320-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-320-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: alpine-321-desktop
+    singleapp: false
+    base: core-alpine-321
+    dockerfile: dockerfile-kasm-alpine-321-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-321-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: brave
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-brave
+    changeFiles:
+      - dockerfile-kasm-brave
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/brave/**
+  - name: debian-bullseye-desktop
+    singleapp: false
+    base: core-debian-bullseye
+    dockerfile: dockerfile-kasm-debian-bullseye-desktop
+    changeFiles:
+      - dockerfile-kasm-debian-bullseye-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+  - name: debian-bookworm-desktop
+    singleapp: false
+    base: core-debian-bookworm
+    dockerfile: dockerfile-kasm-debian-bookworm-desktop
+    changeFiles:
+      - dockerfile-kasm-debian-bookworm-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
+  - name: fedora-39-desktop
+    singleapp: false
+    base: core-fedora-39
+    dockerfile: dockerfile-kasm-fedora-39-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-39-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: fedora-40-desktop
+    singleapp: false
+    base: core-fedora-40
+    dockerfile: dockerfile-kasm-fedora-40-desktop
+    changeFiles:
+      - dockerfile-kasm-fedora-40-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: kali-rolling-desktop
+    singleapp: false
+    base: core-kali-rolling
+    dockerfile: dockerfile-kasm-kali-rolling-desktop
+    changeFiles:
+      - dockerfile-kasm-kali-rolling-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: maltego
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-maltego
+    changeFiles:
+      - dockerfile-kasm-maltego
+      - src/ubuntu/install/maltego/**
+      - src/ubuntu/install/firefox/**
+  - name: minetest
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-minetest
+    changeFiles:
+      - dockerfile-kasm-minetest
+      - src/ubuntu/install/minetest/**
+  - name: oracle-9-desktop
+    singleapp: false
+    base: core-oracle-9
+    dockerfile: dockerfile-kasm-oracle-9-desktop
+    changeFiles:
+      - dockerfile-kasm-oracle-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: rhel-9-desktop
+    singleapp: false
+    base: core-rhel-9
+    dockerfile: dockerfile-kasm-rhel-9-desktop
+    changeFiles:
+      - dockerfile-kasm-rhel-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: parrotos-6-desktop
+    singleapp: false
+    base: core-parrotos-6
+    dockerfile: dockerfile-kasm-parrotos-6-desktop
+    changeFiles:
+      - dockerfile-kasm-parrotos-6-desktop
+      - src/ubuntu/install/parrot/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+  - name: retroarch
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-retroarch
+    changeFiles:
+      - dockerfile-kasm-retroarch
+      - src/ubuntu/install/retroarch/**
+  - name: rockylinux-8-desktop
+    singleapp: false
+    base: core-rockylinux-8
+    dockerfile: dockerfile-kasm-rockylinux-8-desktop
+    changeFiles:
+      - dockerfile-kasm-rockylinux-8-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: rockylinux-9-desktop
+    singleapp: false
+    base: core-rockylinux-9
+    dockerfile: dockerfile-kasm-rockylinux-9-desktop
+    changeFiles:
+      - dockerfile-kasm-rockylinux-9-desktop
+      - src/oracle/install/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/slack/**
+  - name: super-tux-kart
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-super-tux-kart
+    changeFiles:
+      - dockerfile-kasm-super-tux-kart
+      - src/ubuntu/install/super_tux_kart/**
+  - name: ubuntu-jammy-dind
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-dind
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-dind
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-jammy-dind-rootless
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-ubuntu-jammy-dind-rootless
+    changeFiles:
+      - dockerfile-kasm-ubuntu-jammy-dind-rootless
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind_rootless/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-noble-dind
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-noble-dind
+    changeFiles:
+      - dockerfile-kasm-ubuntu-noble-dind
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: ubuntu-noble-dind-rootless
+    singleapp: false
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-ubuntu-noble-dind-rootless
+    changeFiles:
+      - dockerfile-kasm-ubuntu-noble-dind-rootless
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind_rootless/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
+  - name: vivaldi
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-vivaldi
+    changeFiles:
+      - dockerfile-kasm-vivaldi
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/vivaldi/**
+singleImages:
+  - name: blender
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-blender
+    changeFiles:
+      - dockerfile-kasm-blender
+      - src/ubuntu/install/blender/**
+  - name: chrome
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-chrome
+    changeFiles:
+      - dockerfile-kasm-chrome
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/chrome/**
+  - name: desktop
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-desktop
+    changeFiles:
+      - dockerfile-kasm-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/certificates/**
+      - src/ubuntu/install/chrome/**
+  - name: desktop-deluxe
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-desktop-deluxe
+    changeFiles:
+      - dockerfile-kasm-desktop-deluxe
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+  - name: discord
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-discord
+    changeFiles:
+      - dockerfile-kasm-discord
+      - src/ubuntu/install/discord/**
+  - name: edge
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-edge
+    changeFiles:
+      - dockerfile-kasm-edge
+      - src/ubuntu/install/gtk/**
+      - src/ubuntu/install/edge/**
+  - name: hunchly
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-hunchly
+    changeFiles:
+      - dockerfile-kasm-hunchly
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/hunchly/**
+  - name: insomnia
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-insomnia
+    changeFiles:
+      - dockerfile-kasm-insomnia
+      - src/ubuntu/install/insomnia/**
+  - name: only-office
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-only-office
+    changeFiles:
+      - dockerfile-kasm-only-office
+  - name: postman
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-postman
+    changeFiles:
+      - dockerfile-kasm-postman
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/postman/**
+  - name: signal
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-signal
+    changeFiles:
+      - dockerfile-kasm-signal
+      - src/ubuntu/install/signal/**
+  - name: slack
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-slack
+    changeFiles:
+      - dockerfile-kasm-slack
+      - src/ubuntu/install/slack/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/cleanup/**
+  - name: steam
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-steam
+    changeFiles:
+      - dockerfile-kasm-steam
+      - src/ubuntu/install/steam/**
+  - name: tracelabs
+    singleapp: false
+    base: core-kali-rolling
+    dockerfile: dockerfile-kasm-tracelabs
+    changeFiles:
+      - dockerfile-kasm-tracelabs
+      - src/ubuntu/install/kali/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/tracelabs/**
+  - name: unityhub
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-unityhub
+    changeFiles:
+      - dockerfile-kasm-unityhub
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/unityhub/**
+  - name: zoom
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-zoom
+    changeFiles:
+      - dockerfile-kasm-zoom
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/chrome/**
+  - name: zsnes
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-zsnes
+    changeFiles:
+      - dockerfile-kasm-zsnes
+      - src/ubuntu/install/zsnes/**
+  - name: forensic-osint
+    singleapp: false
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-forensic-osint
+    changeFiles:
+      - dockerfile-kasm-forensic-osint
+      - src/ubuntu/install/forensic_osint/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/torbrowser/**
+      - src/ubuntu/install/cleanup/**

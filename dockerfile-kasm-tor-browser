@@ -1,5 +1,6 @@
 ARG BASE_TAG="develop"
-FROM kasmweb/core-ubuntu-bionic:$BASE_TAG
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 USER root
 
 ENV HOME /home/kasm-default-profile
@@ -16,36 +17,23 @@ RUN bash $INST_SCRIPTS/torbrowser/install_torbrowser.sh  && rm -rf $INST_SCRIPTS
 
 # Update the desktop environment to be optimized for a single application
 RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
-RUN cp /usr/share/extra/backgrounds/bg_kasm.png /usr/share/extra/backgrounds/bg_default.png
+RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
 RUN apt-get remove -y xfce4-panel
 
-# Setup the custom startup script that will be invoked when the container starts
-ENV LAUNCH_URL about:blank
-RUN echo $' \n\
-set -x \n\
-FORCE=$2 \n\
-URL=${1:-$LAUNCH_URL}  \n\
-if [ -n "$URL" ] && ( [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ] ) ; then \n\
-    if [ -f /tmp/custom_startup.lck ] ; then  \n\
-        echo "custom_startup already running!" \n\
-        exit 1 \n\
-    fi \n\
-    touch /tmp/custom_startup.lck \n\
-    while true \n\
-    do \n\
-        if ! pgrep firefox > /dev/null \n\
-        then \n\
-             /usr/bin/desktop_ready \n\
-             /tmp/tor-browser_en-US/Browser/start-tor-browser --detach --allow-remote --new-tab  $URL \n\
-        fi \n\
-        sleep 1 \n\
-    done \n\
-    rm /tmp/custom_startup.lck \n\
-fi \n\
-' >$STARTUPDIR/custom_startup.sh
+# Security modifications
+COPY ./src/ubuntu/install/misc/single_app_security.sh $INST_SCRIPTS/misc/
+RUN  bash $INST_SCRIPTS/misc/single_app_security.sh -t && rm -rf $INST_SCRIPTS/misc/
 
-# Ensure the startup script is executable
-RUN chmod 755 $STARTUPDIR/custom_startup.sh
+ENV KASM_RESTRICTED_FILE_CHOOSER=1
+COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
+RUN bash $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+
+# Setup the custom startup script that will be invoked when the container starts
+#ENV LAUNCH_URL about:blank
+
+COPY ./src/ubuntu/install/torbrowser/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+
 
 ######### End Customizations ###########
 

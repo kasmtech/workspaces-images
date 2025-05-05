@@ -8,4 +8,5 @@ This Image contains a browser-accessible version of [xfce4-terminal](https://doc
 
 # Environment Variables
 
-* `APP_ARGS` - Additional arguments to pass to the application when launched.
+* `TERMINAL_ARGS` - Additional arguments to pass to the application when launched.
+* `SHELL_EXEC`- A command to run when the terminal starts
