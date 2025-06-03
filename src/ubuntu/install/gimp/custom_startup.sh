@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="gimp"
+START_COMMAND="/opt/gimp-3/squashfs-root/launcher"
 PGREP="gimp"
 export MAXIMIZE="true"
 export MAXIMIZE_NAME="GNU Image Manipulation Program"
