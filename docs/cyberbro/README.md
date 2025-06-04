@@ -10,7 +10,7 @@ This Image contains a browser-accessible version of [Cyberbro](https://github.co
 
 ## Firefox Configuration
 
-* `FIREFOX_APP_ARGS` - Additional arguments to pass to firefox when launched.
+* `APP_ARGS` - Additional arguments to pass to firefox when launched (e.g `--no-sandbox`).
 
 ## Cyberbro Configuration
 
@@ -33,11 +33,11 @@ GUI_ENABLED_ENGINES=reverse_dns,rdap,hudsonrock,mde,shodan,opencti,virustotal
 CONFIG_PAGE_ENABLED=true
 ```
 
+You can pass these environment variables to your Cyberbro Workspace with **Docker Run Config Override (JSON)** in your Workspace settings.
+
+![image](https://github.com/user-attachments/assets/33125248-31e8-4315-a772-e0546a8be659)
+
 > Note: if you set `GUI_ENABLED_ENGINES` to `""` then all engines will be enabled in the GUI. \
 > By default, all **free engines** will be enabled in the GUI.
 
 Refer to [Cyberbro Wiki](https://github.com/stanfrbd/cyberbro/wiki) for more information.
-
-You must edit the config in your KASM Cyberbro Workspace settings to add these environment variables, according to [KASM official doc](https://kasmweb.com/docs/latest/guide/workspaces.html#examples)
-
-![image](https://github.com/user-attachments/assets/33125248-31e8-4315-a772-e0546a8be659)
