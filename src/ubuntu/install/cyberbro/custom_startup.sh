@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="firefox"
+START_COMMAND="cyberbro"
 PGREP="firefox"
 export MAXIMIZE="true"
 export MAXIMIZE_NAME="Mozilla Firefox"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
-DEFAULT_FIREFOX_ARGS=""
-FIREFOX_ARGS=${FIREFOX_APP_ARGS:-$DEFAULT_FIREFOX_ARGS}
+DEFAULT_ARGS=""
+ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
-CYBERBRO_SERVER="127.0.0.1:5000"
 
 # Check if GUI_ENABLED_ENGINES is set else apply default
 if [ -z ${GUI_ENABLED_ENGINES+x} ]; then
-  GUI_ENABLED_ENGINES=reverse_dns,rdap,ipquery,spur,phishtank,threatfox,urlscan,google,github,ioc_one_html,ioc_one_pdf,abusix,hudsonrock
+    # Add all engines by default
+    GUI_ENABLED_ENGINES=""
 fi
 
 # Make GUI_ENABLED_ENGINES an environment variable
@@ -43,9 +43,25 @@ if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "${KASM_EGL_CARD}" ] && [ ! -z "${
     START_COMMAND="/opt/VirtualGL/bin/vglrun -d ${KASM_EGL_CARD} $START_COMMAND"
 fi
 
-check_web_server() {
-    curl -s -o /dev/null http://$CYBERBRO_SERVER && return 0 || return 1
+kasm_exec() {
+    if [ -n "$OPT_URL" ] ; then
+        URL=$OPT_URL
+    elif [ -n "$1" ] ; then
+        URL=$1
+    fi 
+    
+    # Since we are execing into a container that already has the browser running from startup, 
+    #  when we don't have a URL to open we want to do nothing. Otherwise a second browser instance would open. 
+    if [ -n "$URL" ] ; then
+        /usr/bin/filter_ready
+        /usr/bin/desktop_ready
+        bash ${MAXIMIZE_SCRIPT} &
+        $START_COMMAND $ARGS $OPT_URL
+    else
+        echo "No URL specified for exec command. Doing nothing."
+    fi
 }
+
 
 kasm_startup() {
     if [ -n "$KASM_URL" ] ; then
@@ -64,15 +80,9 @@ kasm_startup() {
             then
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
-                cd $HOME/cyberbro/cyberbro-*
-                # Start Cyberbro server in background
-                bash -c "source venv/bin/activate && gunicorn -b 0.0.0.0:5000 app:app &"
-                while ! check_web_server; do
-                    sleep 1
-                done
                 set +e
                 bash ${MAXIMIZE_SCRIPT} &
-                $START_COMMAND $FIREFOX_ARGS $URL
+                $START_COMMAND $ARGS $URL
                 set -e
             fi
             sleep 1
@@ -82,4 +92,8 @@ kasm_startup() {
     fi
 }
 
-kasm_startup
+if [ -n "$GO" ] || [ -n "$ASSIGN" ] ; then
+    kasm_exec
+else
+    kasm_startup
+fi

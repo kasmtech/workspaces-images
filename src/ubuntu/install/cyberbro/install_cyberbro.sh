@@ -8,7 +8,8 @@ CYBERBRO_VERSION=$(curl -sX GET "https://api.github.com/repos/stanfrbd/cyberbro/
 echo "Install Cyberbro"
 apt-get update
 apt-get install -y python3-pip git virtualenv
-CYBERBRO_HOME=$HOME/cyberbro
+CYBERBRO_HOME=/opt/cyberbro
+CYBERBRO_SERVER="http://127.0.0.1:5000"
 mkdir -p $CYBERBRO_HOME
 cd $CYBERBRO_HOME
 wget https://github.com/stanfrbd/cyberbro/archive/${CYBERBRO_VERSION}.tar.gz
@@ -19,10 +20,50 @@ cd cyberbro-*
 # Enter virtualenv to avoid conflicts with system packages
 virtualenv venv
 source venv/bin/activate
-
 pip3 install -r requirements.txt
-
 deactivate
+
+# Set appropriate permissions
+chown -R 1000:0 $CYBERBRO_HOME
+
+# Create a launch script
+LAUNCH_SCRIPT="$CYBERBRO_HOME/cyberbro-launch.sh"
+cat <<EOF > "$LAUNCH_SCRIPT"
+#!/usr/bin/env bash
+set -ex
+
+check_web_server() {
+    curl -s -o /dev/null ${CYBERBRO_SERVER} && return 0 || return 1
+}
+
+# Launch Cyberbro server
+cd ${CYBERBRO_HOME}/cyberbro-*
+source venv/bin/activate
+gunicorn -b 0.0.0.0:5000 app:app &
+
+retries=5
+count=0
+while ! check_web_server && [ \$count -lt \$retries ]; do
+  echo "Waiting for web server to start..."
+  sleep 1
+  count=\$((count + 1))
+done
+
+if ! check_web_server; then
+  echo "Web server did not start within the expected time."
+  exit 1
+fi
+
+if [[ "\$#" -gt 0 ]]; then
+  firefox ${CYBERBRO_SERVER} "\$@"
+else
+  firefox ${CYBERBRO_SERVER}
+fi
+EOF
+
+
+chmod +x $LAUNCH_SCRIPT
+mv $LAUNCH_SCRIPT /usr/local/bin/cyberbro
 
 # Cleanup for app layer
 chown -R 1000:0 $HOME
