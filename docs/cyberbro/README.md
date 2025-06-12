@@ -35,7 +35,6 @@ CONFIG_PAGE_ENABLED=true
 
 You can pass these environment variables to your Cyberbro Workspace with **Docker Run Config Override (JSON)** in your Workspace settings.
 
-![image](https://github.com/user-attachments/assets/33125248-31e8-4315-a772-e0546a8be659)
 
 > Note: if you set `GUI_ENABLED_ENGINES` to `""` then all engines will be enabled in the GUI. \
 > By default, all **free engines** will be enabled in the GUI.
