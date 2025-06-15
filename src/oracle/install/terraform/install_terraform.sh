@@ -22,7 +22,7 @@ elif [[ "${DISTRO}" == @(fedora40) ]]; then
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
   fi
-elif [[ "${DISTRO}" == @(fedora38|fedora39) ]]; then
+elif [[ "${DISTRO}" == @(fedora37|fedora38|fedora39) ]]; then
   # skip installation for fedora38 and fedora39
   echo "Skipping terraform install for ${DISTRO}, as it is not officially supported by HashiCorp."
 else
