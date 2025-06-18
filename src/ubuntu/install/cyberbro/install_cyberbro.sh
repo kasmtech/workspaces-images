@@ -39,7 +39,7 @@ check_web_server() {
 # Launch Cyberbro server
 cd ${CYBERBRO_HOME}/cyberbro-*
 source venv/bin/activate
-gunicorn -b 0.0.0.0:5000 app:app &
+gunicorn -b 127.0.0.1:5000 app:app &
 
 retries=5
 count=0
