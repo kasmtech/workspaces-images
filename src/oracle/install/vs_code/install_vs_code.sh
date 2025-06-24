@@ -9,7 +9,7 @@ if [[ "${ARCH}" == "arm64" && "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]
 fi
 
 wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
-if [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
   dnf localinstall -y vs_code.rpm
 else
@@ -26,7 +26,7 @@ chown 1000:1000 $HOME/Desktop/code.desktop
 rm vs_code.rpm
 
 # Conveniences for python development
-if [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   dnf install -y python3-setuptools python3-virtualenv
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
