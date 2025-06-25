@@ -21,6 +21,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # Copy install scripts
 COPY ./src/ $INST_DIR
 
+# Fix Signing Key error https://www.kali.org/blog/new-kali-archive-signing-key/
+RUN \
+  wget https://archive.kali.org/archive-keyring.gpg -O /usr/share/keyrings/kali-archive-keyring.gpg
+
 # Run installations
 RUN \
   for SCRIPT in $INST_SCRIPTS; do \
