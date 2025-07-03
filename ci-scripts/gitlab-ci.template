@@ -31,49 +31,55 @@ before_script:
 {% for IMAGE in multiImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  script:
-    - apk add bash
-    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
-  {% if FILE_LIMITS %}only:
-    changes:
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    - when: on_success
+  script:
+    - apk add bash
+    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
   tags:
     - ${TAG}
   retry: 1
   parallel:
     matrix:
-      - TAG: [ oci-fixed-amd, oci-fixed-arm ]
+      - TAG: [ oci-amd-scheduled, oci-arm-scheduled ]
 {% endfor %}
 
 {% for IMAGE in singleImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  script:
-    - apk add bash
-    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
-  {% if FILE_LIMITS %}only:
-    changes:
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    - when: on_success
+  script:
+    - apk add bash
+    - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
   retry: 1
 {% endfor %}
 
@@ -83,27 +89,28 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  when: always
-  script:
-    - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
-  {% if FILE_LIMITS %}only:
-    changes:
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
+    - when: on_success
+  script:
+    - apk add bash
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
-  when: on_success
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
   retry: 1
   parallel:
     matrix:
@@ -113,27 +120,28 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  when: always
-  script:
-    - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
-  {% if FILE_LIMITS %}only:
-    changes:
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
+    - when: on_success
+  script:
+    - apk add bash
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
-  when: on_success
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
   retry: 1
 {% endfor %}
 
@@ -143,7 +151,21 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  when: always
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    {% if FILE_LIMITS %}- changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+    - when: on_success
   variables:
     SCHEDULED: "{{ SCHEDULED }}"
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
@@ -151,30 +173,31 @@ manifest_{{ IMAGE.name }}:
     - apk add bash tar
     - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"{% if IMAGE.singleapp %}
     - bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
-  {% if FILE_LIMITS %}only:
-    changes:
-      {% for FILE in files %}- {{ FILE }}
-      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
-      {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
   needs:
     - test_{{ IMAGE.name }}
-  when: on_success
   retry: 1
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 {% for IMAGE in singleImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  when: always
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    {% if FILE_LIMITS %}- changes:
+      {% for FILE in files %}- {{ FILE }}
+      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
+      {% endfor %}{% endif %}
+    - when: on_success
   variables:
     SCHEDULED: "{{ SCHEDULED }}"
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
@@ -182,24 +205,59 @@ manifest_{{ IMAGE.name }}:
     - apk add bash tar
     - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"{% if IMAGE.singleapp %}
     - bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "single" "{{ IMAGE.base }}"{% endif %}
-  {% if FILE_LIMITS %}only:
-    changes:
-      {% for FILE in files %}- {{ FILE }}
-      {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
-      {% endfor %}{% endif %}
-  except:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
-      - $QUAY_API_KEY
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
   needs:
     - test_{{ IMAGE.name }}
-  when: on_success
   retry: 1
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
+{% endfor %}
+
+#############################
+# Manifest for Weekly Build #
+#############################
+
+{% for IMAGE in multiImages %}
+weekly_manifest_{{ IMAGE.name }}:
+  stage: manifest
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+      when: always
+    - when: never
+  script:
+    - apk add bash tar
+    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "multi" {% if IMAGE.singleapp %}"{{ IMAGE.base }}"{% endif %}
+  retry: 1
+  tags:
+    - oci-amd-scheduled
+{% endfor %}
+
+{% for IMAGE in singleImages %}
+weekly_manifest_{{ IMAGE.name }}:
+  stage: manifest
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+      when: always
+    - when: never
+  script:
+    - apk add bash tar
+    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "single" {% if IMAGE.singleapp %}"{{ IMAGE.base }}"{% endif %}
+  retry: 1
+  tags:
+    - oci-amd-scheduled
 {% endfor %}
 
 ####################
@@ -210,81 +268,85 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 update_readmes_{{ IMAGE.name }}:
   stage: readme
+  rules:
+    - if: >
+        $README_USERNAME && 
+        $README_PASSWORD
+      when: always
   script:
     - apk add bash
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
-  only:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 {% for IMAGE in singleImages %}
 update_readmes_{{ IMAGE.name }}:
   stage: readme
+  rules:
+    - if: >
+        $README_USERNAME && 
+        $README_PASSWORD
+      when: always
   script:
     - apk add bash
     - bash ci-scripts/readme.sh "{{ IMAGE.name }}"
-  only:
-    variables:
-      - $README_USERNAME
-      - $README_PASSWORD
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 ## Update Quay Readmes ##
 {% for IMAGE in multiImages %}
 update_quay_readmes_{{ IMAGE.name }}:
   stage: readme
+  rules:
+    - if: $QUAY_API_KEY
+      when: always
   script:
     - apk add bash
     - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
-  only:
-    variables:
-      - $QUAY_API_KEY
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 {% for IMAGE in singleImages %}
 update_quay_readmes_{{ IMAGE.name }}:
   stage: readme
+  rules:
+    - if: $QUAY_API_KEY
+      when: always
   script:
     - apk add bash
     - bash ci-scripts/quay_readme.sh "{{ IMAGE.name }}"
-  only:
-    variables:
-      - $QUAY_API_KEY
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 ## Revert Images to specific build id ##
 {% for IMAGE in multiImages %}
 dockerhub_revert_{{ IMAGE.name }}:
   stage: revert
+  rules:
+    - if: >
+        $DOCKERHUB_REVERT && 
+        $REVERT_IS_ROLLING
+      when: always
   script:
     - /bin/bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi" "${DOCKERHUB_REVERT}" "${REVERT_IS_ROLLING}"
-  only:
-    variables:
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
 
 {% for IMAGE in singleImages %}
 dockerhub_revert_{{ IMAGE.name }}:
   stage: revert
+  rules:
+    - if: >
+        $DOCKERHUB_REVERT && 
+        $REVERT_IS_ROLLING
+      when: always
   script:
     - /bin/bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single" "${DOCKERHUB_REVERT}" "${REVERT_IS_ROLLING}"
-  only:
-    variables:
-      - $DOCKERHUB_REVERT
-      - $REVERT_IS_ROLLING
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
 {% endfor %}
