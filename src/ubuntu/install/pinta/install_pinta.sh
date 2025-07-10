@@ -3,22 +3,24 @@ set -ex
 
 # Install Pinta
 # For Jammy, build pinta from source because standard package is buggy
-if grep -q Jammy /etc/os-release;  then
+if grep -q Jammy /etc/os-release || grep -q Noble /etc/os-release;  then
   # install requirements for building pinta from source
   apt update -y
   apt-get install -y dotnet-sdk-8.0
   apt-get install -y libgtk-3-dev
-  apt install -y autotools-dev autoconf-archive gettext intltool libadwaita-1-dev
-  # download and install pinta 2.1.2 source
-  wget -q https://github.com/PintaProject/Pinta/releases/download/2.1.2/pinta-2.1.2.tar.gz -O /tmp/pinta-2.1.2.tar.gz
-  tar -xvzf /tmp/pinta-2.1.2.tar.gz -C /tmp/
-  cd /tmp/pinta-2.1.2
+  apt install -y autotools-dev autoconf-archive gettext intltool libadwaita-1-dev jq build-essential
+  # download and install pinta latest non-beta version from source. Use GitHub API to get the latest non-beta release
+  PINTA_VERSION=$(curl -s https://api.github.com/repos/PintaProject/Pinta/releases | jq -r '[.[] | select(.prerelease == false and (.name | test("(?i)beta") | not))][0].tag_name')
+  PINTA_DOWNLOAD_URL=$(curl -s https://api.github.com/repos/PintaProject/Pinta/releases | jq -r '[.[] | select(.prerelease == false and (.name | test("(?i)beta") | not))][0].assets[] | select(.name | endswith(".tar.gz")).browser_download_url')
+  wget -q ${PINTA_DOWNLOAD_URL} -O /tmp/pinta-${PINTA_VERSION}.tar.gz
+  tar -xvzf /tmp/pinta-${PINTA_VERSION}.tar.gz -C /tmp
+  cd /tmp/pinta-${PINTA_VERSION}
   ./configure --prefix=/usr/local
   make install
 
   # cleanup to reduce image size
-  rm -rf /tmp/pinta-2.1.2.tar.gz /tmp/pinta-2.1.2
-  apt remove -y libgtk-3-dev autotools-dev autoconf-archive gettext intltool libadwaita-1-dev
+  rm -rf /tmp/pinta-${PINTA_VERSION}.tar.gz /tmp/pinta-${PINTA_VERSION}
+  apt remove -y libgtk-3-dev autotools-dev autoconf-archive gettext intltool libadwaita-1-dev jq build-essential
   apt autoremove -y
 
   # create desktop file

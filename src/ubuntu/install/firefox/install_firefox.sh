@@ -176,6 +176,10 @@ else
   firefox -headless -CreateProfile "kasm $HOME/.mozilla/firefox/kasm"
 fi
 
+# Silence Firefox security nag "Some of Firefox's features may offer less protection on your current operating system".
+echo 'user_pref("security.sandbox.warn_unprivileged_namespaces", false);' > $HOME/.mozilla/firefox/kasm/user.js
+chown 1000:1000 $HOME/.mozilla/firefox/kasm/user.js
+
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   set_desktop_icon
 fi
@@ -183,8 +187,27 @@ fi
 # Starting with version 67, Firefox creates a unique profile mapping per installation which is hash generated
 #   based off the installation path. Because that path will be static for our deployments we can assume the hash
 #   and thus assign our profile to the default for the installation
-
-if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
+if grep -q "ID=kali" /etc/os-release; then
+cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+[Install3B6073811A6ABF12]
+Default=kasm
+Locked=1
+EOL
+elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
+  if [ "${ARCH}" != "amd64" ]; then
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+[Install3B6073811A6ABF12]
+Default=kasm
+Locked=1
+EOL
+  else
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+  [Install4F96D1932A9F858E]
+  Default=kasm
+  Locked=1
+EOL
+  fi
+elif [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install4F96D1932A9F858E]
 Default=kasm
