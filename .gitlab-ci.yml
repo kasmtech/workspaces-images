@@ -21,6 +21,8 @@ before_script:
 #######################
 template:
   stage: template
+  rules:
+    - when: always
   script:
     - apk add py3-jinja2 py3-yaml
     - cd ci-scripts
