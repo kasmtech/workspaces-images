@@ -44,6 +44,9 @@ pipeline:
         $REVERT_IS_ROLLING
       when: never
     - when: on_success
+  variables:
+    PARENT_PIPELINE_SOURCE: "$CI_PIPELINE_SOURCE"
+    RUN_SET: "$RUN_SET"
   trigger:
     include:
       - artifact: gitlab-ci.yml
