@@ -43,7 +43,7 @@ build_{{ IMAGE.name }}:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - when: on_success
   script:
@@ -72,7 +72,7 @@ build_{{ IMAGE.name }}:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - when: on_success
   script:
@@ -97,7 +97,7 @@ test_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
@@ -128,7 +128,7 @@ test_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
@@ -159,7 +159,7 @@ manifest_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
@@ -191,7 +191,7 @@ manifest_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
@@ -227,7 +227,7 @@ weekly_manifest_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
       when: always
     - when: never
   script:
@@ -249,7 +249,7 @@ weekly_manifest_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
       when: always
     - when: never
   script:
