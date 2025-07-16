@@ -132,7 +132,11 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|almalinux9
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
 elif grep -q "ID=kali" /etc/os-release; then
-  preferences_file=/usr/lib/firefox-esr/defaults/pref/firefox.js
+  if [ "$ARCH" == "arm64" ]; then
+    preferences_file=/usr/lib/firefox-esr/defaults/pref/firefox.js
+  else
+    preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
+  fi
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   if [ "${ARCH}" == "amd64" ]; then
     preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
@@ -191,13 +195,21 @@ fi
 #   based off the installation path. Because that path will be static for our deployments we can assume the hash
 #   and thus assign our profile to the default for the installation
 if grep -q "ID=kali" /etc/os-release; then
-cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+  if [ "${ARCH}" == "arm64" ]; then
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install3B6073811A6ABF12]
 Default=kasm
 Locked=1
 EOL
+  else
+    cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
+[Install4F96D1932A9F858E]
+Default=kasm
+Locked=1
+EOL
+  fi
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
-  if [ "${ARCH}" != "amd64" ]; then
+  if [ "${ARCH}" == "arm64" ]; then
     cat >>$HOME/.mozilla/firefox/profiles.ini <<EOL
 [Install3B6073811A6ABF12]
 Default=kasm
