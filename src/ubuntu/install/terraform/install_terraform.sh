@@ -9,13 +9,21 @@ if [ "${ARCH}" == "arm64" ] ; then
 fi
 
 # Install terraform
-curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-echo \
-  "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+# apt-key add is deprecated in trixie and later, use keyrings instead
+# trixie does not have a release, so use bookworm temporarily
+if grep -q "trixie" /etc/os-release; then
+  mkdir -p /usr/share/keyrings
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com bookworm main" \
   > /etc/apt/sources.list.d/hashicorp.list
+else
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+  echo \
+    "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+    > /etc/apt/sources.list.d/hashicorp.list
+fi
 apt-get update
-apt-get install -y \
-  terraform
+apt-get install -y terraform
 
 # Cleanup
 chown -R 1000:0 $HOME
