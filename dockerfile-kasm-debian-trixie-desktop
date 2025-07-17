@@ -1,10 +1,6 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="core-debian-trixie"
-# FROM kasmweb/$BASE_IMAGE:$BASE_TAG
-
-# Use private image for testing purposes
-# FROM kasmweb/image-cache-private:x86_64-core-debian-trixie-bugfix_KASM-7386-add_core_debian_trixie_develop-1922077725
-FROM kasmweb/core-debian-trixie:local_build
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
