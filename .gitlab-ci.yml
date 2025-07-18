@@ -21,28 +21,37 @@ before_script:
 #######################
 template:
   stage: template
+  rules:
+    - when: always
   script:
     - apk add py3-jinja2 py3-yaml
     - cd ci-scripts
     - python3 template-gitlab.py
   tags:
-    - oci-fixed-amd
+    - oci-amd-scheduled
   artifacts:
     paths:
       - gitlab-ci.yml
+
 pipeline:
   stage: run
-  except:
-    variables:
-      - $README_USERNAME_RUN
-      - $README_PASSWORD_RUN
-      - $QUAY_API_KEY_RUN
-      - $DOCKERHUB_REVERT_RUN
-      - $REVERT_IS_ROLLING_RUN
+  rules:
+    - if: >
+        $README_USERNAME || 
+        $README_PASSWORD || 
+        $QUAY_API_KEY || 
+        $DOCKERHUB_REVERT || 
+        $REVERT_IS_ROLLING
+      when: never
+    - when: on_success
+  variables:
+    PARENT_PIPELINE_SOURCE: "$CI_PIPELINE_SOURCE"
+    RUN_SET: "$RUN_SET"
   trigger:
     include:
       - artifact: gitlab-ci.yml
         job: template
+
 pipeline_readme:
   stage: run
   only:
@@ -56,6 +65,7 @@ pipeline_readme:
     include:
       - artifact: gitlab-ci.yml
         job: template
+        
 pipeline_readme_quay:
   stage: run
   only:
@@ -67,6 +77,7 @@ pipeline_readme_quay:
     include:
       - artifact: gitlab-ci.yml
         job: template
+        
 pipeline_revert:
   stage: run
   only:
