@@ -7,7 +7,7 @@ else
   START_COMMAND="/opt/Telegram/Telegram"
   PGREP="Telegram"
 fi
-export MAXIMIZE="false"
+export MAXIMIZE="true"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 DEFAULT_ARGS="--no-sandbox"
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
