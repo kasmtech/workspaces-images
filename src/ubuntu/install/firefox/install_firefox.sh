@@ -129,12 +129,12 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
 elif [ "${DISTRO}" == "opensuse" ]; then
   preferences_file=/usr/lib64/firefox/browser/defaults/preferences/firefox.js
 elif grep -q "ID=kali" /etc/os-release; then
-  preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+  preferences_file=/usr/lib/firefox-esr/defaults/pref/firefox.js
 elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release; then
   if [ "${ARCH}" == "amd64" ]; then
     preferences_file=/usr/lib/firefox/defaults/pref/firefox.js
   else
-    preferences_file=/usr/lib/firefox-esr/browser/defaults/preferences/firefox.js
+    preferences_file=/usr/lib/firefox-esr/defaults/pref/firefox.js
   fi
 else
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js

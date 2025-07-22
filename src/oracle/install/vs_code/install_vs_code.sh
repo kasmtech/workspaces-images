@@ -2,6 +2,12 @@
 set -ex
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/x64/g')
 
+# if arch is arm64 and distro is oracle8 or rockylinux8 or almalinux8, skip installation
+if [[ "${ARCH}" == "arm64" && "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
+  echo "Skipping VS Code installation for arm64 architecture on ${DISTRO}"
+  exit 0
+fi
+
 wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   wget -q https://update.code.visualstudio.com/latest/linux-rpm-${ARCH}/stable -O vs_code.rpm
