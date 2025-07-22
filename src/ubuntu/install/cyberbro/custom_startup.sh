@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+exit 0
 set -ex
 START_COMMAND="cyberbro"
 PGREP="firefox"
