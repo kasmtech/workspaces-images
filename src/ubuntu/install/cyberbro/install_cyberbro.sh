@@ -75,4 +75,3 @@ if [ -z ${SKIP_CLEAN+x} ]; then
     /var/tmp/* \
     /tmp/*
 fi
-
