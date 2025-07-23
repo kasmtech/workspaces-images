@@ -54,11 +54,11 @@ function ready_check() {
 # Determine deployment based on arch
 if [[ "${ARCH}" == "x86_64" ]]; then
   AMI=$(getami "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04" 099720109477 x86_64)
-  TYPE=c5.xlarge
+  TYPE=c5.large
   USER=ubuntu
 else
   AMI=$(getami "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04" 099720109477 arm64)
-  TYPE=c6g.xlarge
+  TYPE=c6g.large
   USER=ubuntu
 fi
 
