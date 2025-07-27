@@ -26,7 +26,7 @@ deactivate
 # Set appropriate permissions
 chown -R 1000:0 $CYBERBRO_HOME
 
-# Create a launch script.
+# Create a launch script..
 LAUNCH_SCRIPT="$CYBERBRO_HOME/cyberbro-launch.sh"
 cat <<EOF > "$LAUNCH_SCRIPT"
 #!/usr/bin/env bash
