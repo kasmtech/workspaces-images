@@ -44,6 +44,9 @@ clean_tar () {
 if [ "${TYPE}" == "multi" ]; then
   for ARCH in x86_64 aarch64; do
     # Create image tarballs
+    # In 1.15.0, there was a problem with the pipeline saying that the image used below
+    # is not present causing a "reference does not exists" error.
+    # If the app feature starts to be used again a potential fix for the error is to do an explicit pull of the image.
     docker save -o $ARCH.tar ${ORG_NAME}/${ENDPOINT}:${ARCH}-${SANITIZED_BRANCH}
     # Pull out the layer we are looking for
     mkdir $ARCH
