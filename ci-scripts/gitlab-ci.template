@@ -23,7 +23,6 @@ before_script:
   - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi 
   - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
-  - export BASE_TAG="{{ BASE_TAG }}"
 
 ###############################################
 # Build Containers and push to cache endpoint #
@@ -236,7 +235,7 @@ weekly_manifest_{{ IMAGE.name }}:
     - when: never
   script:
     - apk add bash tar
-    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "multi" {% if IMAGE.singleapp %}"{{ IMAGE.base }}"{% endif %}
+    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "multi"
   retry: 1
   tags:
     - oci-amd-scheduled
@@ -258,7 +257,7 @@ weekly_manifest_{{ IMAGE.name }}:
     - when: never
   script:
     - apk add bash tar
-    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "single" {% if IMAGE.singleapp %}"{{ IMAGE.base }}"{% endif %}
+    - bash ci-scripts/weekly-manifest.sh "{{ IMAGE.name }}" "single"
   retry: 1
   tags:
     - oci-amd-scheduled
