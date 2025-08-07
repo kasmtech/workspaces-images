@@ -37,6 +37,8 @@ RUN chmod +x $STARTUPDIR/custom_startup.sh
 ENV KASM_RESTRICTED_FILE_CHOOSER=1
 COPY ./src/ubuntu/install/gtk/ $INST_SCRIPTS/gtk/
 RUN bash $INST_SCRIPTS/gtk/install_restricted_file_chooser.sh
+COPY ./src/ubuntu/install/close_browser_breakout_via_file_manager/ $INST_SCRIPTS/close_browser_breakout_via_file_manager/
+RUN bash $INST_SCRIPTS/close_browser_breakout_via_file_manager/replace_thunar_with_empty_script.sh
 
 
 ######### End Customizations ###########
