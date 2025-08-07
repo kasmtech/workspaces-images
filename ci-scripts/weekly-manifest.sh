@@ -39,12 +39,13 @@ if [[ "${TYPE}" == "multi" ]]; then
     done
   
     # Single App Layer Images
-    if [ ! -z "${BASE}" ];then
-        tagImage "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
-        tagImage "${ORG_NAME}/${APPS}:aarch64-${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:aarch64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
+    # Disabling Single App Layer due to functionality not being used currently
+    # if [ ! -z "${BASE}" ];then
+    #     tagImage "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
+    #     tagImage "${ORG_NAME}/${APPS}:aarch64-${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:aarch64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
         
-        manifest "${ORG_NAME}/${APPS}:${BASE}-${NAME}-${SANITIZED_BRANCH}" "${ORG_NAME}/${APPS}" "${BASE}-${NAME}-${SANITIZED_BRANCH}"
-    fi
+    #     manifest "${ORG_NAME}/${APPS}:${BASE}-${NAME}-${SANITIZED_BRANCH}" "${ORG_NAME}/${APPS}" "${BASE}-${NAME}-${SANITIZED_BRANCH}"
+    # fi
 # Single arch image just pull and push
 else
     tagImage "${ORG_NAME}/${NAME}:x86_64-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${NAME}:${SANITIZED_BRANCH}"
@@ -54,7 +55,8 @@ else
     done
   
     # Single App Layer Images
-    if [ ! -z "${BASE}" ];then
-        tagImage "${ORG_NAME}/${APPS}:${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
-    fi
+    # Disabling Single App Layer due to functionality not being used currently
+    # if [ ! -z "${BASE}" ];then
+    #     tagImage "${ORG_NAME}/${APPS}:${BASE}-${NAME}-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${APPS}:x86_64-${BASE}-${NAME}-${SANITIZED_BRANCH}"
+    # fi
 fi
