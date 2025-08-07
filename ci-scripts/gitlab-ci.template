@@ -170,7 +170,7 @@ manifest_{{ IMAGE.name }}:
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
   script:
     - apk add bash tar
-    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"{% if IMAGE.singleapp %}
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "multi"
     # Disabling app layer build due to feature not being used
     #{% if IMAGE.singleapp %}
     #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
@@ -204,10 +204,10 @@ manifest_{{ IMAGE.name }}:
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
   script:
     - apk add bash tar
-    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"{% if IMAGE.singleapp %}
+    - bash ci-scripts/manifest.sh "{{ IMAGE.name }}" "single"
     # Disabling app layer build due to feature not being used
     #{% if IMAGE.singleapp %}
-    #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
+    #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "single" "{{ IMAGE.base }}"{% endif %}
   needs:
     - test_{{ IMAGE.name }}
   retry: 1
