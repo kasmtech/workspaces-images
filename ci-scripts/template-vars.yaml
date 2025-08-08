@@ -5,6 +5,7 @@ files: &UNIVERSAL_CHANGE_FILES
 
 multiImages:
   - name: audacity
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-audacity
@@ -12,6 +13,7 @@ multiImages:
       - dockerfile-kasm-audacity
       - src/ubuntu/install/audacity/**
   - name: chromium
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chromium
@@ -21,6 +23,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/certificates/**
   - name: deluge
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-deluge
@@ -28,6 +31,7 @@ multiImages:
       - dockerfile-kasm-deluge
       - src/ubuntu/install/deluge/**
   - name: doom
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-doom
@@ -35,6 +39,7 @@ multiImages:
       - dockerfile-kasm-doom
       - src/ubuntu/install/doom/**
   - name: filezilla
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-filezilla
@@ -42,6 +47,7 @@ multiImages:
       - dockerfile-kasm-filezilla
       - src/ubuntu/install/filezilla/**
   - name: firefox
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-firefox
@@ -51,6 +57,7 @@ multiImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/certificates/**
   - name: gimp
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-gimp
@@ -58,6 +65,7 @@ multiImages:
       - dockerfile-kasm-gimp
       - src/ubuntu/install/gimp/**
   - name: inkscape
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-inkscape
@@ -65,6 +73,7 @@ multiImages:
       - dockerfile-kasm-inkscape
       - src/ubuntu/install/inkscape/**
   - name: java-dev
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-java-dev
@@ -79,6 +88,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/eclipse/**
   - name: kasmos-desktop
+    runset: set-b
     singleapp: false
     base: core-kasmos
     dockerfile: dockerfile-kasmos-desktop
@@ -99,6 +109,7 @@ multiImages:
       - src/ubuntu/install/gamepad_utils/**
       - src/ubuntu/install/cleanup/**
   - name: libre-office
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-libre-office
@@ -106,6 +117,7 @@ multiImages:
       - dockerfile-kasm-libre-office
       - src/ubuntu/install/libre_office/**
   - name: nessus
+    runset: set-b
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-nessus
@@ -115,6 +127,7 @@ multiImages:
       - src/ubuntu/install/nessus/**
       - src/ubuntu/install/cleanup/**
   - name: opensuse-15-desktop
+    runset: set-a
     singleapp: false
     base: core-opensuse-15
     dockerfile: dockerfile-kasm-opensuse-15-desktop
@@ -131,6 +144,7 @@ multiImages:
       - src/ubuntu/install/slack/**
       - src/opensuse/install/**
   - name: oracle-8-desktop
+    runset: set-b
     singleapp: false
     base: core-oracle-8
     dockerfile: dockerfile-kasm-oracle-8-desktop
@@ -145,6 +159,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: pinta
+    runset: set-a
     singleapp: true
     base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-pinta
@@ -152,6 +167,7 @@ multiImages:
       - dockerfile-kasm-pinta
       - src/ubuntu/install/pinta/**
   - name: qbittorrent
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-qbittorrent
@@ -159,6 +175,7 @@ multiImages:
       - dockerfile-kasm-qbittorrent
       - src/ubuntu/install/qbittorrent/**
   - name: redroid
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-redroid
@@ -174,6 +191,7 @@ multiImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/cleanup/**
   - name: remmina
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-remmina
@@ -181,6 +199,7 @@ multiImages:
       - dockerfile-kasm-remmina
       - src/ubuntu/install/remmina/**
   - name: spiderfoot
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-spiderfoot
@@ -191,6 +210,7 @@ multiImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/cleanup/**
   - name: sublime-text
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-sublime-text
@@ -198,6 +218,7 @@ multiImages:
       - dockerfile-kasm-sublime-text
       - src/ubuntu/install/sublime_text/**
   - name: telegram
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-telegram
@@ -206,6 +227,7 @@ multiImages:
       - src/ubuntu/install/telegram/**
       - src/ubuntu/install/chrome/**
   - name: terminal
+    runset: set-b
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-terminal
@@ -215,6 +237,7 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/terminal/**
   - name: thunderbird
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-thunderbird
@@ -222,6 +245,7 @@ multiImages:
       - dockerfile-kasm-thunderbird
       - src/ubuntu/install/thunderbird/**
   - name: tor-browser
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-tor-browser
@@ -230,6 +254,7 @@ multiImages:
       - src/ubuntu/install/gtk/**
       - src/ubuntu/install/torbrowser/**
   - name: ubuntu-jammy-desktop
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-ubuntu-jammy-desktop
@@ -257,6 +282,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
   - name: ubuntu-jammy-desktop-vpn
+    runset: set-b
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-ubuntu-jammy-desktop-vpn
@@ -285,6 +311,7 @@ multiImages:
       - src/ubuntu/install/slack/**
       - src/ubuntu/install/vpn/**
   - name: ubuntu-noble-desktop
+    runset: set-a
     singleapp: false
     base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-ubuntu-noble-desktop
@@ -312,6 +339,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
   - name: vlc
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vlc
@@ -319,6 +347,7 @@ multiImages:
       - dockerfile-kasm-vlc
       - src/ubuntu/install/vlc/**
   - name: vs-code
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vs-code
@@ -327,6 +356,7 @@ multiImages:
       - src/ubuntu/install/vs_code/**
       - src/ubuntu/install/chrome/**
   - name: almalinux-8-desktop
+    runset: set-b
     singleapp: false
     base: core-almalinux-8
     dockerfile: dockerfile-kasm-almalinux-8-desktop
@@ -341,6 +371,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: almalinux-9-desktop
+    runset: set-a
     singleapp: false
     base: core-almalinux-9
     dockerfile: dockerfile-kasm-almalinux-9-desktop
@@ -354,6 +385,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: alpine-319-desktop
+    runset: set-b
     singleapp: false
     base: core-alpine-319
     dockerfile: dockerfile-kasm-alpine-319-desktop
@@ -363,6 +395,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
   - name: alpine-320-desktop
+    runset: set-a
     singleapp: false
     base: core-alpine-320
     dockerfile: dockerfile-kasm-alpine-320-desktop
@@ -372,6 +405,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
   - name: alpine-321-desktop
+    runset: set-b
     singleapp: false
     base: core-alpine-321
     dockerfile: dockerfile-kasm-alpine-321-desktop
@@ -381,6 +415,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
   - name: brave
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-brave
@@ -389,6 +424,7 @@ multiImages:
       - src/ubuntu/install/gtk/**
       - src/ubuntu/install/brave/**
   - name: debian-bullseye-desktop
+    runset: set-b
     singleapp: false
     base: core-debian-bullseye
     dockerfile: dockerfile-kasm-debian-bullseye-desktop
@@ -414,6 +450,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
   - name: debian-bookworm-desktop
+    runset: set-a
     singleapp: false
     base: core-debian-bookworm
     dockerfile: dockerfile-kasm-debian-bookworm-desktop
@@ -439,6 +476,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
   - name: fedora-39-desktop
+    runset: set-b
     singleapp: false
     base: core-fedora-39
     dockerfile: dockerfile-kasm-fedora-39-desktop
@@ -452,6 +490,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: fedora-40-desktop
+    runset: set-a
     singleapp: false
     base: core-fedora-40
     dockerfile: dockerfile-kasm-fedora-40-desktop
@@ -465,6 +504,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: kali-rolling-desktop
+    runset: set-b
     singleapp: false
     base: core-kali-rolling
     dockerfile: dockerfile-kasm-kali-rolling-desktop
@@ -474,6 +514,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
   - name: maltego
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-maltego
@@ -482,6 +523,7 @@ multiImages:
       - src/ubuntu/install/maltego/**
       - src/ubuntu/install/firefox/**
   - name: minetest
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-minetest
@@ -489,6 +531,7 @@ multiImages:
       - dockerfile-kasm-minetest
       - src/ubuntu/install/minetest/**
   - name: oracle-9-desktop
+    runset: set-a
     singleapp: false
     base: core-oracle-9
     dockerfile: dockerfile-kasm-oracle-9-desktop
@@ -502,6 +545,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: rhel-9-desktop
+    runset: set-b
     singleapp: false
     base: core-rhel-9
     dockerfile: dockerfile-kasm-rhel-9-desktop
@@ -515,6 +559,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: parrotos-6-desktop
+    runset: set-a
     singleapp: false
     base: core-parrotos-6
     dockerfile: dockerfile-kasm-parrotos-6-desktop
@@ -525,6 +570,7 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
   - name: retroarch
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-retroarch
@@ -532,6 +578,7 @@ multiImages:
       - dockerfile-kasm-retroarch
       - src/ubuntu/install/retroarch/**
   - name: rockylinux-8-desktop
+    runset: set-a
     singleapp: false
     base: core-rockylinux-8
     dockerfile: dockerfile-kasm-rockylinux-8-desktop
@@ -546,6 +593,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: rockylinux-9-desktop
+    runset: set-b
     singleapp: false
     base: core-rockylinux-9
     dockerfile: dockerfile-kasm-rockylinux-9-desktop
@@ -559,6 +607,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
   - name: super-tux-kart
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-super-tux-kart
@@ -566,6 +615,7 @@ multiImages:
       - dockerfile-kasm-super-tux-kart
       - src/ubuntu/install/super_tux_kart/**
   - name: ubuntu-jammy-dind
+    runset: set-b
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-ubuntu-jammy-dind
@@ -580,6 +630,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
   - name: ubuntu-jammy-dind-rootless
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-ubuntu-jammy-dind-rootless
@@ -595,6 +646,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
   - name: ubuntu-noble-dind
+    runset: set-b
     singleapp: false
     base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-ubuntu-noble-dind
@@ -609,6 +661,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
   - name: ubuntu-noble-dind-rootless
+    runset: set-a
     singleapp: false
     base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-ubuntu-noble-dind-rootless
@@ -624,6 +677,7 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
   - name: vivaldi
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-vivaldi
@@ -634,6 +688,7 @@ multiImages:
       - src/ubuntu/install/vivaldi/**
 singleImages:
   - name: blender
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-blender
@@ -641,6 +696,7 @@ singleImages:
       - dockerfile-kasm-blender
       - src/ubuntu/install/blender/**
   - name: chrome
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chrome
@@ -650,6 +706,7 @@ singleImages:
       - src/ubuntu/install/certificates/**
       - src/ubuntu/install/chrome/**
   - name: desktop
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-desktop
@@ -659,6 +716,7 @@ singleImages:
       - src/ubuntu/install/certificates/**
       - src/ubuntu/install/chrome/**
   - name: desktop-deluxe
+    runset: set-b
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-desktop-deluxe
@@ -682,6 +740,7 @@ singleImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
   - name: discord
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-discord
@@ -689,6 +748,7 @@ singleImages:
       - dockerfile-kasm-discord
       - src/ubuntu/install/discord/**
   - name: edge
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-edge
@@ -697,6 +757,7 @@ singleImages:
       - src/ubuntu/install/gtk/**
       - src/ubuntu/install/edge/**
   - name: hunchly
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-hunchly
@@ -705,6 +766,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/hunchly/**
   - name: insomnia
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-insomnia
@@ -712,12 +774,14 @@ singleImages:
       - dockerfile-kasm-insomnia
       - src/ubuntu/install/insomnia/**
   - name: only-office
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-only-office
     changeFiles:
       - dockerfile-kasm-only-office
   - name: postman
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-postman
@@ -726,6 +790,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/postman/**
   - name: signal
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-signal
@@ -733,6 +798,7 @@ singleImages:
       - dockerfile-kasm-signal
       - src/ubuntu/install/signal/**
   - name: slack
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-slack
@@ -743,6 +809,7 @@ singleImages:
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/cleanup/**
   - name: steam
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-steam
@@ -750,6 +817,7 @@ singleImages:
       - dockerfile-kasm-steam
       - src/ubuntu/install/steam/**
   - name: tracelabs
+    runset: set-a
     singleapp: false
     base: core-kali-rolling
     dockerfile: dockerfile-kasm-tracelabs
@@ -759,6 +827,7 @@ singleImages:
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/tracelabs/**
   - name: unityhub
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-unityhub
@@ -768,6 +837,7 @@ singleImages:
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/unityhub/**
   - name: zoom
+    runset: set-a
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-zoom
@@ -776,6 +846,7 @@ singleImages:
       - src/ubuntu/install/zoom/**
       - src/ubuntu/install/chrome/**
   - name: zsnes
+    runset: set-b
     singleapp: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-zsnes
@@ -783,6 +854,7 @@ singleImages:
       - dockerfile-kasm-zsnes
       - src/ubuntu/install/zsnes/**
   - name: forensic-osint
+    runset: set-a
     singleapp: false
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-forensic-osint
