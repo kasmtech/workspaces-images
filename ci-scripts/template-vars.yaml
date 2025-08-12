@@ -126,6 +126,15 @@ multiImages:
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/nessus/**
       - src/ubuntu/install/cleanup/**
+  - name: obsidian
+    runset: set-a
+    singleapp: true
+    base: core-ubuntu-jammy
+    dockerfile: dockerfile-kasm-obsidian
+    changeFiles:
+      - dockerfile-kasm-obsidian
+      - src/ubuntu/install/obsidian/**
+      - src/ubuntu/install/chrome/**
   - name: opensuse-15-desktop
     runset: set-a
     singleapp: false
