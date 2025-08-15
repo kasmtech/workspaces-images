@@ -13,6 +13,7 @@ LATEST_RELEASE=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releas
 if [ "$ARCH" == "amd64" ]; then
   DOWNLOAD_URL=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r '.assets[] | select(.name | test("AppImage$") and (contains("arm64") | not)) | .browser_download_url')
 else
+  apt-get install -y zlib1g-dev libfuse2
   DOWNLOAD_URL=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r '.assets[] | select(.name | test("arm64") and test("AppImage$")) | .browser_download_url')
 fi
 
