@@ -679,17 +679,6 @@ singleImages:
     changeFiles:
       - dockerfile-kasm-blender
       - src/ubuntu/install/blender/**
-  - name: centos-7-desktop
-    singleapp: false
-    runset: set-b
-    base: core-centos-7
-    dockerfile: dockerfile-kasm-centos-7-desktop
-    changeFiles:
-      - dockerfile-kasm-centos-7-desktop
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: chrome
     singleapp: true
     runset: set-a
