@@ -764,19 +764,6 @@ singleImages:
     dockerfile: dockerfile-kasm-only-office
     changeFiles:
       - dockerfile-kasm-only-office
-  - name: oracle-7-desktop
-    singleapp: false
-    runset: set-a
-    base: core-oracle-7
-    dockerfile: dockerfile-kasm-oracle-7-desktop
-    changeFiles:
-      - dockerfile-kasm-oracle-7-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: postman
     singleapp: true
     runset: set-b
