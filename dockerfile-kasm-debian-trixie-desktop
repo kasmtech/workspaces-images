@@ -1,8 +1,6 @@
 ARG BASE_TAG="develop"
 ARG BASE_IMAGE="core-debian-trixie"
-# FROM kasmweb/$BASE_IMAGE:$BASE_TAG
-
-FROM kasmweb/core-debian-trixie-private:bugfix_KASM-7386-add_core_debian_trixie_develop
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
