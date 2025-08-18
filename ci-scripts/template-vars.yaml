@@ -663,14 +663,6 @@ multiImages:
       - src/ubuntu/install/certificates/**
       - src/ubuntu/install/vivaldi/**
 singleImages:
-  - name: atom
-    singleapp: true
-    runset: set-b
-    base: core-ubuntu-focal
-    dockerfile: dockerfile-kasm-atom
-    changeFiles:
-      - dockerfile-kasm-atom
-      - src/ubuntu/install/atom/**
   - name: blender
     singleapp: true
     runset: set-a
@@ -679,17 +671,6 @@ singleImages:
     changeFiles:
       - dockerfile-kasm-blender
       - src/ubuntu/install/blender/**
-  - name: centos-7-desktop
-    singleapp: false
-    runset: set-b
-    base: core-centos-7
-    dockerfile: dockerfile-kasm-centos-7-desktop
-    changeFiles:
-      - dockerfile-kasm-centos-7-desktop
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: chrome
     singleapp: true
     runset: set-a
@@ -775,19 +756,6 @@ singleImages:
     dockerfile: dockerfile-kasm-only-office
     changeFiles:
       - dockerfile-kasm-only-office
-  - name: oracle-7-desktop
-    singleapp: false
-    runset: set-a
-    base: core-oracle-7
-    dockerfile: dockerfile-kasm-oracle-7-desktop
-    changeFiles:
-      - dockerfile-kasm-oracle-7-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chrome/**
   - name: postman
     singleapp: true
     runset: set-b
