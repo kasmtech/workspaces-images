@@ -9,7 +9,7 @@ stages:
   - run
 variables:
   BASE_TAG: "develop"
-  USE_PRIVATE_IMAGES: 1
+  USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.17.0"
   TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.17.0.bbc15c.tar.gz"
   MIRROR_ORG_NAME: "kasmtech"
