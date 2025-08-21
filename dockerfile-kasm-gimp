@@ -1,7 +1,6 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-ubuntu-jammy"
-# FROM kasmweb/$BASE_IMAGE:$BASE_TAG
-FROM kasmweb/core-debian-trixie-private:bugfix_KASM-7386-add_core_debian_trixie_develop
+ARG BASE_IMAGE="core-debian-trixie"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
@@ -12,7 +11,7 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-
+# Install Gimp
 COPY ./src/ubuntu/install/gimp $INST_SCRIPTS/gimp/
 RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
 
