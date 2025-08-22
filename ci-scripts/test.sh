@@ -212,7 +212,7 @@ docker run --rm \
   -e REPO=workspaces-images \
   -e AUTOMATED=true \
   -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
-  kasmweb/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-handle_images_with_more_load
+  kasmweb/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-fix_cyberbro_tests
 
 # Shutdown Instances
 turnoff
