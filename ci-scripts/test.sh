@@ -190,7 +190,7 @@ ssh \
 ready_check
 
 # Pull tester image
-docker pull ${ORG_NAME}/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-handle_images_with_more_load
+docker pull ${ORG_NAME}/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-fix_cyberbro_tests
 
 # Run test
 cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
