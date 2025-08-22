@@ -4,8 +4,8 @@ set -ex
 # Install Telegram
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 if [ "${ARCH}" == "arm64" ] ; then
-  # Telegram is not available for noble aarch64
-  if grep -q "VERSION_CODENAME=noble" /etc/os-release; then
+  # Telegram is not available for noble and trixie aarch64
+  if grep -q "VERSION_CODENAME=noble" /etc/os-release || grep -q "VERSION_CODENAME=trixie" /etc/os-release; then
     exit 0
   fi
   apt-get update

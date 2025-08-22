@@ -475,6 +475,31 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
+  - name: debian-trixie-desktop
+    singleapp: false
+    base: core-debian-trixie
+    dockerfile: dockerfile-kasm-debian-trixie-desktop
+    changeFiles:
+      - dockerfile-kasm-debian-trixie-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: fedora-39-desktop
     runset: set-b
     singleapp: false
