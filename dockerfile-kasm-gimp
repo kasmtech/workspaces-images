@@ -1,6 +1,7 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-ubuntu-jammy"
+ARG BASE_IMAGE="core-debian-trixie"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
 USER root
 
 ENV HOME /home/kasm-default-profile
@@ -10,7 +11,7 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-
+# Install Gimp
 COPY ./src/ubuntu/install/gimp $INST_SCRIPTS/gimp/
 RUN bash $INST_SCRIPTS/gimp/install_gimp.sh  && rm -rf $INST_SCRIPTS/gimp/
 
