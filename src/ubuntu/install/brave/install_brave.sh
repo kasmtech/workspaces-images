@@ -24,14 +24,31 @@ chmod +x $HOME/Desktop/brave-browser.desktop
 mv /usr/bin/brave-browser /usr/bin/brave-browser-orig
 cat >/usr/bin/brave-browser <<EOL
 #!/usr/bin/env bash
+
+supports_vulkan() {
+  # Needs the CLI tool
+  command -v vulkaninfo >/dev/null 2>&1 || return 1
+
+  # Look for any non-CPU device
+  DISPLAY= vulkaninfo --summary 2>/dev/null |
+    grep -qE 'PHYSICAL_DEVICE_TYPE_(INTEGRATED_GPU|DISCRETE_GPU|VIRTUAL_GPU)'
+}
+
 sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
 sed -i 's/"exit_type":"Crashed"/"exit_type":"None"/' ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
+
+VULKAN_FLAGS=
+if supports_vulkan; then
+  VULKAN_FLAGS="--use-angle=vulkan"
+  echo 'vulkan supported'
+fi
+
 if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
     echo "Starting Brave with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
-    vglrun -d "\${KASM_EGL_CARD}" /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\$@" 
+    vglrun -d "\${KASM_EGL_CARD}" /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\${VULKAN_FLAGS}" "\$@" 
 else
     echo "Starting Brave"
-    /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\$@"
+    /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\${VULKAN_FLAGS}" "\$@"
 fi
 EOL
 chmod +x /usr/bin/brave-browser
