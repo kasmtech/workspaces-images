@@ -56,12 +56,10 @@ if [[ "${ARCH}" == "x86_64" ]]; then
   AMI=$(getami "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04" 099720109477 x86_64)
   TYPE=c5.large
   USER=ubuntu
-  ARCH_DOCKERHUB="x86_64"
 else
   AMI=$(getami "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04" 099720109477 arm64)
   TYPE=c6g.large
   USER=ubuntu
-  ARCH_DOCKERHUB="aarch64"
 fi
 
 # Setup SSH Key
@@ -190,7 +188,7 @@ ssh \
 ready_check
 
 # Pull tester image
-docker pull ${ORG_NAME}/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-fix_cyberbro_tests
+docker pull ${ORG_NAME}/kasm-tester:bugfix_KASM-7221-fix_cyberbro_tests
 
 # Run test
 cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
@@ -212,7 +210,7 @@ docker run --rm \
   -e REPO=workspaces-images \
   -e AUTOMATED=true \
   -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
-  kasmweb/kasm-tester:${ARCH_DOCKERHUB}-bugfix_KASM-7221-fix_cyberbro_tests
+  kasmweb/kasm-tester:bugfix_KASM-7221-fix_cyberbro_tests
 
 # Shutdown Instances
 turnoff
