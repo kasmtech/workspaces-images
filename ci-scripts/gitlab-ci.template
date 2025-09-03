@@ -45,6 +45,8 @@ build_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
@@ -71,6 +73,8 @@ build_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
@@ -97,6 +101,8 @@ test_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
@@ -124,6 +130,8 @@ test_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
@@ -151,6 +159,8 @@ manifest_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
@@ -181,6 +191,8 @@ manifest_{{ IMAGE.name }}:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
       when: always
     {% if FILE_LIMITS %}- changes:
