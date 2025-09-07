@@ -22,6 +22,14 @@ multiImages:
       - src/ubuntu/install/gtk/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/certificates/**
+  - name: cyberbro
+    singleapp: true
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-cyberbro
+    changeFiles:
+      - dockerfile-kasm-cyberbro
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cyberbro/**
   - name: deluge
     runset: set-a
     singleapp: true
