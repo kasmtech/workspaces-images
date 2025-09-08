@@ -24,12 +24,7 @@ before_script:
   - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
-###############################################
-# Build Containers and push to cache endpoint #
-###############################################
-{% for IMAGE in multiImages %}
-build_{{ IMAGE.name }}:
-  stage: build
+.run_rules:
   rules:
     - if: >
         $README_USERNAME || 
@@ -38,13 +33,27 @@ build_{{ IMAGE.name }}:
         $DOCKERHUB_REVERT || 
         $REVERT_IS_ROLLING
       when: never
+
+###############################################
+# Build Containers and push to cache endpoint #
+###############################################
+{% for IMAGE in multiImages %}
+build_{{ IMAGE.name }}:
+  stage: build
+  extends: .run_rules
+  rules:
+    - !reference [.run_rules, rules]
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
+      when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
-      when: never
-    - when: on_success
+    - when: never
   script:
     - apk add bash
     - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
@@ -59,21 +68,20 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 build_{{ IMAGE.name }}:
   stage: build
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
+    - !reference [.run_rules, rules]
+    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
-      when: never
-    - when: on_success
+    - when: never
   script:
     - apk add bash
     - bash ci-scripts/build.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}"
@@ -88,21 +96,19 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - when: on_success
   script:
     - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
@@ -119,21 +125,19 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - when: on_success
   script:
     - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
@@ -150,21 +154,19 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - when: on_success
   variables:
     SCHEDULED: "{{ SCHEDULED }}"
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
@@ -184,21 +186,19 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
+    - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
+      when: always
+    - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
+      when: always
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
-    - when: on_success
   variables:
     SCHEDULED: "{{ SCHEDULED }}"
     SCHEDULE_NAME: "{{ SCHEDULE_NAME }}"
@@ -222,14 +222,9 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
       when: always
     - when: never
@@ -244,14 +239,9 @@ weekly_manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
+  extends: .run_rules
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
-      when: never
+    - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
       when: always
     - when: never
