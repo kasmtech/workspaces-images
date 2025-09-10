@@ -32,21 +32,6 @@ rsync -aviu kali-config/common/includes.chroot/usr/ /usr/
 
 mv /etc/skel/Desktop/*.pdf $HOME/Desktop/
 
-# # APT pinning to not install xfce4-power-manager
-# sudo tee /etc/apt/preferences.d/nopower.pref <<EOF
-# Package: xfce4-power-manager
-# Pin: release *
-# Pin-Priority: -1
-
-# Package: xfce4-power-manager-data
-# Pin: release *
-# Pin-Priority: -1
-
-# Package: xfce4-power-manager-plugins
-# Pin: release *
-# Pin-Priority: -1
-# EOF
-# apt-get update
 
 
 #### Install all tracelabs image packages #### 
