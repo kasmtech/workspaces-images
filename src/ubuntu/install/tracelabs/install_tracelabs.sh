@@ -32,6 +32,8 @@ rsync -aviu kali-config/common/includes.chroot/usr/ /usr/
 
 mv /etc/skel/Desktop/*.pdf $HOME/Desktop/
 
+
+
 #### Install all tracelabs image packages ####
 #                                                              rm lines with # | Delete Empty lines | 
 cat kali-config/variant-tracelabs/package-lists/kali.list.chroot | sed '/^#/d' | sed '/^$/d' | sed '/firefox-esr/d' | xargs --no-run-if-empty apt-get install -y
