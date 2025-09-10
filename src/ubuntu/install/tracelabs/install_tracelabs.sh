@@ -32,9 +32,31 @@ rsync -aviu kali-config/common/includes.chroot/usr/ /usr/
 
 mv /etc/skel/Desktop/*.pdf $HOME/Desktop/
 
-#### Install all tracelabs image packages ####
-#                                                              rm lines with # | Delete Empty lines | 
-cat kali-config/variant-tracelabs/package-lists/kali.list.chroot | sed '/^#/d' | sed '/^$/d' | sed '/firefox-esr/d' | xargs --no-run-if-empty apt-get install -y
+# # APT pinning to not install xfce4-power-manager
+# sudo tee /etc/apt/preferences.d/nopower.pref <<EOF
+# Package: xfce4-power-manager
+# Pin: release *
+# Pin-Priority: -1
+
+# Package: xfce4-power-manager-data
+# Pin: release *
+# Pin-Priority: -1
+
+# Package: xfce4-power-manager-plugins
+# Pin: release *
+# Pin-Priority: -1
+# EOF
+# apt-get update
+
+
+#### Install all tracelabs image packages #### 
+cat kali-config/variant-tracelabs/package-lists/kali.list.chroot \
+  | sed '/^#/d' \
+  | sed '/^$/d' \
+  | sed '/firefox-esr/d' \
+  | sed '/kali-desktop-xfce/d' \
+  | xargs --no-run-if-empty apt-get install -y
+
 sed -i '/m4ll0k/,+3d' kali-config/common/hooks/normal/osint-packages.chroot
 sh kali-config/common/hooks/normal/osint-packages.chroot
 
