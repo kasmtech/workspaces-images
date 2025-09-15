@@ -32,6 +32,20 @@ elif grep -q "ID=debian" /etc/os-release; then
     /var/lib/apt/lists/* \
     /var/tmp/*
   fi
+elif grep -q "ID=ubuntu" /etc/os-release && grep -q "VERSION_CODENAME=focal" /etc/os-release; then
+  apt-get update
+  apt-get install -y software-properties-common
+  # manually add the PPA key
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 21C5F0BA
+  add-apt-repository -y ppa:remmina-ppa-team/remmina-next
+  apt-get update
+  apt-get install -y remmina remmina-plugin-rdp remmina-plugin-secret remmina-plugin-spice xdotool
+  if [ -z ${SKIP_CLEAN+x} ]; then
+  apt-get autoclean
+  rm -rf \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+  fi
 else
   apt-get update
   apt-get install -y software-properties-common
