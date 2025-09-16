@@ -2,7 +2,7 @@
 set -ex
 
 # Distro package cleanup
-if [[ "${DISTRO}" == @(almalinux8|almalinux9|fedora39|fedora40|oracle8|oracle9|rhel9|rockylinux8|rockylinux9) ]]; then
+if [[ "${DISTRO}" == @(almalinux8|almalinux9|fedora39|fedora40|fedora41|oracle8|oracle9|rhel9|rockylinux8|rockylinux9) ]]; then
   dnf clean all
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper clean --all
