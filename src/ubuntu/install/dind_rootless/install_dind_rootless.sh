@@ -31,10 +31,6 @@ STABLE_LATEST=$(curl -sL https://get.docker.com/rootless | awk -F'="' '/STABLE_L
 STATIC_RELEASE_ROOTLESS_URL="https://download.docker.com/linux/static/stable/$(uname -m)/docker-rootless-extras-${STABLE_LATEST}.tgz"
 
 # User settings
-curl -o \
-    /usr/local/bin/dind -L \
-    https://raw.githubusercontent.com/moby/moby/master/hack/dind
-chmod +x /usr/local/bin/dind
 echo 'hosts: files dns' > /etc/nsswitch.conf
 
 # Install rootless extras
@@ -45,8 +41,6 @@ tar -xf \
   /tmp/rootless.tgz \
   --strip-components 1 \
   --directory /usr/local/bin/ \
-  'docker-rootless-extras/dockerd-rootless.sh' \
-  'docker-rootless-extras/rootlesskit' \
   'docker-rootless-extras/vpnkit'
 
 # Cleanup
