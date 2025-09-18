@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -ex
 
-if [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux9|rockylinux8|almalinux9|almalinux8|fedora39|fedora40|fedora41) ]]; then
   if [[ "${DISTRO}" == @(oracle8|rockylinux8|almalinux8) ]]; then
     dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret remmina-plugins-spice xdotool
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all
     fi
-  elif [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9|fedora39|fedora40) ]]; then
+  elif [[ "${DISTRO}" == @(rockylinux9|oracle9|rhel9|almalinux9|fedora39|fedora40|fedora41) ]]; then
     dnf install -y remmina remmina-plugins-rdp remmina-plugins-secret xdotool
     if [ -z ${SKIP_CLEAN+x} ]; then
       dnf clean all

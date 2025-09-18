@@ -25,7 +25,7 @@ elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux8|rockylinux9|almalinux
     openvpn \
     wireguard-tools \
     jq
-elif [[ "${DISTRO}" == @(fedora39|fedora40) ]] ; then
+elif [[ "${DISTRO}" == @(fedora39|fedora40|fedora41) ]] ; then
   dnf install -y \
     openresolv \
     openvpn \
