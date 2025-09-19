@@ -36,12 +36,7 @@ template:
 pipeline:
   stage: run
   rules:
-    - if: >
-        $README_USERNAME || 
-        $README_PASSWORD || 
-        $QUAY_API_KEY || 
-        $DOCKERHUB_REVERT || 
-        $REVERT_IS_ROLLING
+    - if: '$README_USERNAME_RUN || $README_PASSWORD_RUN || $QUAY_API_KEY_RUN || $DOCKERHUB_REVERT_RUN || $REVERT_IS_ROLLING_RUN'
       when: never
     - when: on_success
   variables:
