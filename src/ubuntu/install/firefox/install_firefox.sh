@@ -180,6 +180,13 @@ fi
 echo 'user_pref("security.sandbox.warn_unprivileged_namespaces", false);' > $HOME/.mozilla/firefox/kasm/user.js
 chown 1000:1000 $HOME/.mozilla/firefox/kasm/user.js
 
+# configure smartcard support
+# note: some firefox versions don't read from the global pkcs11.txt when creating profiles
+if [[ ${KASM_SVC_SMARTCARD:-1} == 1 ]] && [ -f "$HOME/.pki/nssdb/pkcs11.txt" ]; then
+    cp $HOME/.pki/nssdb/pkcs11.txt $HOME/.mozilla/firefox/kasm/pkcs11.txt
+    chown 1000:1000 $HOME/.mozilla/firefox/kasm/pkcs11.txt
+fi
+
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40|fedora41) ]]; then
   set_desktop_icon
 fi
