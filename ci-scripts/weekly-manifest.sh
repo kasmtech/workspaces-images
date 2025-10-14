@@ -48,10 +48,10 @@ if [[ "${TYPE}" == "multi" ]]; then
     # fi
 # Single arch image just pull and push
 else
-    tagImage "${ORG_NAME}/${NAME}:x86_64-${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${NAME}:${SANITIZED_BRANCH}"
+    tagImage "${ORG_NAME}/${NAME}:${SANITIZED_BRANCH_DAILY}" "${ORG_NAME}/${NAME}:${SANITIZED_BRANCH}"
     
     for MIRROR in "${REGISTRY_MIRRORS[@]}"; do
-        tagImage "${ORG_NAME}/${NAME}:x86_64-${SANITIZED_BRANCH_DAILY}" "${MIRROR}/${MIRROR_ORG_NAME}/${NAME}:${SANITIZED_BRANCH}"
+        tagImage "${ORG_NAME}/${NAME}:${SANITIZED_BRANCH_DAILY}" "${MIRROR}/${MIRROR_ORG_NAME}/${NAME}:${SANITIZED_BRANCH}"
     done
   
     # Single App Layer Images
