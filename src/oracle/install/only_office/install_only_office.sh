@@ -6,8 +6,7 @@ if [ "$ARCH" == "arm64" ] ; then
   echo "Only Office is not supported on arm64, skipping Only Office installation"
   exit 0
 fi
-
-curl -L -o only_office.rpm "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors.$(arch).rpm"
+curl -L -o only_office.rpm "https://github.com/ONLYOFFICE/DesktopEditors/releases/latest/download/onlyoffice-desktopeditors.$(arch).rpm"
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
   dnf localinstall -y only_office.rpm
   if [ -z ${SKIP_CLEAN+x} ]; then
