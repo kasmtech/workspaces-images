@@ -10,14 +10,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# Install Firefox first to avoid p11-kit version conflicts
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
 
 # Install Tracelabs utils
 COPY ./src/ubuntu/install/tracelabs $INST_SCRIPTS/tracelabs/
 RUN bash $INST_SCRIPTS/tracelabs/install_tracelabs.sh && rm -rf $INST_SCRIPTS/tracelabs/
-
-# Install Firefox
-COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
-RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
 
 ######### End Customizations ###########
 
