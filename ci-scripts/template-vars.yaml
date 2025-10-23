@@ -687,6 +687,21 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
+  - name: cuda-jammy-dind
+    runset: set-b
+    singleapp: false
+    base: core-cuda-jammy
+    dockerfile: dockerfile-kasm-cuda-jammy-dind
+    changeFiles:
+      - dockerfile-kasm-cuda-jammy-dind
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/dind/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/chrome/**
   - name: ubuntu-jammy-dind-rootless
     runset: set-a
     singleapp: false
