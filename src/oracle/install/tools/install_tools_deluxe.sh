@@ -2,7 +2,7 @@
 set -ex
 
 if [ -f /usr/bin/dnf ]; then
-  dnf install -y vlc git tmux xz glibc-locale-source glibc-langpack-en
+  dnf install -y --nobest vlc git tmux xz glibc-locale-source glibc-langpack-en
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
   fi
