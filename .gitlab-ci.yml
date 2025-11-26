@@ -1,12 +1,14 @@
 ############
 # Settings #
 ############
-image: docker:24.0.6
+image: docker:28.2.2
 services:
-  - docker:24.0.6-dind
+  - docker:28.2.2-dind
 stages:
   - template
   - run
+default:
+  retry: 2
 variables:
   BASE_TAG: "1.16.1-rolling-daily"
   USE_PRIVATE_IMAGES: 0
