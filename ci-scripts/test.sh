@@ -169,12 +169,13 @@ for IP in "${IPS[@]}"; do
   scp \
     -oStrictHostKeyChecking=no \
     /root/.docker/config.json \
+    ci-scripts/docker-install.sh \
     ${USER}@${IP}:/tmp/
   ssh \
     -oConnectTimeout=10 \
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
-    "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json"
+    "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json && sudo bash /tmp/docker-install.sh"
 done
 
 # Install Kasm workspaces

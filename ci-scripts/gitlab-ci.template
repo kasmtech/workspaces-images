@@ -1,15 +1,17 @@
 ############
 # Settings #
 ############
-image: docker:24.0.6
+image: docker:28.2.2
 services:
-  - docker:24.0.6-dind
+  - docker:28.2.2-dind
 stages:
   - readme
   - revert
   - build
   - test
   - manifest
+default:
+  retry: 2
 variables:
   BASE_TAG: "{{ BASE_TAG }}"
   USE_PRIVATE_IMAGES: {{ USE_PRIVATE_IMAGES }}
