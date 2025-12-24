@@ -18,7 +18,11 @@ COPY ./src/ubuntu/install/dind_rootless/modprobe /usr/local/bin/modprobe
 RUN chmod +x /usr/local/bin/modprobe
 ENV XDG_RUNTIME_DIR=/docker \
     DOCKER_HOST=unix:///docker/docker.sock
-RUN mkdir -p $XDG_RUNTIME_DIR && chown 1000:0 $XDG_RUNTIME_DIR
+RUN mkdir -p $XDG_RUNTIME_DIR && chown 1000:0 $XDG_RUNTIME_DIR && \
+    mkdir -p /home/kasm-user/.config/docker && \
+    chown -R 1000:0 /home/kasm-user/.config
+COPY ./src/ubuntu/install/dind_rootless/daemon.json /home/kasm-user/.config/docker/daemon.json
+RUN chown 1000:0 /home/kasm-user/.config/docker/daemon.json
 
 ### Envrionment config
 ENV DEBIAN_FRONTEND=noninteractive \
