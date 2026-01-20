@@ -334,8 +334,12 @@ class Recorder:
     def _detect_resolution_linux(self):
         """Detect screen resolution on Linux using xdpyinfo."""
         try:
+            # Preserve existing environment and set/override DISPLAY
+            env = os.environ.copy()
+            env["DISPLAY"] = self.display
+            
             probe = subprocess.check_output(
-                ["xdpyinfo"], env={"DISPLAY": self.display}, stderr=subprocess.DEVNULL
+                ["xdpyinfo"], env=env, stderr=subprocess.DEVNULL
             ).decode()
             for line in probe.splitlines():
                 if "dimensions:" in line:
