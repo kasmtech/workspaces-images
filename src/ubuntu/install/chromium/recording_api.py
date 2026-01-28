@@ -74,13 +74,17 @@ class Recorder:
 
     def start(self, video_size=None, framerate=None, filename=None):
         if self.is_running():
-            raise RuntimeError("Recording already in progress")
+            # Stop the current recording before starting a new one
+            try:
+                self.stop()
+            except Exception:
+                pass  # Ignore errors when stopping
 
         if not shutil.which("ffmpeg"):
             raise RuntimeError("ffmpeg is not available in PATH")
 
         os.makedirs(self.recording_dir, exist_ok=True)
-        
+
         # Clean up old recording files to avoid disk bloat
         self._cleanup_old_recordings()
 
@@ -91,10 +95,10 @@ class Recorder:
             raise RuntimeError("video_size must be formatted as WIDTHxHEIGHT")
 
         framerate = int(framerate or self.default_fps)
-        
+
         # Generate unique UUID for this recording
         recording_uuid = str(uuid.uuid4())
-        
+
         ts = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
         # Include UUID in filename if not provided
         if filename:
@@ -107,10 +111,26 @@ class Recorder:
         cmd = self._build_ffmpeg_cmd(video_size, framerate, target)
 
         # Start the ffmpeg process detached from stdin to avoid blocking.
+        # Capture stderr to detect startup failures.
         process = subprocess.Popen(
-            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE
         )
-        
+
+        # Wait briefly and check if the process started successfully
+        time.sleep(0.3)
+        if process.poll() is not None:
+            # Process exited immediately, likely a startup failure
+            stderr_output = ""
+            if process.stderr:
+                try:
+                    stderr_output = process.stderr.read().decode(errors="replace")
+                except Exception:
+                    pass
+            exit_code = process.returncode
+            raise RuntimeError(
+                f"ffmpeg failed to start (exit code {exit_code}): {stderr_output}"
+            )
+
         # Store recording info with UUID
         self.recordings[recording_uuid] = {
             "process": process,
@@ -118,16 +138,20 @@ class Recorder:
             "video_size": video_size,
             "framerate": framerate,
         }
-        
+
         # Update current recording (for backward compatibility)
         self.process = process
         self.current_file = target
         self.current_uuid = recording_uuid
-        
+
         return recording_uuid, target, video_size, framerate
 
     def _build_ffmpeg_cmd(self, video_size, framerate, target):
         """Build ffmpeg command based on platform."""
+        # libx264 requires width and height to be divisible by 2
+        # Use scale filter to ensure dimensions are even
+        scale_filter = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+
         if IS_MACOS:
             # macOS: use avfoundation
             # capture_input format: "video_device:audio_device" e.g., "1:none" or "0:none"
@@ -139,7 +163,7 @@ class Recorder:
                 "-framerate", str(framerate),
                 "-capture_cursor", "1",  # Capture mouse cursor
                 "-i", capture_input,
-                "-vf", f"scale={video_size.replace('x', ':')}",  # Scale to desired size
+                "-vf", scale_filter,
                 "-codec:v", "libx264",
                 "-preset", "ultrafast",
                 "-pix_fmt", "yuv420p",
@@ -154,6 +178,7 @@ class Recorder:
                 "-framerate", str(framerate),
                 "-f", "x11grab",
                 "-i", self.display,
+                "-vf", scale_filter,  # Ensure dimensions are divisible by 2
                 "-codec:v", "libx264",
                 "-preset", "ultrafast",
                 "-pix_fmt", "yuv420p",
@@ -168,13 +193,45 @@ class Recorder:
             rec = self.recordings[recording_uuid]
             process = rec["process"]
             finished_file = rec["file"]
-            
+
             if process is None or process.poll() is not None:
-                raise RuntimeError(f"Recording with UUID {recording_uuid} is not running")
+                # Process has exited, try to read stderr for error details
+                stderr_output = ""
+                exit_code = None
+                if process is not None:
+                    exit_code = process.returncode
+                    if process.stderr:
+                        try:
+                            stderr_output = process.stderr.read().decode(errors="replace")
+                        except Exception:
+                            pass
+
+                error_msg = f"Recording with UUID {recording_uuid} is not running"
+                if exit_code is not None:
+                    error_msg += f" (exit code: {exit_code})"
+                if stderr_output:
+                    error_msg += f": {stderr_output}"
+                raise RuntimeError(error_msg)
         else:
             # Backward compatibility: use current recording
             if not self.is_running():
-                raise RuntimeError("No active recording")
+                # Process has exited, try to read stderr for error details
+                stderr_output = ""
+                exit_code = None
+                if self.process is not None:
+                    exit_code = self.process.returncode
+                    if self.process.stderr:
+                        try:
+                            stderr_output = self.process.stderr.read().decode(errors="replace")
+                        except Exception:
+                            pass
+
+                error_msg = "No active recording"
+                if exit_code is not None:
+                    error_msg += f" (exit code: {exit_code})"
+                if stderr_output:
+                    error_msg += f": {stderr_output}"
+                raise RuntimeError(error_msg)
             process = self.process
             finished_file = self.current_file
             recording_uuid = self.current_uuid
