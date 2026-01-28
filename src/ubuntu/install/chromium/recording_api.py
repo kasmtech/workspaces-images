@@ -172,6 +172,8 @@ class Recorder:
                 "-codec:v", "libx264",
                 "-preset", "ultrafast",
                 "-pix_fmt", "yuv420p",
+                "-profile:v", "baseline",  # Chrome / QuickTime / Safari compatibility
+                "-level", "4.0",
                 target,
             ]
         else:
@@ -187,6 +189,8 @@ class Recorder:
                 "-codec:v", "libx264",
                 "-preset", "ultrafast",
                 "-pix_fmt", "yuv420p",
+                "-profile:v", "baseline",  # Chrome / QuickTime / Safari compatibility
+                "-level", "4.0",
                 target,
             ]
 
@@ -284,6 +288,9 @@ class Recorder:
         except OSError as e:
             raise RuntimeError(f"Cannot access recording file: {e}")
 
+        # Remux to put moov at start (Chrome / QuickTime require this)
+        finished_file = self._remux_faststart(finished_file)
+
         # Update recording info
         if recording_uuid and recording_uuid in self.recordings:
             self.recordings[recording_uuid]["process"] = None
@@ -296,7 +303,7 @@ class Recorder:
             self.current_file = None
             self.current_uuid = None
             self.current_cmd = None
-        
+
         # Ensure we always return a UUID (even if None for backward compatibility)
         return recording_uuid, finished_file
 
@@ -309,6 +316,44 @@ class Recorder:
         if file_path and os.path.exists(file_path):
             return file_path
         return None
+
+    def _remux_faststart(self, path):
+        """Remux MP4 so moov atom is at start (required by Chrome / QuickTime)."""
+        if not shutil.which("ffmpeg"):
+            return path
+        tmp = path + ".tmp"
+        try:
+            proc = subprocess.run(
+                ["ffmpeg", "-y", "-i", path, "-c", "copy", "-movflags", "+faststart", tmp],
+                capture_output=True,
+                timeout=60,
+            )
+            if proc.returncode != 0:
+                if os.path.exists(tmp):
+                    try:
+                        os.remove(tmp)
+                    except OSError:
+                        pass
+                stderr = proc.stderr.decode(errors="replace") if proc.stderr else ""
+                raise RuntimeError(
+                    f"Remux for browser compatibility failed (exit {proc.returncode}): {stderr[:500]}"
+                )
+            os.replace(tmp, path)
+            return path
+        except subprocess.TimeoutExpired:
+            if os.path.exists(tmp):
+                try:
+                    os.remove(tmp)
+                except OSError:
+                    pass
+            raise RuntimeError("Remux for browser compatibility timed out")
+        except Exception:
+            if os.path.exists(tmp):
+                try:
+                    os.remove(tmp)
+                except OSError:
+                    pass
+            raise
 
     def _cleanup_old_recordings(self):
         """Clean up old recording files to avoid disk bloat.
