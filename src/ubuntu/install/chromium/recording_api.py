@@ -55,8 +55,9 @@ class Recorder:
         self.process = None
         self.current_file = None
         self.last_file = None
+        self.current_cmd = None
         # UUID-based recording management
-        # Format: {uuid: {"process": process, "file": file_path, "video_size": size, "framerate": fps}}
+        # Format: {uuid: {"process": process, "file": file_path, "video_size": size, "framerate": fps, "cmd": [...]}}
         self.recordings = {}
         self.current_uuid = None
         # Platform info
@@ -128,7 +129,9 @@ class Recorder:
                     pass
             exit_code = process.returncode
             raise RuntimeError(
-                f"ffmpeg failed to start (exit code {exit_code}): {stderr_output}"
+                f"ffmpeg failed to start (exit code {exit_code}). "
+                f"cmd: {cmd}. "
+                f"stderr: {stderr_output}"
             )
 
         # Store recording info with UUID
@@ -137,12 +140,14 @@ class Recorder:
             "file": target,
             "video_size": video_size,
             "framerate": framerate,
+            "cmd": cmd,
         }
 
         # Update current recording (for backward compatibility)
         self.process = process
         self.current_file = target
         self.current_uuid = recording_uuid
+        self.current_cmd = cmd
 
         return recording_uuid, target, video_size, framerate
 
@@ -193,6 +198,7 @@ class Recorder:
             rec = self.recordings[recording_uuid]
             process = rec["process"]
             finished_file = rec["file"]
+            cmd = rec.get("cmd")
 
             if process is None or process.poll() is not None:
                 # Process has exited, try to read stderr for error details
@@ -209,8 +215,10 @@ class Recorder:
                 error_msg = f"Recording with UUID {recording_uuid} is not running"
                 if exit_code is not None:
                     error_msg += f" (exit code: {exit_code})"
+                if cmd:
+                    error_msg += f" cmd: {cmd}"
                 if stderr_output:
-                    error_msg += f": {stderr_output}"
+                    error_msg += f" stderr: {stderr_output}"
                 raise RuntimeError(error_msg)
         else:
             # Backward compatibility: use current recording
@@ -229,13 +237,15 @@ class Recorder:
                 error_msg = "No active recording"
                 if exit_code is not None:
                     error_msg += f" (exit code: {exit_code})"
+                if self.current_cmd:
+                    error_msg += f" cmd: {self.current_cmd}"
                 if stderr_output:
-                    error_msg += f": {stderr_output}"
+                    error_msg += f" stderr: {stderr_output}"
                 raise RuntimeError(error_msg)
             process = self.process
             finished_file = self.current_file
             recording_uuid = self.current_uuid
-        
+
         # Send SIGINT to gracefully stop ffmpeg
         process.send_signal(signal.SIGINT)
         try:
@@ -249,7 +259,7 @@ class Recorder:
         max_wait = 3  # Maximum seconds to wait for file
         wait_interval = 0.1  # Check every 100ms
         waited = 0
-        
+
         while waited < max_wait:
             if finished_file and os.path.exists(finished_file):
                 # Check if file is readable and has content
@@ -262,11 +272,11 @@ class Recorder:
                     pass
             time.sleep(wait_interval)
             waited += wait_interval
-        
+
         # Verify the file exists and is readable
         if not finished_file or not os.path.exists(finished_file):
             raise RuntimeError(f"Recording file not found: {finished_file}")
-        
+
         try:
             file_size = os.path.getsize(finished_file)
             if file_size == 0:
@@ -278,13 +288,14 @@ class Recorder:
         if recording_uuid and recording_uuid in self.recordings:
             self.recordings[recording_uuid]["process"] = None
             self.last_file = finished_file
-        
+
         # Update current recording state (for backward compatibility)
         if recording_uuid == self.current_uuid:
             self.last_file = finished_file
             self.process = None
             self.current_file = None
             self.current_uuid = None
+            self.current_cmd = None
         
         # Ensure we always return a UUID (even if None for backward compatibility)
         return recording_uuid, finished_file
