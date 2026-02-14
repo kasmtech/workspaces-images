@@ -25,7 +25,7 @@
       "tooltip": "Coeadapt"
     },
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' https://localhost:6901 http://127.0.0.1:3100; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
+      "csp": "default-src 'self'; connect-src 'self' https://localhost:6901 http://127.0.0.1:3100 https://api.coeadapt.com http://localhost:5000 https://*.clerk.accounts.dev https://*.clerk.com; img-src 'self' data: https://*.clerk.accounts.dev https://*.clerk.com https://img.clerk.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://*.clerk.accounts.dev https://*.clerk.com; script-src 'self' https://*.clerk.accounts.dev https://*.clerk.com"
     }
   },
   "bundle": {

@@ -2,6 +2,7 @@ use std::sync::Mutex;
 use tauri::Manager;
 use tauri_plugin_shell::ShellExt;
 use tauri_plugin_shell::process::{CommandChild, CommandEvent};
+use tauri_plugin_store::StoreExt;
 
 /// Global singleton holding the running sidecar child process.
 /// Option so we can .take() it when killing (kill consumes self).
@@ -16,10 +17,23 @@ pub fn start_mcp_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
         return Ok(());
     }
 
+    // Read device token and API URL from Tauri store for Cora API access
+    let device_token = app
+        .store("auth.json")
+        .ok()
+        .and_then(|store| store.get("deviceToken"))
+        .and_then(|v| v.as_str().map(|s| s.to_string()))
+        .unwrap_or_default();
+
+    let api_url = std::env::var("COEADAPT_API_URL")
+        .unwrap_or_else(|_| "https://api.coeadapt.com".to_string());
+
     let sidecar_command = app
         .shell()
         .sidecar("coeadapt-mcp")
-        .map_err(|e| format!("Failed to create sidecar command: {}", e))?;
+        .map_err(|e| format!("Failed to create sidecar command: {}", e))?
+        .env("COEADAPT_DEVICE_TOKEN", &device_token)
+        .env("COEADAPT_API_URL", &api_url);
 
     let (mut rx, child) = sidecar_command
         .spawn()

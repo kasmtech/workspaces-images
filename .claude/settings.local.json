@@ -38,7 +38,23 @@
       "Bash(git status:*)",
       "Bash(cargo check:*)",
       "Bash(powershell.exe -Command \"try { Invoke-WebRequest -Uri ''https://localhost:6901'' -SkipCertificateCheck -TimeoutSec 5 | Select-Object StatusCode, @{N=''Bytes'';E={$_Content.Length}} } catch { $_Exception.Message }\")",
-      "Bash(timeout 15 powershell -Command:*)"
+      "Bash(timeout 15 powershell -Command:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: Remove 109MB compiled binary from repo and preserve binaries dir\n\nThe MCP sidecar binary \\(coeadapt-mcp-x86_64-pc-windows-msvc.exe\\) was\ncommitted to git history, exceeding GitHub''s 100MB file size limit.\nPurged from all history with git-filter-repo. Added .gitkeep so the\nbinaries/ directory exists for local builds while contents stay ignored.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --all -p)",
+      "Bash(git push:*)",
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" status -s)",
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --all --name-status)",
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --all -S \"api_key_here\" --oneline)",
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" diff .claude/settings.local.json)",
+      "Bash(npx tsc:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: Add developer onboarding section to README\n\nReplace the sparse build instructions with a proper \"For developers\"\nsection that orients new contributors — explains the two halves of\nthe project \\(launcher vs workspace images\\), setup steps, where the\nMCP sidecar binary goes, and a \"where to start\" table pointing to\nthe right directories by interest area.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: Add mission statement and manifesto to README\n\nWelcome new contributors with the why behind Career-Box — the\nresponsibility to ensure no one is unequipped for the age of AI,\nthe belief that meaningful work is deeply personal and worth\nprotecting, and the vision of AI as the great equalizer.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(dir:*)",
+      "Bash(pushd:*)",
+      "Bash(npm:*)"
     ]
   }
 }

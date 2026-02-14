@@ -1,27 +1,33 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import { useDiskSpace } from "../hooks/useDiskSpace";
 import { useClaudeConnection } from "../hooks/useClaudeConnection";
 import { useSettings } from "../hooks/useSettings";
+import { useDeviceToken } from "../hooks/useDeviceToken";
 import { DiskUsage } from "../components/DiskUsage";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { ToggleSwitch } from "../components/ToggleSwitch";
 import { STRINGS } from "../lib/constants";
 import { tauri } from "../lib/tauri";
 
-type Tab = "ai" | "workspace" | "general";
+type Tab = "account" | "ai" | "workspace" | "general";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("workspace");
+  const [tab, setTab] = useState<Tab>("account");
   const disk = useDiskSpace();
   const claude = useClaudeConnection();
   const appSettings = useSettings();
+  const { user } = useUser();
+  const { signOut } = useClerk();
+  const { deviceToken, loading: tokenLoading, regenerate: regenerateToken } = useDeviceToken();
   const [resetting, setResetting] = useState(false);
   const [pruning, setPruning] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const tabs: { id: Tab; label: string }[] = [
+    { id: "account", label: "Account" },
     { id: "ai", label: "AI Connection" },
     { id: "workspace", label: "Workspace" },
     { id: "general", label: "General" },
@@ -85,6 +91,65 @@ export default function Settings() {
               </button>
             ))}
           </div>
+
+          {/* Account Tab */}
+          {tab === "account" && (
+            <div className="space-y-4 animate-fade-in">
+              <div className="glass-card p-6 space-y-5">
+                <div className="flex items-center gap-4">
+                  {user?.imageUrl ? (
+                    <img src={user.imageUrl} alt="" className="w-12 h-12 rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-brand-600/10 flex items-center justify-center">
+                      <span className="text-brand-400 font-semibold text-lg">
+                        {user?.firstName?.[0] || "?"}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-medium text-sm">
+                      {user?.firstName} {user?.lastName}
+                    </h3>
+                    <p className="text-xs text-text-muted">
+                      {user?.primaryEmailAddress?.emailAddress}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between py-2 border-b border-surface-300/50">
+                    <span className="text-text-muted">Cora Connection</span>
+                    <StatusIndicator
+                      status={deviceToken ? "running" : tokenLoading ? "starting" : "stopped"}
+                      label={deviceToken ? "Connected" : tokenLoading ? "Connecting..." : "Not connected"}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-text-muted">Device Token</span>
+                    <span className={`text-xs font-mono ${deviceToken ? "text-success" : "text-text-faint"}`}>
+                      {deviceToken ? `${deviceToken.slice(0, 12)}...` : "None"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={regenerateToken}
+                    disabled={tokenLoading}
+                    className="btn-secondary text-sm px-4 py-2.5"
+                  >
+                    {tokenLoading ? "Generating..." : "Regenerate Token"}
+                  </button>
+                  <button
+                    onClick={() => signOut({ redirectUrl: "/login" })}
+                    className="px-4 py-2.5 rounded-xl text-sm font-medium text-danger bg-danger/10 hover:bg-danger/20 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* AI Connection Tab */}
           {tab === "ai" && (

@@ -196,6 +196,16 @@ The default RDP profile forced gateway transport over unencrypted HTTP. Changed 
 
 The previous check refused to start if bind wasn't `127.0.0.1`, but a TOCTOU race could allow bypass. Now the launcher auto-repairs the config back to `127.0.0.1` before starting, closing the race window.
 
+### 18. OwnCloud HTTP package repository
+**File:** `src/ubuntu/install/owncloud/install_owncloud.sh`
+
+Package repository used unencrypted HTTP, allowing MITM package injection.
+
+```diff
+- deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.04/ /
++ deb https://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.04/ /
+```
+
 ---
 
 ## Known Remaining Issues (upstream / not patchable here)
@@ -203,9 +213,10 @@ The previous check refused to start if bind wasn't `127.0.0.1`, but a TOCTOU rac
 | Issue | Location | Notes |
 |-------|----------|-------|
 | Unverified binary downloads (no checksums) | blender, eclipse, gimp, horizon, postman, hunchly install scripts | Upstream Kasm scripts — add SHA256 checks when pinning versions |
-| Pipe-to-gpg key imports | signal, terraform, vivaldi install scripts | Standard distro packaging pattern — lower risk since GPG verifies the key itself |
+| Pipe-to-gpg key imports | signal, terraform, vivaldi, sublime, atom, unityhub, dind install scripts | Standard distro packaging pattern — lower risk since GPG verifies the key itself; modern `signed-by` keyring already used where supported |
 | AWS credentials passed as CLI args in CI | `ci-scripts/test.sh` | Visible in `ps aux` — migrate to IAM roles or CI secret masking |
 | OwnCloud config points to `http://192.168.117.130:9999` | `src/ubuntu/install/owncloud/install_owncloud.cfg` | Test/template config — users should override with HTTPS endpoint |
+| Deprecated `apt-key add` in 7 scripts | atom, dind, dind_rootless, sublime_text, unityhub, signal, terraform | Upstream Kasm convention; fallback for older Ubuntu; newer distros use keyring path |
 
 ---
 
