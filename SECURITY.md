@@ -1,6 +1,6 @@
 # Security Hardening
 
-Security audit and hardening patches applied to the Career-Box workspace environment. This document covers vulnerabilities found in upstream Kasm workspace scripts and in Career-Box's own components (CoeAdapt Launcher, OpenClaw gateway integration), along with the fixes applied.
+Security audit and hardening patches applied to the Career-Box workspace environment. This document covers vulnerabilities found in upstream Kasm workspace scripts and in Career-Box's own components (Coeadapt Launcher, OpenClaw gateway integration), along with the fixes applied.
 
 All fixes preserve full functionality while closing security gaps. If you discover a vulnerability not listed here, please open a private security advisory on this repository rather than a public issue.
 

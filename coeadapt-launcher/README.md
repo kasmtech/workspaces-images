@@ -1,6 +1,6 @@
-# CoeAdapt Launcher
+# Coeadapt Launcher
 
-Cross-platform desktop app that manages the CoeAdapt career workspace. Built with Tauri v2 + React + TypeScript.
+Cross-platform desktop app that manages the Coeadapt career workspace. Built with Tauri v2 + React + TypeScript.
 
 > This is a subproject of [Career-Box](../README.md). See the root README for the full project overview.
 
@@ -15,7 +15,7 @@ Cross-platform desktop app that manages the CoeAdapt career workspace. Built wit
 ## Architecture
 
 ```
-CoeAdapt Tauri App (system tray + window)
+Coeadapt Tauri App (system tray + window)
 ├── React UI (Vite + Tailwind v4)
 │   ├── Setup wizard (onboarding)
 │   ├── Dashboard (status + controls)

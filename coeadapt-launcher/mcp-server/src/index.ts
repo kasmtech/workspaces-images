@@ -65,7 +65,7 @@ const httpServer = createServer(async (req, res) => {
 });
 
 httpServer.listen(PORT, HOST, () => {
-  console.log(`CoeAdapt MCP server listening on http://${HOST}:${PORT}`);
+  console.log(`Coeadapt MCP server listening on http://${HOST}:${PORT}`);
   console.log(`  MCP endpoint: http://${HOST}:${PORT}/mcp`);
   console.log(`  Health check: http://${HOST}:${PORT}/health`);
 });

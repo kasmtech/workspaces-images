@@ -40,7 +40,7 @@ The `dockerfile-kasm-*` files and `src/*/install/` scripts define the containeri
 
 Follow the patterns in existing images. See Kasm's [image building guide](https://kasmweb.com/docs/latest/how_to/building_images.html) for details on how Kasm images work.
 
-### CoeAdapt Launcher
+### Coeadapt Launcher
 
 The launcher lives in `coeadapt-launcher/` and is built with Tauri v2 + React + TypeScript. See [coeadapt-launcher/README.md](coeadapt-launcher/README.md) for the full architecture and project structure.
 

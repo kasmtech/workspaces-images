@@ -207,7 +207,7 @@ export default function Settings() {
                 <h3 className="font-medium text-sm text-text-secondary mb-2">Startup</h3>
                 <ToggleSwitch
                   label="Launch on startup"
-                  description="Open CoeAdapt automatically when you log in"
+                  description="Open Coeadapt automatically when you log in"
                   checked={appSettings.settings.autoStartApp}
                   onChange={appSettings.setAutoStartApp}
                   disabled={appSettings.loading}

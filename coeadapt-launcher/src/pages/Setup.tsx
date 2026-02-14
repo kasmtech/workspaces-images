@@ -91,7 +91,7 @@ export default function Setup() {
 
           {step === "welcome" && (
             <div className="text-center animate-fade-in space-y-8">
-              <img src="/logo-color.png" alt="CoeAdapt" className="w-20 h-20 mx-auto animate-breathe" />
+              <img src="/logo-color.png" alt="Coeadapt" className="w-20 h-20 mx-auto animate-breathe" />
               <div className="space-y-3">
                 <h1 className="text-3xl font-bold tracking-tight">{STRINGS.WELCOME_TITLE}</h1>
                 <p className="text-text-secondary text-lg leading-relaxed">Your AI-powered career workspace,<br />ready in minutes.</p>

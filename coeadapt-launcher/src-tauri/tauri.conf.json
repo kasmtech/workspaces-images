@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "CoeAdapt",
+  "productName": "Coeadapt",
   "version": "0.1.0",
   "identifier": "com.coeadapt.launcher",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "CoeAdapt",
+        "title": "Coeadapt",
         "width": 800,
         "height": 600,
         "resizable": true,
@@ -22,7 +22,7 @@
     "trayIcon": {
       "iconPath": "icons/icon.png",
       "iconAsTemplate": true,
-      "tooltip": "CoeAdapt"
+      "tooltip": "Coeadapt"
     },
     "security": {
       "csp": "default-src 'self'; connect-src 'self' https://localhost:6901 http://127.0.0.1:3100; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"

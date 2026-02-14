@@ -7,7 +7,7 @@ export function registerWorkspaceStatus(
 ) {
   server.tool(
     "workspace_status",
-    "Check if the CoeAdapt workspace is running and healthy",
+    "Check if the Coeadapt workspace is running and healthy",
     {},
     async () => {
       onToolCall();

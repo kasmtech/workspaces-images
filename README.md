@@ -15,7 +15,7 @@ No Docker knowledge. No Linux experience. Just launch and go.
 
 ## What is Career-Box?
 
-Career-Box is the hands-on workspace component of the [CoeAdapt](https://coeadapt.com) career development platform. Think of it as your personal career lab.
+Career-Box is the hands-on workspace component of the [Coeadapt](https://coeadapt.com) career development platform. Think of it as your personal career lab.
 
 It brings together two powerful open-source projects:
 
@@ -39,7 +39,7 @@ It brings together two powerful open-source projects:
         │  Your Machine                              │
         │                                            │
         │  ┌──────────────────────────────────────┐  │
-        │  │  CoeAdapt Launcher (system tray)     │  │
+        │  │  Coeadapt Launcher (system tray)     │  │
         │  │  Manages container + MCP server      │  │
         │  └──────┬──────────────┬────────────────┘  │
         │         │              │                   │
@@ -53,7 +53,7 @@ It brings together two powerful open-source projects:
         └────────────────────────────────────────────┘
 ```
 
-The **CoeAdapt Launcher** is a cross-platform desktop app (built with Tauri v2) that:
+The **Coeadapt Launcher** is a cross-platform desktop app (built with Tauri v2) that:
 - Detects Docker/Podman and guides you through setup
 - Pulls and manages the Kasm workspace container
 - Runs an MCP server so OpenClaw/Claude can interact with your workspace
@@ -121,7 +121,7 @@ Download the latest release for your platform from the [Releases](https://github
 
 ### Run
 
-1. Launch **CoeAdapt** from your applications
+1. Launch **Coeadapt** from your applications
 2. The setup wizard walks you through everything (Docker check, image download, workspace start)
 3. Click **Open Workspace** to access your career desktop in the browser
 4. Connect Claude Desktop for AI integration (one click)
@@ -210,7 +210,7 @@ This repository is a fork of [kasmtech/workspaces-images](https://github.com/kas
 
 ### What Career-Box adds
 
-- The **CoeAdapt Launcher** — a Tauri v2 desktop app for managing workspace containers without touching Docker
+- The **Coeadapt Launcher** — a Tauri v2 desktop app for managing workspace containers without touching Docker
 - An **MCP server** — bridging AI assistants to the workspace via the Model Context Protocol
 - **CareerClaw** — career-specific OpenClaw skills for coaching, assessments, resume building, interview prep, and job tracking
 - **Security hardening** — patches to upstream Kasm scripts (see [SECURITY.md](SECURITY.md) for the full audit)
@@ -242,4 +242,4 @@ See [SECURITY.md](SECURITY.md) for the security audit, hardening documentation, 
 
 ## License
 
-[MIT License](LICENSE.md). Workspace image scripts originally by [Kasm Technologies Inc](https://kasmweb.com), with additional work by [CoeAdapt](https://coeadapt.com).
+[MIT License](LICENSE.md). Workspace image scripts originally by [Kasm Technologies Inc](https://kasmweb.com), with additional work by [Coeadapt](https://coeadapt.com).

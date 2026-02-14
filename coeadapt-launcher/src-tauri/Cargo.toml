@@ -1,8 +1,8 @@
 [package]
 name = "coeadapt-launcher"
 version = "0.1.0"
-description = "CoeAdapt - Turn-key career workspace launcher"
-authors = ["CoeAdapt"]
+description = "Coeadapt - Turn-key career workspace launcher"
+authors = ["Coeadapt"]
 edition = "2021"
 
 [lib]

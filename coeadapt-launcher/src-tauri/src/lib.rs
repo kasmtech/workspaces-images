@@ -41,7 +41,7 @@ pub fn run() {
 
             let sep3 = PredefinedMenuItem::separator(app)?;
 
-            let quit = MenuItem::with_id(app, "quit", "Quit CoeAdapt", true, None::<&str>)?;
+            let quit = MenuItem::with_id(app, "quit", "Quit Coeadapt", true, None::<&str>)?;
 
             let menu = Menu::with_items(
                 app,
@@ -62,7 +62,7 @@ pub fn run() {
             let _tray = TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
-                .tooltip("CoeAdapt")
+                .tooltip("Coeadapt")
                 .on_menu_event(move |app, event| match event.id.as_ref() {
                     "open_workspace" => {
                         let _ = commands::open_workspace_browser();

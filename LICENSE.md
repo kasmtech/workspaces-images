@@ -2,9 +2,9 @@
 
 This project contains work from multiple authors, all licensed under the MIT License.
 
-## Career-Box / CoeAdapt
+## Career-Box / Coeadapt
 
-Copyright 2025-2026 CoeAdapt
+Copyright 2025-2026 Coeadapt
 
 ## Kasm Workspaces Images
 

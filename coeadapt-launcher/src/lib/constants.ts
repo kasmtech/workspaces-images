@@ -1,16 +1,16 @@
 // User-facing strings — NO technical jargon
 export const STRINGS = {
-  APP_NAME: "CoeAdapt",
-  WELCOME_TITLE: "Welcome to CoeAdapt",
+  APP_NAME: "Coeadapt",
+  WELCOME_TITLE: "Welcome to Coeadapt",
   WELCOME_SUBTITLE: "Let's get your career workspace set up.",
   SETUP_CHECKING_SYSTEM: "Checking your system...",
   SETUP_DISK_OK: "Storage: Ready",
   SETUP_DISK_LOW: "Your computer needs more free space",
-  SETUP_DISK_MINIMUM: "CoeAdapt needs at least 15GB of free space.",
+  SETUP_DISK_MINIMUM: "Coeadapt needs at least 15GB of free space.",
   SETUP_DOCKER_CHECKING: "Checking for workspace engine...",
   SETUP_DOCKER_FOUND: "Workspace engine: Ready",
   SETUP_DOCKER_NOT_FOUND:
-    "CoeAdapt needs to install a small helper app to run your workspace.",
+    "Coeadapt needs to install a small helper app to run your workspace.",
   SETUP_DOCKER_INSTALL: "Install Docker Desktop",
   SETUP_DOCKER_STARTING: "Starting up your workspace engine...",
   SETUP_PULLING: "Downloading your workspace...",
