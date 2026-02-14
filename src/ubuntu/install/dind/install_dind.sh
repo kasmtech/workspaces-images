@@ -49,9 +49,10 @@ curl -o \
     "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
 chmod +x /usr/local/bin/kubectl
 
-# Passwordless Sudo
-echo 'kasm-user:kasm-user' | chpasswd
-echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# Sudo access — require password, limited to docker operations
+KASM_PASS=$(openssl rand -base64 16)
+echo "kasm-user:${KASM_PASS}" | chpasswd
+echo 'kasm-user ALL=(ALL) NOPASSWD: /usr/bin/dockerd, /usr/local/bin/dind, /usr/local/bin/dockerd-entrypoint.sh, /usr/sbin/iptables, /usr/sbin/ip6tables' >> /etc/sudoers
 
 # Cleanup
 if [ -z ${SKIP_CLEAN+x} ]; then

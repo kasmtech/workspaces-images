@@ -1,0 +1,61 @@
+ARG BASE_TAG="develop"
+ARG BASE_IMAGE="core-ubuntu-jammy"
+FROM kasmweb/$BASE_IMAGE:$BASE_TAG
+
+USER root
+
+ENV HOME /home/kasm-default-profile
+ENV STARTUPDIR /dockerstartup
+WORKDIR $HOME
+
+### Environment config
+ENV DEBIAN_FRONTEND noninteractive
+ENV INST_SCRIPTS $STARTUPDIR/install
+
+### KasmVNC quality: 60fps, balanced quality for smooth performance
+ENV MAX_FRAME_RATE=60
+ENV VNCOPTIONS="-DynamicQualityMin 6 -DynamicQualityMax 9 -TreatLossless 9 -JpegVideoQuality 7 -WebpVideoQuality 7 -VideoScaling 2"
+
+######### Customize Container Here ###########
+
+# KasmVNC high-quality settings (1080p, 60fps, max quality)
+COPY ./src/ubuntu/install/kasmvnc_settings $INST_SCRIPTS/kasmvnc_settings/
+RUN bash $INST_SCRIPTS/kasmvnc_settings/install_kasmvnc_settings.sh && rm -rf $INST_SCRIPTS/kasmvnc_settings/
+
+# Install Zorin OS Theme (themes, icons, wallpaper, fonts, XFCE config)
+COPY ./src/ubuntu/install/zorin_theme $INST_SCRIPTS/zorin_theme/
+RUN bash $INST_SCRIPTS/zorin_theme/install_zorin_theme.sh && rm -rf $INST_SCRIPTS/zorin_theme/
+
+# Install Wine (Windows app compatibility)
+COPY ./src/ubuntu/install/wine $INST_SCRIPTS/wine/
+RUN bash $INST_SCRIPTS/wine/install_wine.sh && rm -rf $INST_SCRIPTS/wine/
+
+# Install Utilities
+COPY ./src/ubuntu/install/misc $INST_SCRIPTS/misc/
+RUN bash $INST_SCRIPTS/misc/install_tools.sh && rm -rf $INST_SCRIPTS/misc/
+
+# Install Firefox
+COPY ./src/ubuntu/install/firefox/ $INST_SCRIPTS/firefox/
+COPY ./src/ubuntu/install/firefox/firefox.desktop $HOME/Desktop/
+RUN bash $INST_SCRIPTS/firefox/install_firefox.sh && rm -rf $INST_SCRIPTS/firefox/
+
+# Install Google Chrome
+COPY ./src/ubuntu/install/chrome $INST_SCRIPTS/chrome/
+RUN bash $INST_SCRIPTS/chrome/install_chrome.sh && rm -rf $INST_SCRIPTS/chrome/
+
+### Install CareerClaw AI Assistant (OpenClaw fork)
+COPY ./src/ubuntu/install/careerclaw $INST_SCRIPTS/careerclaw/
+RUN bash $INST_SCRIPTS/careerclaw/install_careerclaw.sh && rm -rf $INST_SCRIPTS/careerclaw/
+
+######### End Customizations ###########
+
+RUN chown 1000:0 $HOME
+RUN $STARTUPDIR/set_user_permission.sh $HOME
+
+ENV HOME /home/kasm-user
+WORKDIR $HOME
+RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+USER 1000
+
+CMD ["--tail-log"]
