@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { listen } from "@tauri-apps/api/event";
-import { tauri } from "../lib/tauri";
+import { tauri, safeListen } from "../lib/tauri";
 import type { DiskStatus } from "../lib/types";
 
 export function useDiskSpace() {
@@ -13,26 +12,19 @@ export function useDiskSpace() {
       setStatus(result);
       setShowWarning(result.is_low);
     } catch {
-      // Ignore disk check failures
+      // Not in Tauri or command failed
     }
   }, []);
 
   useEffect(() => {
     check();
-
-    const unlisten = listen<DiskStatus>("disk-warning", (event) => {
+    const unlisten = safeListen<DiskStatus>("disk-warning", (event) => {
       setStatus(event.payload);
       setShowWarning(true);
     });
-
-    return () => {
-      unlisten.then((fn) => fn());
-    };
+    return () => { unlisten.then((fn) => fn()); };
   }, [check]);
 
-  const dismissWarning = useCallback(() => {
-    setShowWarning(false);
-  }, []);
-
+  const dismissWarning = useCallback(() => setShowWarning(false), []);
   return { status, showWarning, dismissWarning, refresh: check };
 }

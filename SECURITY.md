@@ -1,7 +1,8 @@
-# OpenClaw Security Hardening
+# Security Hardening
 
-Security audit and patches applied to the Career-Box OpenClaw environment.
-All fixes preserve full functionality on port 18789 and browser-based features (WhatsApp Web, etc.) through the Kasm desktop.
+Security audit and hardening patches applied to the Career-Box workspace environment. This document covers vulnerabilities found in upstream Kasm workspace scripts and in Career-Box's own components (CoeAdapt Launcher, OpenClaw gateway integration), along with the fixes applied.
+
+All fixes preserve full functionality while closing security gaps. If you discover a vulnerability not listed here, please open a private security advisory on this repository rather than a public issue.
 
 ---
 
@@ -140,6 +141,71 @@ The launcher now reads `openclaw.json` and refuses to start if `gateway.bind` is
 **File:** `src/ubuntu/install/careerclaw/install_careerclaw.sh`
 
 Added `pnpm prune --prod` and `rm -rf .git` after build to reduce attack surface and image size.
+
+---
+
+## Round 2 — Additional Findings
+
+### 12. Hunchly license key removed from repository
+**File:** `src/ubuntu/install/hunchly/license.key`
+
+A license key file was committed to git history. Removed from tracking and added to `.gitignore`. The key still exists in git history — run `git filter-branch` or BFG Repo-Cleaner to purge it before making the repo public.
+
+### 13. CI script SSH key set to chmod 777
+**File:** `ci-scripts/test.sh`
+
+The SSH private key used for CI test instances was set world-readable/writable. Fixed to `chmod 600`.
+
+```diff
+- chmod 777 $(dirname ${CI_PROJECT_DIR})/sshkey
++ chmod 600 $(dirname ${CI_PROJECT_DIR})/sshkey
+```
+
+### 14. CI script disabled SSH host key verification
+**File:** `ci-scripts/test.sh`
+
+Six SSH calls used `StrictHostKeyChecking=no`, allowing MITM attacks on CI test infrastructure. Changed to `accept-new` (trusts first connect, rejects changed keys).
+
+```diff
+- -oStrictHostKeyChecking=no
++ -oStrictHostKeyChecking=accept-new
+```
+
+### 15. Chrome repo on OpenSUSE used HTTP
+**File:** `src/ubuntu/install/chrome/install_chrome.sh`
+
+The zypper repository for Chrome used unencrypted HTTP, enabling package tampering via MITM.
+
+```diff
+- zypper ar http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
++ zypper ar https://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
+```
+
+### 16. Remmina RDP gateway transport defaulted to HTTP
+**File:** `src/ubuntu/install/remmina/install_remmina.sh`
+
+The default RDP profile forced gateway transport over unencrypted HTTP. Changed to `auto` which prefers HTTPS when available.
+
+```diff
+- gwtransp=http
++ gwtransp=auto
+```
+
+### 17. CareerClaw bind check hardened against config tampering
+**File:** `src/ubuntu/install/careerclaw/install_careerclaw.sh`
+
+The previous check refused to start if bind wasn't `127.0.0.1`, but a TOCTOU race could allow bypass. Now the launcher auto-repairs the config back to `127.0.0.1` before starting, closing the race window.
+
+---
+
+## Known Remaining Issues (upstream / not patchable here)
+
+| Issue | Location | Notes |
+|-------|----------|-------|
+| Unverified binary downloads (no checksums) | blender, eclipse, gimp, horizon, postman, hunchly install scripts | Upstream Kasm scripts — add SHA256 checks when pinning versions |
+| Pipe-to-gpg key imports | signal, terraform, vivaldi install scripts | Standard distro packaging pattern — lower risk since GPG verifies the key itself |
+| AWS credentials passed as CLI args in CI | `ci-scripts/test.sh` | Visible in `ps aux` — migrate to IAM roles or CI secret masking |
+| OwnCloud config points to `http://192.168.117.130:9999` | `src/ubuntu/install/owncloud/install_owncloud.cfg` | Test/template config — users should override with HTTPS endpoint |
 
 ---
 

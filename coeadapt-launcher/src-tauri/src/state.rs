@@ -64,6 +64,13 @@ pub struct PullProgress {
     pub percent: f64,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct McpHealthInfo {
+    pub is_running: bool,
+    pub last_tool_call: Option<u64>,
+    pub uptime_secs: Option<f64>,
+}
+
 pub const CONTAINER_NAME: &str = "coeadapt-workspace";
 pub const IMAGE_NAME: &str = "coeadapt/workspace:latest";
 pub const VOLUME_NAME: &str = "coeadapt-data";

@@ -42,8 +42,35 @@ pub async fn wait_for_workspace(
 }
 
 pub async fn check_mcp_health() -> bool {
-    reqwest::get("http://127.0.0.1:3100/health")
-        .await
-        .map(|r| r.status().is_success())
-        .unwrap_or(false)
+    get_mcp_health_info().await.is_running
+}
+
+pub async fn get_mcp_health_info() -> crate::state::McpHealthInfo {
+    let client = reqwest::Client::builder()
+        .timeout(Duration::from_secs(3))
+        .build()
+        .unwrap_or_default();
+
+    match client.get("http://127.0.0.1:3100/health").send().await {
+        Ok(resp) if resp.status().is_success() => {
+            if let Ok(body) = resp.json::<serde_json::Value>().await {
+                crate::state::McpHealthInfo {
+                    is_running: true,
+                    last_tool_call: body.get("lastToolCall").and_then(|v| v.as_u64()),
+                    uptime_secs: body.get("uptime").and_then(|v| v.as_f64()),
+                }
+            } else {
+                crate::state::McpHealthInfo {
+                    is_running: true,
+                    last_tool_call: None,
+                    uptime_secs: None,
+                }
+            }
+        }
+        _ => crate::state::McpHealthInfo {
+            is_running: false,
+            last_tool_call: None,
+            uptime_secs: None,
+        },
+    }
 }

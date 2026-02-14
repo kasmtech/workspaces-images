@@ -50,11 +50,19 @@ if ss -tlnp 2>/dev/null | grep -q ":18789"; then
     exit 0
 fi
 
-# Verify gateway is bound to localhost only (defense-in-depth)
-BIND_ADDR=$(python3 -c "import json; print(json.load(open('$HOME/.openclaw/openclaw.json')).get('gateway',{}).get('bind',''))" 2>/dev/null || echo "")
-if [ "$BIND_ADDR" != "127.0.0.1" ]; then
-    echo "[$(date)] SECURITY: Refusing to start — gateway must bind to 127.0.0.1" >> "$GATEWAY_LOG"
-    exit 1
+# Enforce localhost binding — overwrite config if tampered (defense-in-depth)
+CONFIG="$HOME/.openclaw/openclaw.json"
+if [ -f "$CONFIG" ]; then
+    BIND_ADDR=$(python3 -c "import json; print(json.load(open('$CONFIG')).get('gateway',{}).get('bind',''))" 2>/dev/null || echo "")
+    if [ "$BIND_ADDR" != "loopback" ]; then
+        echo "[$(date)] SECURITY: bind was '$BIND_ADDR', forcing to loopback" >> "$GATEWAY_LOG"
+        python3 -c "
+import json
+c = json.load(open('$CONFIG'))
+c.setdefault('gateway',{})['bind'] = 'loopback'
+json.dump(c, open('$CONFIG','w'), indent=2)
+" 2>/dev/null
+    fi
 fi
 
 echo "[$(date)] Starting CareerClaw gateway..." >> "$GATEWAY_LOG"
@@ -65,22 +73,37 @@ chmod +x /usr/local/bin/careerclaw-gateway
 # Create default config directory for the Kasm default profile
 OPENCLAW_STATE="$HOME/.openclaw"
 mkdir -p "$OPENCLAW_STATE/workspace"
+mkdir -p "$OPENCLAW_STATE/agents/main/sessions"
+mkdir -p "$OPENCLAW_STATE/credentials"
 
-cat > "$OPENCLAW_STATE/openclaw.json" <<'CONF'
+# Generate a per-install gateway token
+GATEWAY_TOKEN=$(openssl rand -hex 32)
+
+cat > "$OPENCLAW_STATE/openclaw.json" <<CONF
 {
-  "agent": {
-    "model": "anthropic/claude-sonnet-4-5-20250929"
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-sonnet-4-5-20250929"
+      }
+    }
   },
   "gateway": {
+    "mode": "local",
     "port": 18789,
-    "bind": "127.0.0.1",
-    "cors": {
-      "allowedOrigins": ["http://localhost:18789", "http://127.0.0.1:18789"]
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "$GATEWAY_TOKEN"
     }
   }
 }
 CONF
 chmod 600 "$OPENCLAW_STATE/openclaw.json"
+
+# Save token separately so the Tauri launcher can read it
+echo "$GATEWAY_TOKEN" > "$OPENCLAW_STATE/gateway-token"
+chmod 600 "$OPENCLAW_STATE/gateway-token"
 
 # Create desktop icon
 mkdir -p /usr/share/icons/hicolor/apps

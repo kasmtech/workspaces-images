@@ -8,23 +8,23 @@ export function DiskUsage({ status }: Props) {
   const usedGb = status.total_gb - status.available_gb;
   const usedPercent = (usedGb / status.total_gb) * 100;
 
+  const barColor = status.is_low
+    ? "bg-danger"
+    : !status.meets_recommended
+      ? "bg-warning"
+      : "bg-success";
+
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between text-sm">
-        <span className="text-gray-300">Storage</span>
-        <span className="text-gray-400">
-          {status.available_gb}GB free of {status.total_gb}GB
+    <div className="space-y-3">
+      <div className="flex justify-between items-baseline">
+        <span className="text-sm font-medium text-text-secondary">Storage</span>
+        <span className="text-xs text-text-muted tabular-nums">
+          {status.available_gb} GB free of {status.total_gb} GB
         </span>
       </div>
-      <div className="w-full bg-gray-700 rounded-full h-2">
+      <div className="w-full bg-surface-300 rounded-full h-1.5">
         <div
-          className={`h-2 rounded-full transition-all ${
-            status.is_low
-              ? "bg-red-500"
-              : !status.meets_recommended
-                ? "bg-amber-500"
-                : "bg-emerald-500"
-          }`}
+          className={`h-1.5 rounded-full transition-all duration-500 ${barColor}`}
           style={{ width: `${usedPercent}%` }}
         />
       </div>

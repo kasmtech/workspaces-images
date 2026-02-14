@@ -15,10 +15,20 @@ target/
 
 # Tauri build output
 coeadapt-launcher/src-tauri/target/
-
-# MCP sidecar binaries (built locally)
 coeadapt-launcher/src-tauri/binaries/
 
 # Lock files (platform-specific)
 *.lock
 !bun.lock
+
+# Secrets and license keys
+*.key
+!*.pub
+
+# Development artifacts
+Brand/
+/*.png
+.claude/
+.playwright-mcp/
+CoeAdapt-Launcher-Prompt.md
+console-errors.log

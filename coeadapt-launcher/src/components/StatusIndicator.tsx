@@ -3,18 +3,23 @@ interface Props {
   label: string;
 }
 
-const colors = {
-  running: "bg-emerald-500",
-  starting: "bg-amber-400 animate-pulse",
-  stopped: "bg-gray-400",
-  error: "bg-red-500",
-};
-
 export function StatusIndicator({ status, label }: Props) {
+  const dotColor = {
+    running: "bg-success",
+    starting: "bg-warning animate-pulse",
+    stopped: "bg-surface-500",
+    error: "bg-danger",
+  };
+
   return (
-    <div className="flex items-center gap-2">
-      <span className={`inline-block w-3 h-3 rounded-full ${colors[status]}`} />
-      <span className="text-sm font-medium text-gray-200">{label}</span>
+    <div className="flex items-center gap-2.5">
+      <span className="relative flex h-2.5 w-2.5">
+        {status === "running" && (
+          <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
+        )}
+        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor[status]}`} />
+      </span>
+      <span className="text-sm font-medium text-text-secondary">{label}</span>
     </div>
   );
 }

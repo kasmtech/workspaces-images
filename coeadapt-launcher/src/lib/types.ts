@@ -46,3 +46,9 @@ export interface PullProgress {
   progress: string | null;
   percent: number;
 }
+
+export interface McpHealthInfo {
+  is_running: boolean;
+  last_tool_call: number | null;
+  uptime_secs: number | null;
+}

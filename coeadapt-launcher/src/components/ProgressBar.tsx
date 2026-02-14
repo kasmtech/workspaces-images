@@ -6,21 +6,23 @@ interface Props {
 
 export function ProgressBar({ percent, label, indeterminate }: Props) {
   return (
-    <div className="w-full">
+    <div className="w-full space-y-2">
       {label && (
-        <div className="flex justify-between mb-1">
-          <span className="text-sm text-gray-300">{label}</span>
+        <div className="flex justify-between">
+          <span className="text-sm text-text-secondary">{label}</span>
           {!indeterminate && (
-            <span className="text-sm text-gray-400">{Math.round(percent)}%</span>
+            <span className="text-sm text-text-muted tabular-nums">
+              {Math.round(percent)}%
+            </span>
           )}
         </div>
       )}
-      <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+      <div className="w-full bg-surface-300 rounded-full h-1.5 overflow-hidden">
         {indeterminate ? (
-          <div className="bg-coral-500 h-2 rounded-full w-1/3 animate-[shimmer_1.5s_ease-in-out_infinite]" />
+          <div className="h-full rounded-full w-1/3 brand-gradient animate-[shimmer_1.5s_ease-in-out_infinite]" />
         ) : (
           <div
-            className="bg-coral-500 h-2 rounded-full transition-all duration-300"
+            className="h-full rounded-full brand-gradient transition-all duration-500 ease-out"
             style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
           />
         )}

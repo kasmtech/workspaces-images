@@ -25,7 +25,7 @@
       "tooltip": "CoeAdapt"
     },
     "security": {
-      "csp": "default-src 'self'; connect-src 'self' https://localhost:6901 http://127.0.0.1:3100; img-src 'self' data:; style-src 'self' 'unsafe-inline'"
+      "csp": "default-src 'self'; connect-src 'self' https://localhost:6901 http://127.0.0.1:3100; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com"
     }
   },
   "bundle": {

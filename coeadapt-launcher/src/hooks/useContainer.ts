@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { listen } from "@tauri-apps/api/event";
-import { tauri } from "../lib/tauri";
+import { tauri, safeListen } from "../lib/tauri";
 import type { ContainerStatus, PullProgress } from "../lib/types";
 
 export function useContainer() {
@@ -14,19 +13,18 @@ export function useContainer() {
       const s = await tauri.getWorkspaceStatus();
       setStatus(s);
       setError(null);
-    } catch (e) {
-      setError(String(e));
+    } catch {
+      // Not in Tauri or command failed
     }
   }, []);
 
   useEffect(() => {
     refresh();
 
-    const unlistenPull = listen<PullProgress>("docker-pull-progress", (event) => {
+    const unlistenPull = safeListen<PullProgress>("docker-pull-progress", (event) => {
       setPullProgress(event.payload);
     });
-
-    const unlistenReady = listen<boolean>("workspace-ready", () => {
+    const unlistenReady = safeListen<boolean>("workspace-ready", () => {
       refresh();
     });
 
@@ -103,17 +101,7 @@ export function useContainer() {
   const isStopped = status?.state === "Stopped" || status?.state === "NotFound";
 
   return {
-    status,
-    pullProgress,
-    loading,
-    error,
-    isRunning,
-    isStopped,
-    pullImage,
-    createWorkspace,
-    startWorkspace,
-    stopWorkspace,
-    openWorkspace,
-    refresh,
+    status, pullProgress, loading, error, isRunning, isStopped,
+    pullImage, createWorkspace, startWorkspace, stopWorkspace, openWorkspace, refresh,
   };
 }

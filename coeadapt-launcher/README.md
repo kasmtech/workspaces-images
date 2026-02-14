@@ -2,6 +2,8 @@
 
 Cross-platform desktop app that manages the CoeAdapt career workspace. Built with Tauri v2 + React + TypeScript.
 
+> This is a subproject of [Career-Box](../README.md). See the root README for the full project overview.
+
 ## What It Does
 
 - Detects Docker/Podman and guides non-technical users through setup
@@ -224,11 +226,6 @@ A backup (`.json.bak`) is created before the first modification.
 - Hide-to-tray on window close
 - Settings page (AI Connection + Workspace tabs functional)
 
-### TODO
-- [ ] Authentication (Account tab — Clerk auth planned)
-- [ ] General settings (auto-start toggle, auto-update toggle)
-- [ ] `needs_restart` detection after Claude config changes
-- [ ] MCP sidecar binary compilation for distribution
-- [ ] Auto-updater pubkey and release endpoint
-- [ ] Error handling improvements (silent catch blocks)
-- [ ] Persistent logging
+### Roadmap
+
+See [GitHub Issues](https://github.com/coeadapt/Career-Box/issues) for planned work and known issues.
