@@ -265,6 +265,24 @@ The Kasm workspace images and install scripts in this repository are used as-is 
 
 ---
 
+## Why we're building this
+
+The world is adapting. AI is reshaping industries, automating tasks, and redefining what it means to have a career. Roles that existed for decades are changing overnight. New ones are appearing faster than anyone can track.
+
+This is not something to fear. But it is something we have a responsibility to face honestly.
+
+Not everyone has a software engineering background. Not everyone has a mentor, a network, or the time to figure out what's next on their own. But everyone deserves to be equipped for what's coming. No one should be left behind because they didn't have the right tools or the right guidance at the right moment.
+
+Tasks will be automated. Roles will change. But the deeply personal endeavour of contributing to something meaningful — of finding work that matters to you and building a life around it — that will never change. That's the part worth protecting.
+
+Career-Box exists because we believe AI should be the great equalizer, not the great divider. We're building a tool that puts an AI career coach and a fully equipped workspace in the hands of anyone who needs it — not just the people who already know how to code or already have access to the best opportunities.
+
+If you're here, you're part of that mission. Welcome to the community. What we're building together has the potential to genuinely change lives — to help people navigate the most uncertain career landscape in a generation, and to come out the other side doing work they care about.
+
+We're called to adapt. Let's make sure no one has to do it alone.
+
+---
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, guidelines, and how to submit changes.
