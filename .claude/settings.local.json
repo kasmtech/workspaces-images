@@ -31,7 +31,9 @@
       "Bash(bun:*)",
       "Bash(export PATH=\"$HOME/.bun/bin:$PATH\")",
       "Bash(gh repo view:*)",
-      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --oneline --all -20)"
+      "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --oneline --all -20)",
+      "Bash(du:*)",
+      "Bash(export PATH=\"/c/Users/aacke/.bun/bin:$PATH\")"
     ]
   }
 }

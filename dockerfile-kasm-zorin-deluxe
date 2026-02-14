@@ -4,15 +4,15 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-ENV HOME /home/kasm-default-profile
-ENV STARTUPDIR /dockerstartup
+ENV HOME=/home/kasm-default-profile
+ENV STARTUPDIR=/dockerstartup
 WORKDIR $HOME
 
 ### Environment config
-ENV DEBIAN_FRONTEND noninteractive
-ENV KASM_RX_HOME $STARTUPDIR/kasmrx
-ENV INST_SCRIPTS $STARTUPDIR/install
-ENV DONT_PROMPT_WSL_INSTALL "No_Prompt_please"
+ENV DEBIAN_FRONTEND=noninteractive
+ENV KASM_RX_HOME=$STARTUPDIR/kasmrx
+ENV INST_SCRIPTS=$STARTUPDIR/install
+ENV DONT_PROMPT_WSL_INSTALL="No_Prompt_please"
 
 ### KasmVNC quality: 60fps, balanced quality for smooth performance
 ENV MAX_FRAME_RATE=60
@@ -83,7 +83,7 @@ RUN $STARTUPDIR/set_user_permission.sh $HOME
 
 RUN chown 1000:0 $HOME
 
-ENV HOME /home/kasm-user
+ENV HOME=/home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 

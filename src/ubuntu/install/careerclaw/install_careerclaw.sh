@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+# Tell pnpm/node we're in a non-interactive CI environment (no TTY)
+export CI=true
+
 # Install Node.js 22 (required by OpenClaw/CareerClaw)
 # Download setup script first, then execute — avoids pipe-to-bash risks
 NODESOURCE_SCRIPT=$(mktemp)
@@ -24,7 +27,7 @@ pnpm build
 pnpm ui:build
 
 # Slim down: drop dev dependencies and git history to save ~300-500 MB
-pnpm prune --prod
+CI=true pnpm prune --prod
 rm -rf .git
 
 # Create CLI wrapper so 'openclaw' is available system-wide

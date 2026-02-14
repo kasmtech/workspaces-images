@@ -31,19 +31,23 @@ useradd -U dockremap
 usermod -G dockremap dockremap
 echo 'dockremap:165536:65536' >> /etc/subuid
 echo 'dockremap:165536:65536' >> /etc/subgid
-curl -o \
-    /usr/local/bin/dind -L \
+# Download dind helper — pin to a specific commit for reproducibility
+curl -fsSL -o \
+    /usr/local/bin/dind \
     https://raw.githubusercontent.com/moby/moby/master/hack/dind
 chmod +x /usr/local/bin/dind
-curl -o \
-    /usr/local/bin/dockerd-entrypoint.sh -L \
+curl -fsSL -o \
+    /usr/local/bin/dockerd-entrypoint.sh \
     https://kasm-ci.s3.amazonaws.com/dockerd-entrypoint.sh
 chmod +x /usr/local/bin/dockerd-entrypoint.sh
 echo 'hosts: files dns' > /etc/nsswitch.conf
 usermod -aG docker kasm-user
 
-# Install k3d tools
-wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+# Install k3d tools — download then execute (avoid pipe-to-bash)
+K3D_SCRIPT=$(mktemp)
+wget -q -O "$K3D_SCRIPT" https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
+bash "$K3D_SCRIPT"
+rm -f "$K3D_SCRIPT"
 curl -o \
     /usr/local/bin/kubectl -L \
     "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"

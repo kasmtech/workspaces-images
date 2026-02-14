@@ -4,13 +4,13 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-ENV HOME /home/kasm-default-profile
-ENV STARTUPDIR /dockerstartup
+ENV HOME=/home/kasm-default-profile
+ENV STARTUPDIR=/dockerstartup
 WORKDIR $HOME
 
 ### Environment config
-ENV DEBIAN_FRONTEND noninteractive
-ENV INST_SCRIPTS $STARTUPDIR/install
+ENV DEBIAN_FRONTEND=noninteractive
+ENV INST_SCRIPTS=$STARTUPDIR/install
 
 ### KasmVNC quality: 60fps, balanced quality for smooth performance
 ENV MAX_FRAME_RATE=60
@@ -52,7 +52,7 @@ RUN bash $INST_SCRIPTS/careerclaw/install_careerclaw.sh && rm -rf $INST_SCRIPTS/
 RUN chown 1000:0 $HOME
 RUN $STARTUPDIR/set_user_permission.sh $HOME
 
-ENV HOME /home/kasm-user
+ENV HOME=/home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
