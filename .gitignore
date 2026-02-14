@@ -15,7 +15,8 @@ target/
 
 # Tauri build output
 coeadapt-launcher/src-tauri/target/
-coeadapt-launcher/src-tauri/binaries/
+coeadapt-launcher/src-tauri/binaries/*
+!coeadapt-launcher/src-tauri/binaries/.gitkeep
 
 # Lock files (platform-specific)
 *.lock
