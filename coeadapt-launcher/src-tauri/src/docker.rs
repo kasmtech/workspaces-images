@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader};
 use std::process::{Command, Stdio};
+use tauri::Emitter;
 
 use crate::state::{ContainerRuntime, DockerInfo, PullProgress};
 

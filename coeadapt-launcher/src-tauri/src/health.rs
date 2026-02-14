@@ -1,4 +1,5 @@
 use std::time::Duration;
+use tauri::Emitter;
 
 pub async fn wait_for_workspace(
     app: tauri::AppHandle,

@@ -34,7 +34,11 @@
       "Bash(git -C \"c:\\\\dev3\\\\Career-Box\" log --oneline --all -20)",
       "Bash(du:*)",
       "Bash(export PATH=\"/c/Users/aacke/.bun/bin:$PATH\")",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(git status:*)",
+      "Bash(cargo check:*)",
+      "Bash(powershell.exe -Command \"try { Invoke-WebRequest -Uri ''https://localhost:6901'' -SkipCertificateCheck -TimeoutSec 5 | Select-Object StatusCode, @{N=''Bytes'';E={$_Content.Length}} } catch { $_Exception.Message }\")",
+      "Bash(timeout 15 powershell -Command:*)"
     ]
   }
 }

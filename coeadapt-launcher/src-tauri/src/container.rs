@@ -91,7 +91,7 @@ pub fn image_exists() -> bool {
 
 pub fn check_for_image_update() -> Result<bool, String> {
     // Get the current image digest
-    let current_digest = docker_cmd(&[
+    let _current_digest = docker_cmd(&[
         "image",
         "inspect",
         "--format",
