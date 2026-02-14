@@ -153,9 +153,15 @@ For detailed launcher documentation, see [coeadapt-launcher/README.md](coeadapt-
 
 ---
 
-## Development
+## For developers
 
-### Building the launcher
+Welcome. This project has two distinct halves, and you can contribute to either without understanding the other.
+
+### The launcher (`coeadapt-launcher/`)
+
+A Tauri v2 desktop app — React frontend, Rust backend, Node.js MCP server. This is where most active development happens. If you've worked with React, TypeScript, or Rust, you'll feel at home here.
+
+**Setup:**
 
 ```bash
 cd coeadapt-launcher
@@ -166,25 +172,52 @@ cd mcp-server && bun install && cd ..
 
 # Run in dev mode (Vite HMR + Tauri window)
 bun run tauri dev
+```
 
-# Build for production (produces platform installers)
+**Requirements:** [Bun](https://bun.sh/), [Rust](https://rustup.rs/), [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+**Build for production:**
+
+```bash
+# Build MCP sidecar binary first
 cd mcp-server && bun run build && cd ..
+
+# Build the Tauri app (produces platform installers in src-tauri/target/release/bundle/)
 bun run tauri build
 ```
 
-**Requirements:** [Bun](https://bun.sh/), [Rust](https://rustup.rs/), Docker
+The compiled MCP sidecar goes into `src-tauri/binaries/` — this directory is gitignored, so you must build it locally before `tauri build` will succeed.
 
-### Building workspace images
+For the full launcher architecture, see [coeadapt-launcher/README.md](coeadapt-launcher/README.md).
+
+### The workspace images (`src/`, `dockerfile-kasm-*`)
+
+80+ Dockerfiles and install scripts inherited from [Kasm Workspaces](https://github.com/kasmtech/workspaces-images). Each image defines a containerized application or desktop environment.
+
+**To build an image:**
 
 ```bash
-# Build any image from its Dockerfile
 sudo docker build -t kasmweb/firefox:dev -f dockerfile-kasm-firefox .
+```
 
-# Run standalone (accessible at https://localhost:6901)
+**To run it standalone (browser access at `https://localhost:6901`):**
+
+```bash
 sudo docker run --rm -it --shm-size=512m -p 6901:6901 -e VNC_PW=password kasmweb/firefox:dev
 ```
 
-For the full image building guide, see Kasm's [How To Guide](https://kasmweb.com/docs/latest/how_to/building_images.html).
+Each image has an install script in `src/ubuntu/install/<name>/` and documentation in `docs/<name>/README.md`. Follow the existing patterns when adding or modifying images. For the full image building guide, see Kasm's [How To Guide](https://kasmweb.com/docs/latest/how_to/building_images.html).
+
+### Where to start
+
+| Interest | Start here |
+|----------|-----------|
+| Frontend / UI | `coeadapt-launcher/src/pages/` and `src/components/` — React + Tailwind |
+| Backend / Systems | `coeadapt-launcher/src-tauri/src/` — Rust, Docker management, health checks |
+| AI / MCP tools | `coeadapt-launcher/mcp-server/src/tools/` — add new tools Claude can use |
+| Container images | `src/ubuntu/install/` — add new apps or fix existing install scripts |
+| Security | [SECURITY.md](SECURITY.md) — review the audit, fix remaining issues |
+| Documentation | `docs/` — 80+ app READMEs, or improve this README |
 
 ---
 
