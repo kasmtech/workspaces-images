@@ -19,7 +19,7 @@ export function ToggleSwitch({ label, description, checked, onChange, disabled }
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-          checked ? "bg-accent" : "bg-surface-2"
+          checked ? "bg-accent" : "bg-surface-400"
         } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
       >
         <span

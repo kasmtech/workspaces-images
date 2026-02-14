@@ -19,8 +19,11 @@
 
   --color-text-primary: #ffffff;
   --color-text-secondary: #a3a3a3;
+  --color-text-tertiary: #8a8a8a;
   --color-text-muted: #737373;
   --color-text-faint: #525252;
+
+  --color-accent: #4f46e5;
 
   --color-success: #22c55e;
   --color-warning: #f59e0b;

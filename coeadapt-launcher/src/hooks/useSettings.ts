@@ -21,7 +21,15 @@ let storeInstance: Awaited<ReturnType<typeof import("@tauri-apps/plugin-store").
 async function getStore() {
   if (!storeInstance) {
     const { Store } = await import("@tauri-apps/plugin-store");
-    storeInstance = await Store.load("settings.json", { autoSave: true });
+    storeInstance = await Store.load("settings.json", {
+      defaults: {
+        autoStartWorkspace: false,
+        autoUpdateImage: false,
+        containerMemoryMb: 2048,
+        vncPassword: "coeadapt",
+      },
+      autoSave: true,
+    });
   }
   return storeInstance;
 }
