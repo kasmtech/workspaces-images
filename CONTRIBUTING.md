@@ -27,6 +27,12 @@ cd mcp-server && bun install && cd ..
 bun run tauri dev
 ```
 
+### Standalone mode (no CoeAdapt account needed)
+
+The default `.env` ships with a placeholder Clerk key, which automatically activates **standalone mode**. You can develop and test all workspace, container, and AI features without a CoeAdapt account.
+
+To develop CoeAdapt-specific features (Cora chat, career tracking, account management), you'll need a valid Clerk key. Contact the maintainers or sign up at [coeadapt.com](https://coeadapt.com). See the [Environment configuration](README.md#environment-configuration) section in the README for details.
+
 ## What you can work on
 
 ### Workspace images

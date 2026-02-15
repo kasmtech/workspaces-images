@@ -4,13 +4,16 @@ set -ex
 # Tell pnpm/node we're in a non-interactive CI environment (no TTY)
 export CI=true
 
-# Install Node.js 22 (required by OpenClaw/CareerClaw)
-# Download setup script first, then execute — avoids pipe-to-bash risks
+# Install dependencies including python3 (for gateway launcher) and Node.js 22
+apt-get update
+apt-get install -y python3 python3-pip git curl
+
+# Download and install Node.js 22
 NODESOURCE_SCRIPT=$(mktemp)
-curl -fsSL https://deb.nodesource.com/setup_22.x -o "$NODESOURCE_SCRIPT"
+curl -fsSL https://deb.nodesource.com/setup_22.x -o "$NODESOURCE_SCRIPT" || { echo "Failed to download Node.js setup script"; exit 1; }
 bash "$NODESOURCE_SCRIPT"
 rm -f "$NODESOURCE_SCRIPT"
-apt-get install -y nodejs git
+apt-get install -y nodejs
 
 # Enable corepack for pnpm
 corepack enable
@@ -18,15 +21,24 @@ corepack prepare pnpm@latest --activate
 
 # Clone CareerClaw (OpenClaw fork)
 CAREERCLAW_DIR="/opt/careerclaw"
-git clone --depth 1 https://github.com/alexander-acker/careerclaw.git "$CAREERCLAW_DIR"
+if [ -d "$CAREERCLAW_DIR" ]; then
+    rm -rf "$CAREERCLAW_DIR"
+fi
+
+echo "Cloning CareerClaw repository..."
+git clone --depth 1 https://github.com/alexander-acker/careerclaw.git "$CAREERCLAW_DIR" || { echo "Failed to clone CareerClaw repo"; exit 1; }
 
 # Build CareerClaw
 cd "$CAREERCLAW_DIR"
-pnpm install --frozen-lockfile
-pnpm build
-pnpm ui:build
+echo "Installing dependencies..."
+pnpm install --frozen-lockfile || { echo "Failed to install dependencies"; exit 1; }
+
+echo "Building CareerClaw..."
+pnpm build || { echo "Failed to build CareerClaw"; exit 1; }
+pnpm ui:build || { echo "Failed to build UI"; exit 1; }
 
 # Slim down: drop dev dependencies and git history to save ~300-500 MB
+echo "Pruning development dependencies..."
 CI=true pnpm prune --prod
 rm -rf .git
 

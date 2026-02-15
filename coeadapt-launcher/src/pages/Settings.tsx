@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser, useClerk } from "@clerk/clerk-react";
+import { STANDALONE_MODE } from "../lib/mode";
 import { useDiskSpace } from "../hooks/useDiskSpace";
 import { useClaudeConnection } from "../hooks/useClaudeConnection";
 import { useSettings } from "../hooks/useSettings";
@@ -15,19 +16,21 @@ type Tab = "account" | "ai" | "workspace" | "general";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("account");
+  const [tab, setTab] = useState<Tab>(STANDALONE_MODE ? "ai" : "account");
   const disk = useDiskSpace();
   const claude = useClaudeConnection();
   const appSettings = useSettings();
-  const { user } = useUser();
-  const { signOut } = useClerk();
-  const { deviceToken, loading: tokenLoading, regenerate: regenerateToken } = useDeviceToken();
+  const { user } = STANDALONE_MODE ? { user: null } : useUser();
+  const { signOut } = STANDALONE_MODE ? { signOut: () => {} } : useClerk();
+  const { deviceToken, loading: tokenLoading, regenerate: regenerateToken } = STANDALONE_MODE
+    ? { deviceToken: null, loading: false, regenerate: () => {} }
+    : useDeviceToken();
   const [resetting, setResetting] = useState(false);
   const [pruning, setPruning] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: "account", label: "Account" },
+    ...(!STANDALONE_MODE ? [{ id: "account" as Tab, label: "Account" }] : []),
     { id: "ai", label: "AI Connection" },
     { id: "workspace", label: "Workspace" },
     { id: "general", label: "General" },

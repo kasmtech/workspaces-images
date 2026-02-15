@@ -31,5 +31,10 @@ Brand/
 /*.png
 .claude/
 .playwright-mcp/
-Coeadapt-Launcher-Prompt.md
 console-errors.log
+
+# AI prompt files, build prompts, and internal docs (never commit to public repo)
+*-Prompt.md
+*-prompt.md
+CLAUDE.md
+docs/COEADAPT_API.md
