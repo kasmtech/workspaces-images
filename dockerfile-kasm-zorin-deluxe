@@ -28,7 +28,7 @@ RUN bash $INST_SCRIPTS/ssl/install_ssl.sh && rm -rf $INST_SCRIPTS/ssl/
 COPY ./src/ubuntu/install/kasmvnc_settings $INST_SCRIPTS/kasmvnc_settings/
 RUN bash $INST_SCRIPTS/kasmvnc_settings/install_kasmvnc_settings.sh && rm -rf $INST_SCRIPTS/kasmvnc_settings/
 
-# Install Zorin OS Theme (themes, icons, wallpaper, fonts, XFCE config)
+# Install macOS-style theme (Colloid GTK + Plank dock + XFCE panel)
 COPY ./src/ubuntu/install/zorin_theme $INST_SCRIPTS/zorin_theme/
 RUN bash $INST_SCRIPTS/zorin_theme/install_zorin_theme.sh && rm -rf $INST_SCRIPTS/zorin_theme/
 
@@ -81,6 +81,21 @@ RUN bash $INST_SCRIPTS/remmina/install_remmina.sh && rm -rf $INST_SCRIPTS/remmin
 COPY ./src/ubuntu/install/careerclaw $INST_SCRIPTS/careerclaw/
 RUN bash $INST_SCRIPTS/careerclaw/install_careerclaw.sh && rm -rf $INST_SCRIPTS/careerclaw/
 
+# CareerClaw custom startup (gateway respawn loop)
+COPY ./src/ubuntu/install/careerclaw/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
+
+# Add extra dock items for deluxe apps
+RUN PLANK_DIR="$HOME/.config/plank/dock1/launchers" && \
+    echo "[PlankDockItemPreferences]" > "$PLANK_DIR/chrome.dockitem" && \
+    echo "Launcher=file:///usr/share/applications/google-chrome.desktop" >> "$PLANK_DIR/chrome.dockitem" && \
+    echo "[PlankDockItemPreferences]" > "$PLANK_DIR/vscode.dockitem" && \
+    echo "Launcher=file:///usr/share/applications/code.desktop" >> "$PLANK_DIR/vscode.dockitem" && \
+    echo "[PlankDockItemPreferences]" > "$PLANK_DIR/gimp.dockitem" && \
+    echo "Launcher=file:///usr/share/applications/gimp.desktop" >> "$PLANK_DIR/gimp.dockitem" && \
+    sed -i 's/^DockItems=.*/DockItems=files.dockitem;firefox.dockitem;chrome.dockitem;vscode.dockitem;terminal.dockitem;gimp.dockitem;careerclaw.dockitem/' "$HOME/.config/plank/dock1/settings"
+
 ######### End Customizations ###########
 
 RUN $STARTUPDIR/set_user_permission.sh $HOME
@@ -93,4 +108,5 @@ RUN mkdir -p $HOME && chown -R 1000:0 $HOME
 
 USER 1000
 
+EXPOSE 18789
 CMD ["--tail-log"]

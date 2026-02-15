@@ -26,7 +26,7 @@ RUN bash $INST_SCRIPTS/ssl/install_ssl.sh && rm -rf $INST_SCRIPTS/ssl/
 COPY ./src/ubuntu/install/kasmvnc_settings $INST_SCRIPTS/kasmvnc_settings/
 RUN bash $INST_SCRIPTS/kasmvnc_settings/install_kasmvnc_settings.sh && rm -rf $INST_SCRIPTS/kasmvnc_settings/
 
-# Install Zorin OS Theme (themes, icons, wallpaper, fonts, XFCE config)
+# Install macOS-style theme (Colloid GTK + Plank dock + XFCE panel)
 COPY ./src/ubuntu/install/zorin_theme $INST_SCRIPTS/zorin_theme/
 RUN bash $INST_SCRIPTS/zorin_theme/install_zorin_theme.sh && rm -rf $INST_SCRIPTS/zorin_theme/
 
@@ -50,11 +50,15 @@ RUN bash $INST_SCRIPTS/chrome/install_chrome.sh && rm -rf $INST_SCRIPTS/chrome/
 ### Install CareerClaw AI Assistant (OpenClaw fork)
 COPY ./src/ubuntu/install/careerclaw $INST_SCRIPTS/careerclaw/
 RUN bash $INST_SCRIPTS/careerclaw/install_careerclaw.sh && rm -rf $INST_SCRIPTS/careerclaw/
+# CareerClaw custom startup (gateway respawn loop)
+COPY ./src/ubuntu/install/careerclaw/custom_startup.sh $STARTUPDIR/custom_startup.sh
+RUN chmod +x $STARTUPDIR/custom_startup.sh
+RUN chmod 755 $STARTUPDIR/custom_startup.sh
 
 ######### End Customizations ###########
 
-RUN chown 1000:0 $HOME
 RUN $STARTUPDIR/set_user_permission.sh $HOME
+RUN chown 1000:0 $HOME
 
 ENV HOME=/home/kasm-user
 WORKDIR $HOME
