@@ -88,10 +88,7 @@ mkdir -p "$OPENCLAW_STATE/workspace"
 mkdir -p "$OPENCLAW_STATE/agents/main/sessions"
 mkdir -p "$OPENCLAW_STATE/credentials"
 
-# Generate a per-install gateway token
-GATEWAY_TOKEN=$(openssl rand -hex 32)
-
-cat > "$OPENCLAW_STATE/openclaw.json" <<CONF
+cat > "$OPENCLAW_STATE/openclaw.json" <<'CONF'
 {
   "agents": {
     "defaults": {
@@ -103,19 +100,11 @@ cat > "$OPENCLAW_STATE/openclaw.json" <<CONF
   "gateway": {
     "mode": "local",
     "port": 18789,
-    "bind": "loopback",
-    "auth": {
-      "mode": "token",
-      "token": "$GATEWAY_TOKEN"
-    }
+    "bind": "loopback"
   }
 }
 CONF
 chmod 600 "$OPENCLAW_STATE/openclaw.json"
-
-# Save token separately so the Tauri launcher can read it
-echo "$GATEWAY_TOKEN" > "$OPENCLAW_STATE/gateway-token"
-chmod 600 "$OPENCLAW_STATE/gateway-token"
 
 # Create desktop icon
 mkdir -p /usr/share/icons/hicolor/apps
