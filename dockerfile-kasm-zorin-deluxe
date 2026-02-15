@@ -20,6 +20,10 @@ ENV VNCOPTIONS="-DynamicQualityMin 6 -DynamicQualityMax 9 -TreatLossless 9 -Jpeg
 
 ######### Customize Container Here ###########
 
+# SSL: Generate CA-signed certs so browsers trust the HTTPS connection
+COPY ./src/ubuntu/install/ssl $INST_SCRIPTS/ssl/
+RUN bash $INST_SCRIPTS/ssl/install_ssl.sh && rm -rf $INST_SCRIPTS/ssl/
+
 # KasmVNC high-quality settings (1080p, 60fps, max quality)
 COPY ./src/ubuntu/install/kasmvnc_settings $INST_SCRIPTS/kasmvnc_settings/
 RUN bash $INST_SCRIPTS/kasmvnc_settings/install_kasmvnc_settings.sh && rm -rf $INST_SCRIPTS/kasmvnc_settings/

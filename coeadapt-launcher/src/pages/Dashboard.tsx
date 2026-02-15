@@ -62,6 +62,21 @@ export default function Dashboard() {
               </div>
             </div>
             <WorkspaceControls isRunning={container.isRunning} isStopped={container.isStopped} loading={container.loading} onStart={handleStart} onStop={container.stopWorkspace} onOpen={container.openWorkspace} />
+            {container.isRunning && container.sslTrusted === false && (
+              <div className="rounded-lg border border-warning/30 bg-warning/5 p-3 space-y-2">
+                <p className="text-xs text-text-secondary">
+                  Your browser will show a security warning when opening the workspace.
+                  Install the workspace certificate to fix this.
+                </p>
+                <button
+                  onClick={container.installSslCertificate}
+                  disabled={container.sslInstalling}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  {container.sslInstalling ? "Installing..." : "Trust Workspace Certificate"}
+                </button>
+              </div>
+            )}
             {container.error && <p className="text-danger text-sm">{container.error}</p>}
           </div>
 

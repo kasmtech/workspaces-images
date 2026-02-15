@@ -5,6 +5,7 @@ mod disk;
 mod docker;
 mod health;
 mod mcp;
+mod ssl;
 mod state;
 
 use tauri::{
@@ -214,6 +215,9 @@ pub fn run() {
             commands::get_claude_status,
             commands::configure_claude,
             commands::open_workspace_browser,
+            commands::check_ssl_trust,
+            commands::install_ssl_certificate,
+            commands::uninstall_ssl_certificate,
             commands::start_mcp,
             commands::stop_mcp,
         ])

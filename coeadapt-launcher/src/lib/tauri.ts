@@ -48,6 +48,9 @@ export const tauri = {
   getClaudeStatus: () => safeInvoke<ClaudeStatus>("get_claude_status"),
   configureClaude: () => safeInvoke<void>("configure_claude"),
   openWorkspaceBrowser: () => safeInvoke<void>("open_workspace_browser"),
+  checkSslTrust: () => safeInvoke<boolean>("check_ssl_trust"),
+  installSslCertificate: () => safeInvoke<void>("install_ssl_certificate"),
+  uninstallSslCertificate: () => safeInvoke<void>("uninstall_ssl_certificate"),
   startMcp: () => safeInvoke<void>("start_mcp"),
   stopMcp: () => safeInvoke<void>("stop_mcp"),
 };

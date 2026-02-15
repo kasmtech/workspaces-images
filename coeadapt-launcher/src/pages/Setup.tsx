@@ -21,6 +21,7 @@ function CheckIcon() {
 
 export default function Setup() {
   const [step, setStep] = useState<Step>("welcome");
+  const [startError, setStartError] = useState<string | null>(null);
   const navigate = useNavigate();
   const docker = useDocker();
   const container = useContainer();
@@ -50,19 +51,51 @@ export default function Setup() {
       const exists = await tauri.checkImageExists();
       if (exists) { setStep("starting"); handleStart(); return; }
       await container.pullImage();
+      if (container.error) return; // Stay on pull step, error shown there
       setStep("starting");
       handleStart();
-    } catch { /* container.error */ }
+    } catch (e) {
+      // container.error will be set by the hook - stay on pull step
+      console.error("[setup] pull failed:", e);
+    }
   };
 
   const handleStart = async () => {
+    setStartError(null);
     try {
       const status = await tauri.getWorkspaceStatus();
-      if (status.state === "NotFound") await container.createWorkspace();
-      else if (status.state === "Stopped") await container.startWorkspace();
+      if (status.state === "NotFound") {
+        await container.createWorkspace();
+        // Check if create actually failed
+        if (container.error) {
+          setStartError(container.error);
+          return;
+        }
+      } else if (status.state === "Stopped") {
+        await container.startWorkspace();
+        if (container.error) {
+          setStartError(container.error);
+          return;
+        }
+      }
       await tauri.waitForReady();
       setStep("ready");
-    } catch { /* hook handles */ }
+    } catch (e) {
+      const msg = String(e);
+      console.error("[setup] start failed:", msg);
+      if (msg.includes("not ready after")) {
+        setStartError("Your workspace is taking longer than expected. It may still be starting — try again in a moment.");
+      } else if (msg.includes("No such image") || msg.includes("not found")) {
+        setStartError("The workspace image wasn't found. The image may not have been downloaded correctly.");
+      } else {
+        setStartError(msg.replace(/^Error:\s*/i, ""));
+      }
+    }
+  };
+
+  const handleRetryStart = () => {
+    setStartError(null);
+    handleStart();
   };
 
   useEffect(() => { if (step === "pull") handlePull(); }, [step]);
@@ -179,8 +212,32 @@ export default function Setup() {
           {step === "starting" && (
             <div className="animate-fade-in space-y-8 text-center">
               <h2 className="text-2xl font-semibold">{STRINGS.SETUP_STARTING}</h2>
-              <Spinner size="lg" />
-              <p className="text-text-muted text-sm">This usually takes about 30 seconds</p>
+              {startError ? (
+                <div className="space-y-5">
+                  <div className="glass-card p-5 text-left">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-danger shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
+                      <div>
+                        <p className="text-sm font-medium text-danger mb-1">Something went wrong</p>
+                        <p className="text-xs text-text-muted leading-relaxed">{startError}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 justify-center">
+                    <button onClick={handleRetryStart} className="btn-primary text-sm px-6 py-2.5">
+                      Try Again
+                    </button>
+                    <button onClick={() => navigate("/dashboard")} className="btn-secondary text-sm px-6 py-2.5">
+                      Go to Dashboard
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Spinner size="lg" />
+                  <p className="text-text-muted text-sm">This usually takes about 30 seconds</p>
+                </>
+              )}
             </div>
           )}
 

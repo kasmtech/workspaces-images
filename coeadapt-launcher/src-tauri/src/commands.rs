@@ -1,4 +1,4 @@
-use crate::{claude, container, disk, docker, health, mcp};
+use crate::{claude, container, disk, docker, health, mcp, ssl};
 use std::time::Duration;
 
 // --- Docker Detection ---
@@ -134,6 +134,23 @@ pub fn get_claude_status() -> crate::state::ClaudeStatus {
 #[tauri::command]
 pub fn configure_claude() -> Result<(), String> {
     claude::inject_coeadapt_config()
+}
+
+// --- SSL / Certificate Trust ---
+
+#[tauri::command]
+pub fn check_ssl_trust() -> bool {
+    ssl::is_ca_installed()
+}
+
+#[tauri::command]
+pub fn install_ssl_certificate() -> Result<(), String> {
+    ssl::install_ca_cert()
+}
+
+#[tauri::command]
+pub fn uninstall_ssl_certificate() -> Result<(), String> {
+    ssl::uninstall_ca_cert()
 }
 
 // --- Workspace Browser ---

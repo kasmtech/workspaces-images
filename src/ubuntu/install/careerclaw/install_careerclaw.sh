@@ -159,6 +159,17 @@ AUTOSTART
 chown -R 1000:0 "$CAREERCLAW_DIR"
 chown -R 1000:0 "$OPENCLAW_STATE"
 
+# Ensure VNC startup script is correct (fix for grey screen issue)
+mkdir -p "/home/kasm-user/.vnc"
+cat > "/home/kasm-user/.vnc/xstartup" <<'XSTARTUP'
+#!/bin/bash
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+exec startxfce4
+XSTARTUP
+chmod +x "/home/kasm-user/.vnc/xstartup"
+chown 1000:0 "/home/kasm-user/.vnc/xstartup"
+
 # Cleanup for app layer
 chown -R 1000:0 $HOME
 find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;

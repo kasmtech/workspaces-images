@@ -7,6 +7,8 @@ export function useContainer() {
   const [pullProgress, setPullProgress] = useState<PullProgress | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sslTrusted, setSslTrusted] = useState<boolean | null>(null);
+  const [sslInstalling, setSslInstalling] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -18,6 +20,17 @@ export function useContainer() {
     }
   }, []);
 
+  const checkSsl = useCallback(async () => {
+    try {
+      const trusted = await tauri.checkSslTrust();
+      setSslTrusted(trusted);
+      return trusted;
+    } catch {
+      setSslTrusted(null);
+      return false;
+    }
+  }, []);
+
   useEffect(() => {
     refresh();
 
@@ -26,6 +39,7 @@ export function useContainer() {
     });
     const unlistenReady = safeListen<boolean>("workspace-ready", () => {
       refresh();
+      checkSsl();
     });
 
     const interval = setInterval(refresh, 10000);
@@ -35,7 +49,7 @@ export function useContainer() {
       unlistenReady.then((fn) => fn());
       clearInterval(interval);
     };
-  }, [refresh]);
+  }, [refresh, checkSsl]);
 
   const pullImage = useCallback(async () => {
     setLoading(true);
@@ -97,11 +111,31 @@ export function useContainer() {
     }
   }, []);
 
+  const installSslCertificate = useCallback(async () => {
+    setSslInstalling(true);
+    setError(null);
+    try {
+      await tauri.installSslCertificate();
+      setSslTrusted(true);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setSslInstalling(false);
+    }
+  }, []);
+
   const isRunning = status?.state === "Running";
   const isStopped = status?.state === "Stopped" || status?.state === "NotFound";
 
+  // Check SSL trust when container becomes running
+  useEffect(() => {
+    if (isRunning) checkSsl();
+  }, [isRunning, checkSsl]);
+
   return {
     status, pullProgress, loading, error, isRunning, isStopped,
+    sslTrusted, sslInstalling,
     pullImage, createWorkspace, startWorkspace, stopWorkspace, openWorkspace, refresh,
+    installSslCertificate,
   };
 }
