@@ -152,7 +152,6 @@ pref("browser.aboutwelcome.enabled", false);
 EOF
 fi
 
-# Firefox 147+ introduced XDG base dir support, so profile paths will vary and need to be handled appropriately
 FIREFOX_VERSION=$(firefox --version | awk '{print $3}')
 FIREFOX_MAJOR=$(echo "$FIREFOX_VERSION" | cut -d. -f1)
 if [ "${FIREFOX_MAJOR:-0}" -ge 147 ]; then
@@ -163,18 +162,7 @@ fi
 FIREFOX_PROFILE_PATH="$FIREFOX_PROFILE_BASE/kasm"
 FIREFOX_PROFILES_INI="$FIREFOX_PROFILE_BASE/profiles.ini"
 
-# Firefox 147+ introduced XDG base dir support, so profile paths will vary and need to be handled appropriately
-FIREFOX_VERSION=$(firefox --version | awk '{print $3}')
-FIREFOX_MAJOR=$(echo "$FIREFOX_VERSION" | cut -d. -f1)
-if [ "${FIREFOX_MAJOR:-0}" -ge 147 ]; then
-  FIREFOX_PROFILE_BASE="$HOME/.config/mozilla/firefox"
-else
-  FIREFOX_PROFILE_BASE="$HOME/.mozilla/firefox"
-fi
-FIREFOX_PROFILE_PATH="$FIREFOX_PROFILE_BASE/kasm"
-FIREFOX_PROFILES_INI="$FIREFOX_PROFILE_BASE/profiles.ini"
-
-if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40|fedora41) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   # Creating a default profile
   chown -R root:root $HOME
   firefox -headless -CreateProfile "kasm $FIREFOX_PROFILE_PATH"
@@ -198,19 +186,12 @@ else
   firefox -headless -CreateProfile "kasm $FIREFOX_PROFILE_PATH"
 fi
 
-# Silence Firefox security nag "Some of Firefox's features may offer less protection on your current operating system".
+# Silence Firefox security nag "Some of Firefox's features may offer less protection on your current operating system"
 mkdir -p "$FIREFOX_PROFILE_PATH"
 echo 'user_pref("security.sandbox.warn_unprivileged_namespaces", false);' > "$FIREFOX_PROFILE_PATH/user.js"
 chown 1000:1000 "$FIREFOX_PROFILE_PATH/user.js"
 
-# configure smartcard support
-# note: some firefox versions don't read from the global pkcs11.txt when creating profiles
-if [[ ${KASM_SVC_SMARTCARD:-1} == 1 ]] && [ -f "$HOME/.pki/nssdb/pkcs11.txt" ]; then
-    cp "$HOME/.pki/nssdb/pkcs11.txt" "$FIREFOX_PROFILE_PATH/pkcs11.txt"
-    chown 1000:1000 "$FIREFOX_PROFILE_PATH/pkcs11.txt"
-fi
-
-if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40|fedora41) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
   set_desktop_icon
 fi
 
@@ -237,13 +218,13 @@ EOL
   Locked=1
 EOL
   fi
-elif [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40|fedora41) ]]; then
+elif [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$FIREFOX_PROFILES_INI <<EOL
 [Install4F96D1932A9F858E]
 Default=kasm
 Locked=1
 EOL
-elif [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40|fedora41) ]]; then
+elif [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|opensuse|fedora39|fedora40) ]]; then
 cat >>$FIREFOX_PROFILES_INI <<EOL
 [Install11457493C5A56847]
 Default=kasm
