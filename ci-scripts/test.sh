@@ -117,7 +117,7 @@ function turnoff() {
   for IP in "${IPS[@]}"; do
     ssh \
       -oConnectTimeout=4 \
-      -oStrictHostKeyChecking=accept-new \
+      -oStrictHostKeyChecking=no \
       ${USER}@${IP} \
       "sudo poweroff" || :
   done
@@ -131,7 +131,7 @@ for IP in "${IPS[@]}"; do
     sleep 2
     UPTIME=$(ssh \
       -oConnectTimeout=4 \
-      -oStrictHostKeyChecking=accept-new \
+      -oStrictHostKeyChecking=no \
       ${USER}@${IP} \
      'uptime'|| :)
     if [ -z "${UPTIME}" ]; then
@@ -152,7 +152,7 @@ for IP in "${IPS[@]}"; do
     sleep 2
     UPTIME=$(ssh \
       -oConnectTimeout=4 \
-      -oStrictHostKeyChecking=accept-new \
+      -oStrictHostKeyChecking=no \
       ${USER}@${IP} \
      'uptime'|| :)
     if [ -z "${UPTIME}" ]; then
@@ -167,12 +167,12 @@ done
 # Copy over docker auth
 for IP in "${IPS[@]}"; do
   scp \
-    -oStrictHostKeyChecking=accept-new \
+    -oStrictHostKeyChecking=no \
     /root/.docker/config.json \
     ${USER}@${IP}:/tmp/
   ssh \
     -oConnectTimeout=10 \
-    -oStrictHostKeyChecking=accept-new \
+    -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
     "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json"
 done
@@ -180,7 +180,7 @@ done
 # Install Kasm workspaces
 ssh \
   -oConnectTimeout=4 \
-  -oStrictHostKeyChecking=accept-new \
+  -oStrictHostKeyChecking=no \
   ${USER}@"${IPS[0]}" \
   "curl -L -o /tmp/installer.tar.gz ${TEST_INSTALLER} && cd /tmp && tar xf installer.tar.gz && sudo bash kasm_release/install.sh -H -u -I -e -P ${RAND} -U ${RAND}"
 
@@ -192,7 +192,7 @@ docker pull ${ORG_NAME}/kasm-tester:1.18.0
 
 # Run test
 cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
-chmod 600 $(dirname ${CI_PROJECT_DIR})/sshkey
+chmod 777 $(dirname ${CI_PROJECT_DIR})/sshkey
 docker run --rm \
   -e TZ=US/Pacific \
   -e KASM_HOST=${IPS[0]} \
