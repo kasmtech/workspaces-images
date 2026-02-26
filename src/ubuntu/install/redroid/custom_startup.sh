@@ -42,7 +42,7 @@ start_android() {
   sudo docker run -itd --rm --privileged \
     --pull always \
     -v ~/data:/data \
-    -p 127.0.0.1:5555:5555 \
+    -p 5555:5555 \
     redroid/redroid:${ANDROID_VERSION}-latest \
     androidboot.redroid_gpu_mode=${REDROID_GPU_GUEST_MODE} \
     androidboot.redroid_fps=${REDROID_FPS} \
