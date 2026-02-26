@@ -29,7 +29,7 @@ if [[ "${DISTRO}" == @(centos|oracle8|rockylinux9|rockylinux8|oracle9|rhel9|alma
   fi
   rm chrome.rpm
 elif [ "${DISTRO}" == "opensuse" ]; then
-  zypper ar http://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
+  zypper ar https://dl.google.com/linux/chrome/rpm/stable/x86_64 Google-Chrome
   wget https://dl.google.com/linux/linux_signing_key.pub
   rpm --import linux_signing_key.pub
   rm linux_signing_key.pub

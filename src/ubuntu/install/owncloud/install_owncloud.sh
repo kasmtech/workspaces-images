@@ -4,7 +4,7 @@ set -ex
 wget -nv https://download.opensuse.org/repositories/isv:ownCloud:desktop/Ubuntu_17.04/Release.key -O Release.key
 apt-key add - < Release.key
 apt-get update
-sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.04/ /' > /etc/apt/sources.list.d/isv:ownCloud:desktop.list"
+sh -c "echo 'deb https://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.04/ /' > /etc/apt/sources.list.d/isv:ownCloud:desktop.list"
 apt-get update
 apt-get install -y owncloud-client
 mkdir -p $HOME/.config/ownCloud

@@ -1,0 +1,5 @@
+FROM career-box-60fps
+USER root
+COPY ./src/ubuntu/install/careerclaw/fix_startup.sh /tmp/fix_startup.sh
+RUN sed -i 's/\r$//' /tmp/fix_startup.sh && bash /tmp/fix_startup.sh && rm /tmp/fix_startup.sh
+USER 1000

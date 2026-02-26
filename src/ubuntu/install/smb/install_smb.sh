@@ -53,16 +53,9 @@ client max protocol = SMB3
 #### Networking ####
 
 # The specific set of interfaces / networks to bind to
-# This can be either the interface name or an IP address/netmask;
-# interface names are normally preferred
-;   interfaces = 127.0.0.0/8 eth0
-
-# Only bind to the named interfaces and/or networks; you must use the
-# 'interfaces' option above to use this.
-# It is recommended that you enable this feature if your Samba machine is
-# not protected by a firewall or is a firewall itself.  However, this
-# option cannot handle dynamic or non-broadcast interfaces correctly.
-;   bind interfaces only = yes
+# Restricted to localhost for security — only local file sharing
+   interfaces = 127.0.0.0/8
+   bind interfaces only = yes
 
 
 
@@ -125,7 +118,7 @@ client max protocol = SMB3
 
 # This option controls how unsuccessful authentication attempts are mapped
 # to anonymous connections
-   map to guest = bad user
+   map to guest = never
 
 ########## Domains ###########
 
@@ -191,7 +184,7 @@ client max protocol = SMB3
 
 # Allow users who've been granted usershare privileges to create
 # public shares, not just authenticated ones
-   usershare allow guests = yes
+   usershare allow guests = no
 
 #======================= Share Definitions =======================
 

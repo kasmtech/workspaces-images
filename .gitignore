@@ -1,0 +1,40 @@
+node_modules/
+.env
+.env.local
+*.log
+dist/
+.DS_Store
+Thumbs.db
+
+# Windows reserved device names
+nul
+NUL
+
+# Rust build artifacts
+target/
+
+# Tauri build output
+coeadapt-launcher/src-tauri/target/
+coeadapt-launcher/src-tauri/binaries/*
+!coeadapt-launcher/src-tauri/binaries/.gitkeep
+
+# Lock files (platform-specific)
+*.lock
+!bun.lock
+
+# Secrets and license keys
+*.key
+!*.pub
+
+# Development artifacts
+Brand/
+/*.png
+.claude/
+.playwright-mcp/
+console-errors.log
+
+# AI prompt files, build prompts, and internal docs (never commit to public repo)
+*-Prompt.md
+*-prompt.md
+CLAUDE.md
+docs/COEADAPT_API.md
