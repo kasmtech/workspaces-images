@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useContainer } from "../hooks/useContainer";
 import { useDiskSpace } from "../hooks/useDiskSpace";
 import { useClaudeConnection } from "../hooks/useClaudeConnection";
+import { useProgress } from "../hooks/useProgress";
 import { STANDALONE_MODE } from "../lib/mode";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { WorkspaceControls } from "../components/WorkspaceControls";
 import { DiskUsage } from "../components/DiskUsage";
+import { ProgressCard } from "../components/ProgressCard";
 import { STRINGS } from "../lib/constants";
 import type { ContainerState } from "../lib/types";
 
@@ -30,6 +32,7 @@ export default function Dashboard() {
   const container = useContainer();
   const disk = useDiskSpace();
   const claude = useClaudeConnection();
+  const progress = useProgress(container.isRunning);
 
   const handleStart = async () => {
     if (container.status?.state === "NotFound") await container.createWorkspace();
@@ -102,6 +105,15 @@ export default function Dashboard() {
               </button>
             )}
           </div>
+
+          {/* Career Progress */}
+          {container.isRunning && (
+            <ProgressCard
+              summary={progress.summary}
+              agentHealth={progress.agentHealth}
+              loading={progress.loading}
+            />
+          )}
 
           {/* Navi - AI Career Companion (CoeAdapt mode only) */}
           {!STANDALONE_MODE && (

@@ -37,9 +37,9 @@ function get_set_creds() {
   CREDENTIALS=$(zenity --forms --title="VPN credentials" --text="Enter your VPN auth credentials" --add-entry="Username" --add-password="Password" --separator ",,,,,,")
   USER=$(awk -F',,,,,,' '{print $1}' <<<$CREDENTIALS)
   PASS=$(awk -F',,,,,,' '{print $2}' <<<$CREDENTIALS)
-  install -m 600 -o kasm-user -g kasm-user /dev/null /home/kasm-user/vpn_credentials
   echo ${USER} > /home/kasm-user/vpn_credentials
   echo ${PASS} >> /home/kasm-user/vpn_credentials
+  chown kasm-user:kasm-user /home/kasm-user/vpn_credentials
   cp ${VPN_CONFIG} /home/kasm-user/vpn.ovpn
   chown kasm-user:kasm-user /home/kasm-user/vpn.ovpn
   sed -i "s#auth-user-pass#auth-user-pass /home/kasm-user/vpn_credentials#g" /home/kasm-user/vpn.ovpn
@@ -179,7 +179,6 @@ if [ -e ${VPN_LAUNCH_CONFIG} ]; then
   elif [ "${VPN_SERVICE}" == "openvpn" ]; then
     OPENVPN_USERNAME="$(jq -r '.openvpn_username' ${VPN_LAUNCH_CONFIG})"
     OPENVPN_PASSWORD="$(jq -r '.openvpn_password' ${VPN_LAUNCH_CONFIG})"
-    install -m 600 /dev/null ${DEFAULT_OPENVPN_CREDS}
     echo ${OPENVPN_USERNAME} > ${DEFAULT_OPENVPN_CREDS}
     echo ${OPENVPN_PASSWORD} >> ${DEFAULT_OPENVPN_CREDS}
     jq -r '.openvpn_config' ${VPN_LAUNCH_CONFIG} > ${DEFAULT_OPENVPN_CONFIG}
