@@ -11,7 +11,7 @@
 Career-Box is a containerized career workspace that pairs a Kasm-based Linux desktop with an AI agent gateway (CareerClaw). The Coeadapt Launcher is a Tauri v2 desktop app that makes the entire system accessible to non-technical users. This plan covers two interleaved tracks:
 
 1. **Launch readiness** — everything needed to ship Career-Box v1.0 as a standalone, downloadable product.
-2. **CoeAdapt platform integration** — connecting the launcher and workspace to the CoeAdapt web application for Cora, career tracking, and cloud sync.
+2. **CoeAdapt platform integration** — connecting the launcher and workspace to the CoeAdapt web application for Navi, career tracking, and cloud sync.
 
 The plan is organized into six phases, each with concrete deliverables, owners, and acceptance criteria. Phases 1–3 are sequential prerequisites. Phases 4–6 can run in parallel once Phase 3 is complete.
 
@@ -52,7 +52,7 @@ The plan is organized into six phases, each with concrete deliverables, owners, 
 | Settings page | Done | AI Connection + Workspace + General tabs |
 | Clerk auth scaffolding | Done | ClerkProvider, mode detection, auth guard |
 | CoeAdapt API client | Done | Typed client with JWT + device token auth |
-| Cora chat page | Done | Basic send/receive UI with streaming support |
+| Navi chat page | Done | Basic send/receive UI with streaming support |
 | Account settings tab | Done | Profile display, device token, sign out |
 | Standalone mode detection | Done | Auto-detects from VITE_CLERK_PUBLISHABLE_KEY |
 | CareerClaw install script | Done | Dependencies, build, CLI, gateway, systemd |
@@ -68,7 +68,7 @@ The plan is organized into six phases, each with concrete deliverables, owners, 
 | No CI/CD for launcher builds | High | Yes — no reproducible release pipeline |
 | No E2E or integration tests | High | No — but risky to ship without |
 | CoeAdapt API endpoints are stubbed in client but untested | High | Yes — integration will break silently |
-| Cora chat uses non-streaming `sendMessage` despite streaming UI | Medium | No — but UX is degraded |
+| Navi chat uses non-streaming `sendMessage` despite streaming UI | Medium | No — but UX is degraded |
 | No error boundaries in React | Medium | No — but crashes blank the app |
 | No telemetry or crash reporting | Medium | No — but debugging production issues will be blind |
 | No license compliance check on 80+ upstream images | Medium | Yes for distribution |
@@ -138,7 +138,7 @@ The plan is organized into six phases, each with concrete deliverables, owners, 
 
 ## Phase 2: CoeAdapt API Integration
 
-**Goal:** Wire the launcher to the live CoeAdapt web application so that authenticated users get Cora, career tracking, and cloud sync.
+**Goal:** Wire the launcher to the live CoeAdapt web application so that authenticated users get Navi, career tracking, and cloud sync.
 
 **Duration:** 2–3 weeks
 
@@ -193,10 +193,10 @@ Validate each API endpoint in `lib/api.ts` against the live CoeAdapt backend:
 - [ ] Add error handling for 401 (redirect to login), 429 (rate limit backoff), 5xx (retry with exponential backoff)
 - [ ] Add offline detection and queue mutations for retry
 
-### 2.3 Cora chat — streaming upgrade
+### 2.3 Navi chat — streaming upgrade
 
 - [ ] Implement SSE or WebSocket streaming for `/api/chatbot/agent`
-- [ ] Update `useCoraChat` hook to consume streaming tokens
+- [ ] Update `useNaviChat` hook to consume streaming tokens
 - [ ] Display tokens as they arrive (already have streaming UI scaffolding)
 - [ ] Add conversation persistence (thread ID stored in `tauri-plugin-store`)
 - [ ] Add conversation history loading on Chat page mount
@@ -210,7 +210,7 @@ Validate each API endpoint in `lib/api.ts` against the live CoeAdapt backend:
   - Next job application deadline
 - [ ] Wire to `api.getPlans()`, `api.getHabitsToday()`, `api.getTasks()`, `api.getJobs()`
 - [ ] Add loading skeletons for async data
-- [ ] Handle empty states ("No plan yet — chat with Cora to get started")
+- [ ] Handle empty states ("No plan yet — chat with Navi to get started")
 
 ### 2.5 Device token handoff to MCP sidecar
 
@@ -263,7 +263,7 @@ Validate each API endpoint in `lib/api.ts` against the live CoeAdapt backend:
   - Submit evidence
   - Log skill practice
   - Report habit completion
-- [ ] Cora (in web app) can trigger CareerClaw actions in workspace:
+- [ ] Navi (in web app) can trigger CareerClaw actions in workspace:
   - Open a URL
   - Run a command
   - Take a screenshot
@@ -481,7 +481,7 @@ Post-launch (T+7 days):
 | Downloads | 500+ |
 | Successful setups (workspace running) | 70% of downloads |
 | CoeAdapt account connections | 30% of successful setups |
-| Cora conversations started | 50% of connected users |
+| Navi conversations started | 50% of connected users |
 | Critical bugs reported | < 5 |
 | Average setup time (download → workspace open) | < 10 min |
 
@@ -490,7 +490,7 @@ Post-launch (T+7 days):
 | Metric | Target |
 |--------|--------|
 | Monthly active workspaces | 200+ |
-| Career plans created via Cora | 100+ |
+| Career plans created via Navi | 100+ |
 | Tasks completed in workspace | 500+ |
 | Community contributions (PRs) | 10+ |
 | GitHub stars | 100+ |
@@ -503,7 +503,7 @@ Post-launch (T+7 days):
 
 2. **macOS notarization:** Do we pay for Apple Developer Program ($99/year) for v1.0, or ship unsigned with "Open Anyway" instructions?
 
-3. **Cora streaming protocol:** Does the CoeAdapt API support SSE for `/api/chatbot/agent`? Or do we need WebSockets? Or is polling acceptable for v1?
+3. **Navi streaming protocol:** Does the CoeAdapt API support SSE for `/api/chatbot/agent`? Or do we need WebSockets? Or is polling acceptable for v1?
 
 4. **Subscription model:** What features are free vs. premium? This affects subscription gating implementation in Phase 2.6.
 
@@ -530,7 +530,7 @@ Phase 1 (Foundation)
 Phase 2 (CoeAdapt Integration)  ◄── requires 1.1  │
   ├── 2.1 Auth flow                                 │
   ├── 2.2 API contract validation                   │
-  ├── 2.3 Cora streaming                            │
+  ├── 2.3 Navi streaming                            │
   ├── 2.4 Career data in Dashboard                  │
   ├── 2.5 Device token → MCP                        │
   └── 2.6 Subscription gating                       │

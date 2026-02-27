@@ -11,7 +11,7 @@ export interface ChatMessage {
   timestamp: string;
 }
 
-export function useCoraChat(threadId: string = "default") {
+export function useNaviChat(threadId: string = "default") {
   const { getToken } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);

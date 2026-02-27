@@ -121,7 +121,7 @@ export default function Settings() {
 
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between py-2 border-b border-surface-300/50">
-                    <span className="text-text-muted">Cora Connection</span>
+                    <span className="text-text-muted">Navi Connection</span>
                     <StatusIndicator
                       status={deviceToken ? "running" : tokenLoading ? "starting" : "stopped"}
                       label={deviceToken ? "Connected" : tokenLoading ? "Connecting..." : "Not connected"}

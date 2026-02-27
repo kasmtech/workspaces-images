@@ -161,7 +161,7 @@ export const api = {
   // Notifications
   getNotifications: () => apiFetch<any>("/api/notifications/me"),
 
-  // Chat with Cora (non-streaming)
+  // Chat with Navi (non-streaming)
   sendMessage: (message: string, threadId?: string) =>
     apiFetch<{ response: string; threadId: string; timestamp: string }>(
       "/api/chatbot/agent",

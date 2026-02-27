@@ -28,7 +28,7 @@ It brings together two powerful open-source projects:
 
 > Career-Box works great on its own with any MCP-compatible AI assistant. For users who want more, it also integrates with the [CoeAdapt platform](https://coeadapt.com) for:
 >
-> - **Cora** — an AI career companion with career coaching, assessments, and personalized guidance
+> - **Navi** — an AI career companion with career coaching, assessments, and personalized guidance
 > - **Career tracking** — plans, tasks, goals, habits, job applications, portfolio, and skill verification
 > - **Cloud sync** — your career data accessible from anywhere
 >
@@ -62,11 +62,11 @@ It brings together two powerful open-source projects:
 └────────────────────────────────────────────────────┘
 ```
 
-**With CoeAdapt** (optional — adds Cora, career tracking, cloud sync):
+**With CoeAdapt** (optional — adds Navi, career tracking, cloud sync):
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│  Cora (coeadapt.com/cora)                                  │
+│  Navi (coeadapt.com/navi)                                  │
 │  AI career companion — powered by OpenClaw agent framework │
 └────────────────────┬───────────────────────────────────────┘
                      │  Cloud API
@@ -118,7 +118,7 @@ Each image is a self-contained Docker container with KasmVNC for browser-based a
 
 ## Career capabilities
 
-When connected to AI (Claude, Cora, or any MCP-compatible assistant), Career-Box becomes an intelligent workspace for:
+When connected to AI (Claude, Navi, or any MCP-compatible assistant), Career-Box becomes an intelligent workspace for:
 
 - **Resume building** — AI reads your drafts, tailors them to job postings, and writes cover letters
 - **Interview prep** — Practice answers out loud, get feedback, run mock interviews
@@ -164,7 +164,7 @@ No account required. No sign-up. Just launch and go.
 1. Create an account at [coeadapt.com](https://coeadapt.com)
 2. Configure your Clerk key (see [Connecting to CoeAdapt](#connecting-to-coeadapt))
 3. Launch the app and sign in
-4. Get access to Cora, career tracking, and cloud sync
+4. Get access to Navi, career tracking, and cloud sync
 
 ---
 
@@ -172,7 +172,7 @@ No account required. No sign-up. Just launch and go.
 
 > **This section is optional.** Career-Box works fully without CoeAdapt.
 
-To connect Career-Box to the CoeAdapt platform for Cora, career tracking, and cloud sync:
+To connect Career-Box to the CoeAdapt platform for Navi, career tracking, and cloud sync:
 
 1. Create an account at [coeadapt.com](https://coeadapt.com)
 2. Copy your Clerk publishable key from your CoeAdapt dashboard
@@ -185,7 +185,7 @@ To connect Career-Box to the CoeAdapt platform for Cora, career tracking, and cl
 
 This enables:
 - Sign-in with your CoeAdapt account
-- Cora AI career companion in the Dashboard
+- Navi AI career companion in the Dashboard
 - Career tracking and progress sync
 - Device token management for API access
 
@@ -273,11 +273,11 @@ Career-Box has two modes, auto-detected from `.env`:
 | Mode | When | What you get |
 |------|------|-------------|
 | **Standalone** (default) | No Clerk key, or `pk_test_REPLACE_ME` | Workspace + CareerClaw AI gateway + any MCP-compatible AI |
-| **CoeAdapt** | Valid Clerk publishable key | + Cora chat, career tracking, account management, cloud sync |
+| **CoeAdapt** | Valid Clerk publishable key | + Navi chat, career tracking, account management, cloud sync |
 
 The default `.env` ships with `pk_test_REPLACE_ME`, which activates standalone mode. You can develop and test all workspace, container, and AI features without a CoeAdapt account.
 
-To develop CoeAdapt-specific features (Cora chat, career tracking, account management), you'll need a valid Clerk key. Contact the maintainers or sign up at [coeadapt.com](https://coeadapt.com).
+To develop CoeAdapt-specific features (Navi chat, career tracking, account management), you'll need a valid Clerk key. Contact the maintainers or sign up at [coeadapt.com](https://coeadapt.com).
 
 The mode detection lives in `coeadapt-launcher/src/lib/mode.ts`.
 
@@ -320,7 +320,7 @@ This repository is a fork of [kasmtech/workspaces-images](https://github.com/kas
 - The **Career-Box Launcher** — a Tauri v2 desktop app for managing workspace containers without touching Docker
 - **CareerClaw** — career-specific OpenClaw agent with gateway, skills for coaching, assessments, resume building, interview prep, and job tracking
 - **Security hardening** — patches to upstream Kasm scripts (see [SECURITY.md](SECURITY.md) for the full audit)
-- **Optional CoeAdapt integration** — connect to [coeadapt.com](https://coeadapt.com) for Cora AI coaching, career tracking, and cloud sync
+- **Optional CoeAdapt integration** — connect to [coeadapt.com](https://coeadapt.com) for Navi AI coaching, career tracking, and cloud sync
 
 The Kasm workspace images and install scripts in this repository are used as-is or with security patches documented in SECURITY.md.
 

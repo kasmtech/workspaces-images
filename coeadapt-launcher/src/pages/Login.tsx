@@ -19,7 +19,7 @@ export default function Login() {
         <span className="font-semibold text-xl text-text-primary">Coeadapt</span>
       </div>
       <p className="text-text-muted text-sm mb-6 animate-fade-in delay-100">
-        Sign in to connect your Career Box to Cora
+        Sign in to connect your Career Box to Navi
       </p>
       <div className="w-full max-w-sm animate-fade-in delay-200">
         <SignIn

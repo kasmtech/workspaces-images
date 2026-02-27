@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCoraChat } from "../hooks/useCoraChat";
+import { useNaviChat } from "../hooks/useNaviChat";
 
 
 export default function Chat() {
   const navigate = useNavigate();
-  const { messages, isStreaming, error, sendMessage, stopStreaming } = useCoraChat();
+  const { messages, isStreaming, error, sendMessage, stopStreaming } = useNaviChat();
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -39,7 +39,7 @@ export default function Chat() {
           </svg>
         </div>
         <div>
-          <h1 className="font-semibold text-sm">Cora</h1>
+          <h1 className="font-semibold text-sm">Navi</h1>
           <p className="text-xs text-text-muted">AI Career Companion</p>
         </div>
       </header>
@@ -53,7 +53,7 @@ export default function Chat() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
               </svg>
             </div>
-            <h2 className="text-lg font-medium text-text-primary mb-2">Hi, I'm Cora</h2>
+            <h2 className="text-lg font-medium text-text-primary mb-2">Hi, I'm Navi</h2>
             <p className="text-sm text-text-muted max-w-xs">
               Your AI career companion. Ask me about career paths, skill development, job strategies, or anything career-related.
             </p>
@@ -95,7 +95,7 @@ export default function Chat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Cora anything..."
+            placeholder="Ask Navi anything..."
             className="flex-1 bg-surface-200 border border-surface-300 rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-faint focus:outline-none focus:border-brand-500 transition-colors"
             disabled={isStreaming}
           />

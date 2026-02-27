@@ -17,7 +17,7 @@ pub fn start_mcp_sidecar(app: &tauri::AppHandle) -> Result<(), String> {
         return Ok(());
     }
 
-    // Read device token and API URL from Tauri store for Cora API access
+    // Read device token and API URL from Tauri store for Navi API access
     let device_token = app
         .store("auth.json")
         .ok()
