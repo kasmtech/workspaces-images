@@ -168,19 +168,24 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   chown -R root:root $HOME
   firefox -headless -CreateProfile "kasm $FIREFOX_PROFILE_PATH"
   # Generate a certdb to be detected on squid start
+  if [ "${FIREFOX_MAJOR:-0}" -ge 147 ]; then
+    ROOT_CERTDB_BASE="/root/.config/mozilla"
+  else
+    ROOT_CERTDB_BASE="/root/.mozilla"
+  fi
   HOME=/root firefox --headless &
-  mkdir -p /root/.mozilla
-  CERTDB=$(find  /root/.mozilla* -name "cert9.db")
+  mkdir -p "$ROOT_CERTDB_BASE"
+  CERTDB=$(find "$ROOT_CERTDB_BASE" -name "cert9.db")
   while [ -z "${CERTDB}" ] ; do
     sleep 1
     echo "waiting for certdb"
-    CERTDB=$(find  /root/.mozilla* -name "cert9.db")
+    CERTDB=$(find "$ROOT_CERTDB_BASE" -name "cert9.db")
   done
   sleep 2
   kill $(pgrep firefox)
   CERTDIR=$(dirname ${CERTDB})
   mv ${CERTDB} $FIREFOX_PROFILE_PATH/
-  rm -Rf /root/.mozilla
+  rm -Rf "$ROOT_CERTDB_BASE"
 else
   # Creating Default Profile
   chown -R 0:0 $HOME
