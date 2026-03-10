@@ -26,6 +26,9 @@ before_script:
   - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
+include:
+  - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
+
 .run_rules:
   rules:
     - if: >
@@ -42,7 +45,9 @@ before_script:
 {% for IMAGE in multiImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -70,7 +75,9 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -98,7 +105,9 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -127,7 +136,9 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -156,7 +167,9 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -188,7 +201,9 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -224,7 +239,9 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
@@ -241,7 +258,9 @@ weekly_manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  extends:
+    - .run_rules
+    - .monitor-in-grafana
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
