@@ -4,4 +4,4 @@ This Image contains a browser-accessible Remnux Focal Desktop with various produ
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/remnux-noble-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/image-screenshots/remnux.png "Image Screenshot"
