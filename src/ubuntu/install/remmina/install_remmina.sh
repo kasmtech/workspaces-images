@@ -83,7 +83,7 @@ window_width=640
 ssh_tunnel_server=
 protocol=VNC
 disableserverinput=0
-ignore-tls-errors=1
+ignore-tls-errors=0
 disableclipboard=0
 EOF
 
@@ -108,13 +108,13 @@ group=
 enable-autostart=0
 ssh_tunnel_enabled=0
 smartcardname=
-gwtransp=http
+gwtransp=auto
 domain=
 serialname=
 ssh_tunnel_auth=0
 ssh_tunnel_server=
 loadbalanceinfo=
-ignore-tls-errors=1
+ignore-tls-errors=0
 clientname=
 base-cred-for-gw=0
 sound=off

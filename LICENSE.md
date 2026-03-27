@@ -1,10 +1,20 @@
-# Disclaimer
+# License
+
+This project contains work from multiple authors, all licensed under the MIT License.
+
+## Career-Box / Coeadapt
+
+Copyright 2025-2026 Coeadapt
+
+## Kasm Workspaces Images
+
+Copyright 2022 Kasm Technologies Inc
 
 This license applies only to the source code that is directly maintained in this git repository, it does not extend to dependencies from outside of this repository, to include other projects owned and/or maintained by Kasm Technologies.
 
-## License
+---
 
-Copyright 2022 Kasm Technologies Inc
+## MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
