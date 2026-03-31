@@ -29,6 +29,7 @@ ENV DEBUG=false \
 COPY ./src/ubuntu/install/redroid/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod 755 $STARTUPDIR/custom_startup.sh
 COPY ./src/ubuntu/install/dind/dockerd.conf /etc/supervisor/conf.d/
+COPY ./src/ubuntu/install/dind/daemon.json /etc/docker/daemon.json
 RUN cp /usr/share/backgrounds/bg_kasm.png /usr/share/backgrounds/bg_default.png
 
 # Copy install scripts
