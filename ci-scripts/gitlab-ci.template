@@ -1,9 +1,9 @@
 ############
 # Settings #
 ############
-image: docker:28.2.2
+image: docker:29.4.0
 services:
-  - docker:28.2.2-dind
+  - docker:29.4.0-dind
 stages:
   - readme
   - revert
@@ -42,7 +42,11 @@ before_script:
 {% for IMAGE in multiImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -70,7 +74,11 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 build_{{ IMAGE.name }}:
   stage: build
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -156,7 +164,11 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -188,7 +200,11 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
@@ -224,7 +240,11 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
@@ -241,7 +261,11 @@ weekly_manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
-  extends: .run_rules
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
+  extends:
+    - .run_rules
   rules:
     - !reference [.run_rules, rules]
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET == "schedule"
