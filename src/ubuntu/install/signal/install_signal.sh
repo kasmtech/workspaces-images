@@ -20,7 +20,11 @@ else
 fi
 
 apt-get update
-apt-get install -y signal-desktop
+if grep -qi "bullseye" /etc/os-release; then
+  apt-get install -y signal-desktop=8.1.0
+else
+  apt-get install -y signal-desktop
+fi
 
 # Desktop icon
 # Modify the desktop file to include --no-sandbox

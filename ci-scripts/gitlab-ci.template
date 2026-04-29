@@ -1,9 +1,9 @@
 ############
 # Settings #
 ############
-image: docker:28.0.0
+image: docker:29.4.0
 services:
-  - docker:28.0.0-dind
+  - docker:29.4.0-dind
 stages:
   - readme
   - revert
@@ -45,6 +45,9 @@ include:
 {% for IMAGE in multiImages %}
 build_{{ IMAGE.name }}:
   stage: build
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -75,6 +78,9 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 build_{{ IMAGE.name }}:
   stage: build
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -167,6 +173,9 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -201,6 +210,9 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 manifest_{{ IMAGE.name }}:
   stage: manifest
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -239,6 +251,9 @@ manifest_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -258,6 +273,9 @@ weekly_manifest_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 weekly_manifest_{{ IMAGE.name }}:
   stage: manifest
+  image: docker:28.2.2
+  services:
+    - docker:28.2.2-dind
   extends:
     - .run_rules
     - .monitor-in-grafana

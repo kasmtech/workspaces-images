@@ -7,11 +7,12 @@ cd /opt/gimp-3
 
 # Get latest stable GIMP version
 GIMP_VERSION=$(curl -s https://www.gimp.org/downloads/ | grep -Po '(?is)current stable release of gimp is.*?\K[0-9]+\.[0-9]+\.[0-9]+')
+GIMP_MINOR=$(echo "${GIMP_VERSION}" | cut -d. -f1,2)
 
 if [ "${ARCH}" == "amd64" ]; then
-  wget -q https://download.gimp.org/gimp/v3.0/linux/GIMP-${GIMP_VERSION}-x86_64.AppImage -O gimp.AppImage
+  wget -q https://download.gimp.org/gimp/v${GIMP_MINOR}/linux/GIMP-${GIMP_VERSION}-x86_64.AppImage -O gimp.AppImage
 else
-  wget -q https://download.gimp.org/gimp/v3.0/linux/GIMP-${GIMP_VERSION}-aarch64.AppImage -O gimp.AppImage
+  wget -q https://download.gimp.org/gimp/v${GIMP_MINOR}/linux/GIMP-${GIMP_VERSION}-aarch64.AppImage -O gimp.AppImage
 fi
 
 chmod +x gimp.AppImage

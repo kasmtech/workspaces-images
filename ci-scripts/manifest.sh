@@ -125,21 +125,32 @@ else
   # Pull image
   docker pull ${ORG_NAME}/image-cache-private:x86_64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}
 
-  # Tage image
+  # Tag image
   docker tag \
     ${ORG_NAME}/image-cache-private:x86_64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID} \
-    ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
+    ${ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
 
   # Push image
-  docker push ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
+  docker push ${ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
+
+  # Manifest to meta tag
+  docker manifest push --purge ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} || :
+  docker manifest create ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} ${ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
+  docker manifest annotate ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} ${ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH} --os linux --arch amd64
+  docker manifest push --purge ${ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
 
   if [[ "${PUBLIC_BUILD}" == "true" ]]; then
     for MIRROR in "${REGISTRY_MIRRORS[@]}"; do
       docker tag \
         ${ORG_NAME}/image-cache-private:x86_64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID} \
-        ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
+        ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
 
-      docker push ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
+      docker push ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
+
+      docker manifest push --purge ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} || :
+      docker manifest create ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH}
+      docker manifest annotate ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH} ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:x86_64-${SANITIZED_BRANCH} --os linux --arch amd64
+      docker manifest push --purge ${MIRROR}/${MIRROR_ORG_NAME}/${ENDPOINT}:${SANITIZED_BRANCH}
     done
   fi
 fi
