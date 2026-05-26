@@ -11,7 +11,12 @@ fi
 wget -O- https://updates.signal.org/desktop/apt/keys.asc | apt-key add -
 echo "deb [arch=${ARCH}] https://updates.signal.org/desktop/apt xenial main" |  tee -a /etc/apt/sources.list.d/signal-xenial.list
 apt-get update
-apt-get install -y signal-desktop
+
+if grep -qi "bullseye" /etc/os-release; then
+    apt-get install -y signal-desktop=8.1.0
+else
+    apt-get install -y signal-desktop
+fi
 
 # Desktop icon
 # Modify the desktop file to include --no-sandbox

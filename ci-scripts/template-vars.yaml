@@ -566,17 +566,6 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: parrotos-6-desktop
-    singleapp: false
-    runset: set-a
-    base: core-parrotos-6
-    dockerfile: dockerfile-kasm-parrotos-6-desktop
-    changeFiles:
-      - dockerfile-kasm-parrotos-6-desktop
-      - src/ubuntu/install/parrot/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
   - name: retroarch
     singleapp: true
     runset: set-b
