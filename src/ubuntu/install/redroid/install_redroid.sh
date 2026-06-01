@@ -13,6 +13,6 @@ apt-get install -y  android-tools-adb android-tools-fastboot \
 
 mkdir -p /opt/
 cd /opt/
-git clone https://github.com/Genymobile/scrcpy
+git clone --depth 1 --branch v3.3.4 https://github.com/Genymobile/scrcpy
 cd scrcpy
 ./install_release.sh
