@@ -6,7 +6,7 @@ BASE=$2
 DOCKERFILE=$3
 
 # Determine if we are using private images
-if [ ${USE_PRIVATE_IMAGES} -eq 1 ]; then
+if [[ ${USE_PRIVATE_IMAGES} -eq 1 ]]; then
   BASE=${BASE}-private
 fi
 
