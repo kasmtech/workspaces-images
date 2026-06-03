@@ -20,28 +20,15 @@ apt-get install -y \
     fuse-overlayfs \
     iptables \
     kmod \
+    slirp4netns \
     openssh-client \
     sudo \
     supervisor \
     uidmap \
     wget
 
-# URLs
-STABLE_LATEST=$(curl -sL https://get.docker.com/rootless | awk -F'="' '/STABLE_LATEST=/ {print substr($2, 1, length($2)-1)}')
-STATIC_RELEASE_ROOTLESS_URL="https://download.docker.com/linux/static/stable/$(uname -m)/docker-rootless-extras-${STABLE_LATEST}.tgz"
-
 # User settings
 echo 'hosts: files dns' > /etc/nsswitch.conf
-
-# Install rootless extras
-curl -o \
-  /tmp/rootless.tgz -L \
-  "${STATIC_RELEASE_ROOTLESS_URL}"
-tar -xf \
-  /tmp/rootless.tgz \
-  --strip-components 1 \
-  --directory /usr/local/bin/ \
-  'docker-rootless-extras/vpnkit'
 
 # Cleanup
 if [ -z ${SKIP_CLEAN+x} ]; then
