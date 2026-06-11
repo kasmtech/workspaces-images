@@ -1,5 +1,5 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-alamalinux-9"
+ARG BASE_IMAGE="core-almalinux-9"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
