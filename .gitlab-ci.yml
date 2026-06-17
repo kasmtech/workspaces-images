@@ -9,6 +9,16 @@ stages:
   - run
 default:
   retry: 2
+
+# Prevent duplicate pipelines for push events to branches that also have open MRs
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - when: always
+
 variables:
   BASE_TAG: "1.17.0-rolling-daily"
   USE_PRIVATE_IMAGES: 0
