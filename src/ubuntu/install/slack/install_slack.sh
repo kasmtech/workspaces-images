@@ -15,6 +15,9 @@ echo Detected slack version $version
 if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora42|fedora43|opensuse) ]]; then
 
   wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-${version}-0.1.el8.x86_64.rpm
+  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-${version}-0.1.el8.x86_64.rpm.sha256
+
+  echo "$(cat slack-${version}-0.1.el8.x86_64.rpm.sha256)  slack-${version}-0.1.el8.x86_64.rpm" | sha256sum -c -
 
   if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8) ]]; then
     dnf localinstall -y slack-${version}-0.1.el8.x86_64.rpm
@@ -27,21 +30,23 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
       dnf clean all
     fi
   elif [[ "${DISTRO}" == "opensuse" ]]; then
-    wget https://slack.com/gpg/slack_pubkey_20251016.gpg
-    rpm --import slack_pubkey_20251016.gpg
-    zypper install -yn slack-${version}-0.1.el8.x86_64.rpm
+    zypper --no-gpg-checks install -yn slack-${version}-0.1.el8.x86_64.rpm
     if [ -z ${SKIP_CLEAN+x} ]; then
       zypper clean --all
     fi
   fi
 
-  rm slack-${version}-0.1.el8.x86_64.rpm
+  rm slack-${version}-0.1.el8.x86_64.rpm slack-${version}-0.1.el8.x86_64.rpm.sha256
 
 else
   wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-desktop-${version}-amd64.deb
+  wget -q https://downloads.slack-edge.com/desktop-releases/linux/x64/${version}/slack-desktop-${version}-amd64.deb.sha256
+
+  echo "$(cat slack-desktop-${version}-amd64.deb.sha256)  slack-desktop-${version}-amd64.deb" | sha256sum -c -
+
   apt-get update
   apt-get install -y ./slack-desktop-${version}-${ARCH}.deb
-  rm slack-desktop-${version}-${ARCH}.deb
+  rm slack-desktop-${version}-${ARCH}.deb slack-desktop-${version}-amd64.deb.sha256
   if [ -z ${SKIP_CLEAN+x} ]; then
     apt-get autoclean
     rm -rf \
