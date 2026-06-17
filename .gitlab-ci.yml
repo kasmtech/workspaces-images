@@ -16,6 +16,16 @@ variables:
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
   retry: 2
+
+# Prevent duplicate pipelines for push events to branches that also have open MRs
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - when: always
+
 before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
