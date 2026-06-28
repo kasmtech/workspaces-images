@@ -1,9 +1,9 @@
 ############
 # Settings #
 ############
-image: docker:24.0.6
+image: docker:29.4.3
 services:
-  - docker:24.0.6-dind
+  - docker:29.4.3-dind
 stages:
   - template
   - run
@@ -13,8 +13,19 @@ variables:
   KASM_RELEASE: "1.18.0"
   TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.18.0.09f70a.tar.gz"
   MIRROR_ORG_NAME: "kasmtech"
+  DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
   retry: 2
+
+# Prevent duplicate pipelines for push events to branches that also have open MRs
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - when: always
+
 before_script:
   - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 

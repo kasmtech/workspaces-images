@@ -164,6 +164,12 @@ for IP in "${IPS[@]}"; do
   done
 done
 
+# Materialize docker config from env var if docker login was not run
+if [ ! -f /root/.docker/config.json ] && [ -n "${DOCKER_AUTH_CONFIG:-}" ]; then
+  mkdir -p /root/.docker
+  printf '%s' "${DOCKER_AUTH_CONFIG}" > /root/.docker/config.json
+fi
+
 # Copy over docker auth
 for IP in "${IPS[@]}"; do
   scp \

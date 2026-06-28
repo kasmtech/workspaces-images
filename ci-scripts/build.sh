@@ -11,7 +11,7 @@ if [[ ${USE_PRIVATE_IMAGES} -eq 1 ]]; then
 fi
 
 ## Build/Push image to cache endpoint by pipeline ID ##
-docker build \
+docker build --provenance=false \
   -t ${ORG_NAME}/image-cache-private:$(arch)-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID} \
   --build-arg BASE_IMAGE="${BASE}" \
   --build-arg BASE_TAG="${BASE_TAG}" \

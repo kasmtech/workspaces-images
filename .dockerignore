@@ -1,0 +1,4 @@
+# Claude Code AI data files — excluded from Docker builds
+.claude/
+claude_files/
+CLAUDE.md
