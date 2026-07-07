@@ -870,6 +870,14 @@ singleImages:
       - src/ubuntu/install/kali/**
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/tracelabs/**
+  - name: tracelabs-deb
+    runset: set-a
+    singleapp: false
+    base: core-debian-trixie
+    dockerfile: dockerfile-kasm-tracelabs-debian
+    changeFiles:
+      - dockerfile-kasm-tracelabs-debian
+      - src/ubuntu/install/tracelabs/**
   - name: unityhub
     runset: set-b
     singleapp: true
