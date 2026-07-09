@@ -4,4 +4,4 @@ This Image contains a browser-accessible Red Hat Linux 9 Desktop with various pr
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/rhel-9-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/rhel-9-desktop.png "Image Screenshot"

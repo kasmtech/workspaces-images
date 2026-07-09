@@ -4,4 +4,4 @@ This Image contains a browser-accessible Kali Rolling Desktop with various produ
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/kali-rolling-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/kali-rolling-desktop.png "Image Screenshot"

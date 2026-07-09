@@ -4,4 +4,4 @@ This Image contains a browser-accessible Parrot OS 7 Desktop with various produc
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/parrotos-5-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/parrotos-5-desktop.png "Image Screenshot"
