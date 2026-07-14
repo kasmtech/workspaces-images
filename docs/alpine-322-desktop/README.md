@@ -1,6 +1,6 @@
 # About This Image
 
-This Image contains a browser-accessible Alpine 3.20 Desktop with various productivity and development apps installed.
+This Image contains a browser-accessible Alpine 3.22 Desktop with various productivity and development apps installed.
 
 ![Screenshot][Image_Screenshot]
 

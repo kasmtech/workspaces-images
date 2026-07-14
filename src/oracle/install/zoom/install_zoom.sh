@@ -8,12 +8,12 @@ fi
 
 
 wget -q https://zoom.us/client/latest/zoom_$(arch).rpm
-if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8|fedora39|fedora40) ]]; then
+if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|almalinux8) ]]; then
   dnf localinstall -y zoom_$(arch).rpm
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
   fi
-elif [[ "${DISTRO}" == "fedora41" ]]; then
+elif [[ "${DISTRO}" == @(fedora42|fedora43) ]]; then
   dnf install -y zoom_$(arch).rpm
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all

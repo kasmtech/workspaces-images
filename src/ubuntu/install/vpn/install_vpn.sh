@@ -2,7 +2,7 @@
 set -ex
 
 # Install OpenVPN/Wireguard deps
-if [[ "${DISTRO}" == @(ubuntu|kali|debian|parrotos6) ]]; then
+if [[ "${DISTRO}" == @(ubuntu|kali|debian|parrotos7) ]]; then
   echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
   apt-get update
   apt-get install -y --no-install-recommends \
@@ -25,7 +25,7 @@ elif [[ "${DISTRO}" == @(oracle8|oracle9|rhel9|rockylinux8|rockylinux9|almalinux
     openvpn \
     wireguard-tools \
     jq
-elif [[ "${DISTRO}" == @(fedora39|fedora40|fedora41) ]] ; then
+elif [[ "${DISTRO}" == @(fedora42|fedora43) ]] ; then
   dnf install -y \
     openresolv \
     openvpn \
@@ -68,7 +68,7 @@ else
     dnf config-manager --add-repo https://pkgs.tailscale.com/stable/fedora/${VERSION2}/tailscale.repo
     dnf install -y tailscale
   elif [[ "${ID}" == "\"opensuse-leap\"" ]]; then
-    zypper ar -g -r https://pkgs.tailscale.com/stable/opensuse/leap/15.5/tailscale.repo
+    zypper ar -g -r https://pkgs.tailscale.com/stable/opensuse/leap/16.0/tailscale.repo
     zypper --gpg-auto-import-keys ref
     zypper install -ny tailscale
   fi

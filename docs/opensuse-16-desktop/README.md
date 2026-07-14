@@ -1,6 +1,6 @@
 # About This Image
 
-This Image contains a browser-accessible openSUSE Leap 15 Desktop with various productivity and development apps installed.
+This Image contains a browser-accessible openSUSE Leap 16 Desktop with various productivity and development apps installed.
 
 ![Screenshot][Image_Screenshot]
 

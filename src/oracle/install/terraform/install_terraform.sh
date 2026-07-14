@@ -14,17 +14,12 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
   fi
-elif [[ "${DISTRO}" == @(fedora40|fedora41) ]]; then
+elif [[ "${DISTRO}" == @(fedora42|fedora43) ]]; then
   dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
-  # use fedora40 hashicorp packages for terraform
-  sed -i 's/$releasever/40/g' /etc/yum.repos.d/hashicorp.repo
   dnf install -y terraform
   if [ -z ${SKIP_CLEAN+x} ]; then
     dnf clean all
   fi
-elif [[ "${DISTRO}" == @(fedora38|fedora39) ]]; then
-  # skip installation for fedora38 and fedora39
-  echo "Skipping terraform install for ${DISTRO}, as it is not officially supported by HashiCorp."
 else
   yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
   yum install -y terraform

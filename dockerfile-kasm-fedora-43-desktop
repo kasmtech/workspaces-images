@@ -1,10 +1,10 @@
 ARG BASE_TAG="develop"
-ARG BASE_IMAGE="core-fedora-41"
+ARG BASE_IMAGE="core-fedora-43"
 FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-ENV DISTRO=fedora41
+ENV DISTRO=fedora43
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME

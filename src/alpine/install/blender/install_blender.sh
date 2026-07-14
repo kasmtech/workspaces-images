@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-apk add --no-cach \
+apk add --no-cache \
   blender
 
 # Desktop icon

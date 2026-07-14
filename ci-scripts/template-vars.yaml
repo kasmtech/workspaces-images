@@ -144,13 +144,13 @@ multiImages:
       - dockerfile-kasm-obsidian
       - src/ubuntu/install/obsidian/**
       - src/ubuntu/install/chrome/**
-  - name: opensuse-15-desktop
+  - name: opensuse-16-desktop
     runset: set-a
     singleapp: false
-    base: core-opensuse-15
-    dockerfile: dockerfile-kasm-opensuse-15-desktop
+    base: core-opensuse-16
+    dockerfile: dockerfile-kasm-opensuse-16-desktop
     changeFiles:
-      - dockerfile-kasm-opensuse-15-desktop
+      - dockerfile-kasm-opensuse-16-desktop
       - src/ubuntu/install/thunderbird/**
       - src/ubuntu/install/remmina/**
       - src/ubuntu/install/nextcloud/**
@@ -402,26 +402,6 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: alpine-319-desktop
-    runset: set-b
-    singleapp: false
-    base: core-alpine-319
-    dockerfile: dockerfile-kasm-alpine-319-desktop
-    changeFiles:
-      - dockerfile-kasm-alpine-319-desktop
-      - src/ubuntu/install/langpacks/**
-      - src/ubuntu/install/cleanup/**
-      - src/alpine/install/**
-  - name: alpine-320-desktop
-    runset: set-a
-    singleapp: false
-    base: core-alpine-320
-    dockerfile: dockerfile-kasm-alpine-320-desktop
-    changeFiles:
-      - dockerfile-kasm-alpine-320-desktop
-      - src/ubuntu/install/langpacks/**
-      - src/ubuntu/install/cleanup/**
-      - src/alpine/install/**
   - name: alpine-321-desktop
     runset: set-b
     singleapp: false
@@ -429,6 +409,26 @@ multiImages:
     dockerfile: dockerfile-kasm-alpine-321-desktop
     changeFiles:
       - dockerfile-kasm-alpine-321-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: alpine-322-desktop
+    runset: set-a
+    singleapp: false
+    base: core-alpine-322
+    dockerfile: dockerfile-kasm-alpine-322-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-322-desktop
+      - src/ubuntu/install/langpacks/**
+      - src/ubuntu/install/cleanup/**
+      - src/alpine/install/**
+  - name: alpine-323-desktop
+    runset: set-b
+    singleapp: false
+    base: core-alpine-323
+    dockerfile: dockerfile-kasm-alpine-323-desktop
+    changeFiles:
+      - dockerfile-kasm-alpine-323-desktop
       - src/ubuntu/install/langpacks/**
       - src/ubuntu/install/cleanup/**
       - src/alpine/install/**
@@ -519,13 +519,13 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
-  - name: fedora-39-desktop
-    runset: set-b
+  - name: fedora-42-desktop
+    runset: set-a
     singleapp: false
-    base: core-fedora-39
-    dockerfile: dockerfile-kasm-fedora-39-desktop
+    base: core-fedora-42
+    dockerfile: dockerfile-kasm-fedora-42-desktop
     changeFiles:
-      - dockerfile-kasm-fedora-39-desktop
+      - dockerfile-kasm-fedora-42-desktop
       - src/oracle/install/**
       - src/ubuntu/install/thunderbird/**
       - src/ubuntu/install/remmina/**
@@ -533,27 +533,13 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: fedora-40-desktop
+  - name: fedora-43-desktop
     runset: set-a
     singleapp: false
-    base: core-fedora-40
-    dockerfile: dockerfile-kasm-fedora-40-desktop
+    base: core-fedora-43
+    dockerfile: dockerfile-kasm-fedora-43-desktop
     changeFiles:
-      - dockerfile-kasm-fedora-40-desktop
-      - src/oracle/install/**
-      - src/ubuntu/install/thunderbird/**
-      - src/ubuntu/install/remmina/**
-      - src/ubuntu/install/firefox/**
-      - src/ubuntu/install/cleanup/**
-      - src/ubuntu/install/chromium/**
-      - src/ubuntu/install/slack/**
-  - name: fedora-41-desktop
-    runset: set-a
-    singleapp: false
-    base: core-fedora-41
-    dockerfile: dockerfile-kasm-fedora-41-desktop
-    changeFiles:
-      - dockerfile-kasm-fedora-41-desktop
+      - dockerfile-kasm-fedora-43-desktop
       - src/oracle/install/**
       - src/ubuntu/install/thunderbird/**
       - src/ubuntu/install/remmina/**
@@ -616,13 +602,13 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/slack/**
-  - name: parrotos-6-desktop
+  - name: parrotos-7-desktop
     runset: set-a
     singleapp: false
-    base: core-parrotos-6
-    dockerfile: dockerfile-kasm-parrotos-6-desktop
+    base: core-parrotos-7
+    dockerfile: dockerfile-kasm-parrotos-7-desktop
     changeFiles:
-      - dockerfile-kasm-parrotos-6-desktop
+      - dockerfile-kasm-parrotos-7-desktop
       - src/ubuntu/install/parrot/**
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/cleanup/**

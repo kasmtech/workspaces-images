@@ -79,7 +79,7 @@ if [[ "${TYPE}" == "multi" ]]; then
 
   # Pull images from cache repo
   docker pull ${ORG_NAME}/image-cache-private:x86_64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}
-  docker pull ${ORG_NAME}/image-cache-private:aarch64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}
+  docker pull --platform linux/arm64 ${ORG_NAME}/image-cache-private:aarch64-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}
 
   # Tag images to live repo
   docker tag \
