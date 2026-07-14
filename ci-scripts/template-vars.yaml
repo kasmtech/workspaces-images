@@ -870,7 +870,7 @@ singleImages:
       - src/ubuntu/install/kali/**
       - src/ubuntu/install/firefox/**
       - src/ubuntu/install/tracelabs/**
-  - name: tracelabs-deb
+  - name: tracelabs-debian
     runset: set-a
     singleapp: false
     base: core-debian-trixie
