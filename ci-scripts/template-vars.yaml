@@ -681,7 +681,6 @@ multiImages:
     changeFiles:
       - dockerfile-kasm-ubuntu-jammy-dind-rootless
       - src/ubuntu/install/vs_code/**
-      - src/ubuntu/install/vs_code/**
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/sublime_text/**
       - src/ubuntu/install/misc/**
@@ -711,7 +710,6 @@ multiImages:
     dockerfile: dockerfile-kasm-ubuntu-noble-dind-rootless
     changeFiles:
       - dockerfile-kasm-ubuntu-noble-dind-rootless
-      - src/ubuntu/install/vs_code/**
       - src/ubuntu/install/vs_code/**
       - src/ubuntu/install/tools/**
       - src/ubuntu/install/sublime_text/**
