@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -euo pipefail
 
 apt-get update && apt-get install -y sudo wget zsh
 
@@ -8,7 +8,7 @@ echo 'kasm-user ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/kasm-user
 chmod 0440 /etc/sudoers.d/kasm-user
 
 cd /opt/
-TLOSINT_RELEASE="2026.05"
+TLOSINT_RELEASE="2026.07"
 TLOSINT_SCRIPT_URL="https://github.com/tracelabs/tlosint-vm/releases/download/${TLOSINT_RELEASE}/tlosint-tools.sh"
 TLOSINT_API_URL="https://api.github.com/repos/tracelabs/tlosint-vm/releases/tags/${TLOSINT_RELEASE}"
 
@@ -36,12 +36,12 @@ TL_USER=kasm-user bash "$INST_SCRIPTS/tracelabs/apply_tracelabs_overlays.sh"
 
 rm -f /etc/sudoers.d/kasm-user
 
-if [ -d /home/kasm-user ]; then
+if [[ -d /home/kasm-user ]]; then
   cp -a /home/kasm-user/. /home/kasm-default-profile/
   chown -R 1000:0 /home/kasm-default-profile
 fi
 
-if [ -z ${SKIP_CLEAN+x} ]; then
+if [[ -z ${SKIP_CLEAN+x} ]]; then
   apt-get autoclean
   rm -rf \
     /var/lib/apt/lists/* \

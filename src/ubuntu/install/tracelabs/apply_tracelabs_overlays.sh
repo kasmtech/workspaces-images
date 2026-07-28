@@ -17,21 +17,26 @@ apt-get install -y rsync git
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-log "Cloning tlosint-vm for the overlay tree"
-git clone --depth 1 https://github.com/tracelabs/tlosint-vm.git "$WORK/tlosint-vm"
+log "Downloading the tlosint-vm source for the overlay tree"
+TLOSINT_RELEASE="2026.07"
+TLOSINT_SCRIPT_URL="https://github.com/tracelabs/tlosint-vm/archive/refs/tags/${TLOSINT_RELEASE}.tar.gz"
 
-OVERLAY="$WORK/tlosint-vm/overlays/tl-overlays"
+wget -P "${WORK}" "${TLOSINT_SCRIPT_URL}"
+cd "${WORK}"
+tar -xzf "${TLOSINT_RELEASE}.tar.gz"
+
+OVERLAY="$WORK/tlosint-vm-${TLOSINT_RELEASE}/overlays/tl-overlays"
 
 log "Applying /etc and /usr overlays"
 rsync -a "$OVERLAY/etc/" /etc/
 rsync -a "$OVERLAY/usr/" /usr/
 
-if [ -f /usr/share/backgrounds/tracelabs/tracelabs.png ]; then
+if [[ -f /usr/share/backgrounds/tracelabs/tracelabs.png ]]; then
   log "Setting Kasm default wallpaper to the Trace Labs background"
   cp /usr/share/backgrounds/tracelabs/tracelabs.png /usr/share/backgrounds/bg_default.png
 fi
 
-if [ -d /etc/skel ]; then
+if [[ -d /etc/skel ]]; then
   log "Seeding $TL_HOME from /etc/skel (Desktop icons, TL-Vault, etc.)"
   rsync -a /etc/skel/ "$TL_HOME/"
   # .desktop launchers need the executable bit to be trusted by xfdesktop

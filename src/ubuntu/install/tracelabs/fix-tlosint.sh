@@ -18,7 +18,7 @@ set -euo pipefail
 log()  { printf '[fix-tlosint] %s\n' "$*"; }
 warn() { printf '[fix-tlosint][WARN] %s\n' "$*" >&2; }
 
-if [ "$(id -u)" -eq 0 ]; then
+if [[ "$(id -u)" -eq 0 ]]; then
   SUDO=""
   TARGET_USER="${SUDO_USER:-root}"
 else
@@ -38,7 +38,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 enable_contrib() {
   local src="/etc/apt/sources.list.d/debian.sources"
-  if [ -f "$src" ]; then
+  if [[ -f "$src" ]]; then
     # deb822 format (Debian 13 default)
     if ! grep -qE '^Components:.*\bcontrib\b' "$src"; then
       log "Enabling 'contrib' component in $src"
@@ -65,9 +65,9 @@ fi
 
 # Reuse an existing build if the upstream cargo fallback already produced one
   # (e.g. ~/.cargo/bin/sn0int); otherwise build from source.
-if [ ! -x /usr/local/bin/sn0int ]; then
+if [[ ! -x /usr/local/bin/sn0int ]]; then
   existing_sn0int="$(command -v sn0int 2>/dev/null || true)"
-  if [ -n "$existing_sn0int" ]; then
+  if [[ -n "$existing_sn0int" ]]; then
     log "Copying existing sn0int ($existing_sn0int) -> /usr/local/bin"
     $SUDO install -m 0755 "$existing_sn0int" /usr/local/bin/sn0int
   else
@@ -82,16 +82,16 @@ else
   log "sn0int already present at /usr/local/bin/sn0int"
 fi
 
-if [ ! -x /usr/local/bin/metagoofil ]; then
+if [[ ! -x /usr/local/bin/metagoofil ]]; then
   log "Installing metagoofil into an isolated venv"
   $SUDO apt-get install -y python3-venv git
-  if [ ! -d /opt/metagoofil/.git ]; then
+  if [[ ! -d /opt/metagoofil/.git ]]; then
     $SUDO rm -rf /opt/metagoofil
     $SUDO git clone --depth 1 https://github.com/opsdisk/metagoofil.git /opt/metagoofil
   fi
   $SUDO python3 -m venv /opt/metagoofil/venv
   $SUDO /opt/metagoofil/venv/bin/pip install --upgrade pip
-  if [ -f /opt/metagoofil/requirements.txt ]; then
+  if [[ -f /opt/metagoofil/requirements.txt ]]; then
     $SUDO /opt/metagoofil/venv/bin/pip install -r /opt/metagoofil/requirements.txt
   fi
   printf '#!/bin/sh\nexec /opt/metagoofil/venv/bin/python /opt/metagoofil/metagoofil.py "$@"\n' \
@@ -102,7 +102,7 @@ else
 fi
 
 DESKTOP_FILE="${TARGET_HOME}/Desktop/participant-guide.desktop"
-if [ ! -f "$DESKTOP_FILE" ]; then
+if [[ ! -f "$DESKTOP_FILE" ]]; then
   log "Creating $DESKTOP_FILE"
   $SUDO mkdir -p "${TARGET_HOME}/Desktop"
   printf '%s\n' \
@@ -122,7 +122,7 @@ fi
 # sandboxing is unavailable. Wrap each binary to inject --no-sandbox
 BRAVE_ARGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --check-for-update-interval=31449600"
 
-if command -v brave-browser >/dev/null 2>&1 && [ ! -x /usr/bin/brave-browser-stable-orig ]; then
+if command -v brave-browser >/dev/null 2>&1 && [[ ! -x /usr/bin/brave-browser-stable-orig ]]; then
     log "Wrapping brave-browser-stable with --no-sandbox"
     $SUDO mv /usr/bin/brave-browser-stable /usr/bin/brave-browser-stable-orig
     $SUDO tee /usr/bin/brave-browser-stable >/dev/null <<BRAVE_WRAPPER
@@ -142,7 +142,7 @@ fi
 CHROME_FLAGS="--password-store=basic --no-sandbox --ignore-gpu-blocklist --user-data-dir --no-first-run --disable-search-engine-choice-screen"
 CHROME_ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
 
-if [ "$CHROME_ARCH" = "arm64" ]; then
+if [[ "$CHROME_ARCH" = "arm64" ]]; then
     log "arm64: skipping Chromium→Chrome replacement (Google Chrome unavailable on arm64)"
 elif ! command -v google-chrome >/dev/null 2>&1; then
     log "Replacing Debian chromium (SIGTRAP crash) with Google Chrome"
