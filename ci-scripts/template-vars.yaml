@@ -833,6 +833,15 @@ singleImages:
       - dockerfile-kasm-postman
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/postman/**
+  - name: remnux-noble-desktop
+    singleapp: false
+    runset: set-b
+    base: core-ubuntu-noble
+    dockerfile: dockerfile-kasm-remnux-noble-desktop
+    changeFiles:
+      - dockerfile-kasm-remnux-noble-desktop
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/remnux/**
   - name: signal
     runset: set-b
     singleapp: true
