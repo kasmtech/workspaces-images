@@ -66,7 +66,7 @@ kasm_startup() {
                 /usr/bin/filter_ready
                 /usr/bin/desktop_ready
                 set +e
-                $START_COMMAND $ARGS $URL
+                printf "%q " "$START_COMMAND" "${ARGS[@]}" "$URL" | xargs -0 sh -c
                 set -e
             fi
             sleep 1
