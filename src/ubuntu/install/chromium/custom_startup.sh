@@ -10,6 +10,22 @@ if [[ $MAXIMIZE == 'true' ]] ; then
 fi
 ARGS=${APP_ARGS:-$DEFAULT_ARGS}
 
+RECORDING_API_PORT=${RECORDING_API_PORT:-18080}
+RECORDINGS_DIR=${RECORDINGS_DIR:-$HOME/recordings}
+RECORDING_DISPLAY=${RECORDING_DISPLAY:-${DISPLAY:-:1}}
+
+# Ensure a writable directory for recordings.
+mkdir -p "$RECORDINGS_DIR"
+
+# Start the lightweight recording API if it is not already running.
+if ! pgrep -f "recording_api.py" > /dev/null ; then
+    nohup python3 /usr/local/bin/recording_api.py \
+        --port "$RECORDING_API_PORT" \
+        --recording-dir "$RECORDINGS_DIR" \
+        --display "$RECORDING_DISPLAY" \
+        > /tmp/recording_api.log 2>&1 &
+fi
+
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
 eval set -- "$options"
 

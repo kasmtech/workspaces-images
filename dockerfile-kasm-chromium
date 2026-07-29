@@ -10,12 +10,12 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
+# Install unzip and recording dependencies
+RUN apt-get update && apt-get install -y unzip ffmpeg python3 && rm -rf /var/lib/apt/lists/*
+
 # Install Chromium
 COPY ./src/ubuntu/install/chromium $INST_SCRIPTS/chromium/
 RUN bash $INST_SCRIPTS/chromium/install_chromium.sh && rm -rf $INST_SCRIPTS/chromium/
-
-# Install unzip
-RUN apt-get update && apt-get install -y unzip
 
 # Update the desktop environment to be optimized for a single application
 RUN cp $HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/* $HOME/.config/xfce4/xfconf/xfce-perchannel-xml/
@@ -32,6 +32,8 @@ COPY ./src/common/chrome-managed-policies/urlblocklist.json /etc/chromium/polici
 
 COPY ./src/ubuntu/install/chromium/custom_startup.sh $STARTUPDIR/custom_startup.sh
 RUN chmod +x $STARTUPDIR/custom_startup.sh
+COPY ./src/ubuntu/install/chromium/recording_api.py /usr/local/bin/recording_api.py
+RUN chmod +x /usr/local/bin/recording_api.py
 
 # Install Custom Certificate Authority
 # COPY ./src/ubuntu/install/certificates $INST_SCRIPTS/certificates/
@@ -52,5 +54,8 @@ RUN $STARTUPDIR/set_user_permission.sh $HOME
 ENV HOME /home/kasm-user
 WORKDIR $HOME
 RUN mkdir -p $HOME && chown -R 1000:0 $HOME
+
+EXPOSE 9222
+EXPOSE 18080
 
 USER 1000
