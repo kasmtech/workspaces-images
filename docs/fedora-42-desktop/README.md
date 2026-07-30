@@ -4,4 +4,4 @@ This Image contains a browser-accessible Fedora 42 Desktop with various producti
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/fedora-37-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/fedora-37-desktop.png "Image Screenshot"

@@ -6,7 +6,7 @@ This Image contains a browser-accessible version of [Docker](https://www.docker.
 
 [Image_Screenshot]: https://5856039.fs1.hubspotusercontent-na1.net/hubfs/5856039/dockerhub/image-screenshots/ubuntu-jammy-dind-rootless.png "Image Screenshot"
 
-See [Kasm Docs](https://kasmweb.com/docs/latest/how_to/docker_in_kasm.html) for additional setup instructions.
+See [Kasm Docs](https://docs.kasm.com/docs/how-to/workspaces-sessions/container-workspace/docker-in-kasm) for additional setup instructions.
 
 # Environment Variables
 

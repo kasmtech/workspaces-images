@@ -4,4 +4,4 @@ This Image contains a browser-accessible Alpine 3.23 Desktop with various produc
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/alpine-317-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/alpine-317-desktop.png "Image Screenshot"

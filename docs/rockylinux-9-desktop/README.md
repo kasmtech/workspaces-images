@@ -4,4 +4,4 @@ This Image contains a browser-accessible Rocky Linux 9 Desktop with various prod
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/rockylinux-8-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/rockylinux-8-desktop.png "Image Screenshot"

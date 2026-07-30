@@ -37,7 +37,7 @@ Kasm Workspaces is a docker container streaming platform that enables you to del
 Kasm Workspaces was developed to meet the most demanding secure collaboration requirements that is highly scalable, customizable, and easy to maintain.  Most importantly, Kasm provides a solution, rather than a service, so it is infinitely customizable to your unique requirements and includes a developer API so that it can be integrated with, rather than replace, your existing applications and workflows. Kasm can be deployed in the cloud (Public or Private), on-premise (Including Air-Gapped Networks), or in a hybrid configuration.
 
 # Live Demo
-A self-guided on-demand demo is available at [**kasmweb.com**](https://kasm.com?utm_campaign=Github&utm_source=github)
+A self-guided on-demand demo is available at [**kasm.com**](https://app.kasm.com/#/cast/kasmos)
 
 # Building Images
 

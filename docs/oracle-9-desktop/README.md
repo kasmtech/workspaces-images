@@ -4,4 +4,4 @@ This Image contains a browser-accessible Oracle 9 Desktop with various productiv
 
 ![Screenshot][Image_Screenshot]
 
-[Image_Screenshot]: https://info.kasmweb.com/hubfs/dockerhub/image-screenshots/oracle-9-desktop.png "Image Screenshot"
+[Image_Screenshot]: https://info.kasm.com/hubfs/dockerhub/image-screenshots/oracle-9-desktop.png "Image Screenshot"
