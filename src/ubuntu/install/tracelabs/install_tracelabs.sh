@@ -41,6 +41,7 @@ cat kali-config/variant-tracelabs/package-lists/kali.list.chroot \
   | sed '/firefox-esr/d' \
   | sed '/kali-desktop-xfce/d' \
   | sed '/outguess/d' \
+  | sed '/torbrowser-launcher/d' \
   | xargs --no-run-if-empty apt-get install -y
 
 sed -i '/m4ll0k/,+3d' kali-config/common/hooks/normal/osint-packages.chroot
