@@ -128,13 +128,20 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   script:
     - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
-  parallel:
+  {% if IMAGE.e2e_playwright %}artifacts:
+    when: always
+    paths:
+      - playwright-results/
+    expire_in: 1 day
+    reports:
+      junit: playwright-results/results.xml
+  {% endif %}parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
 {% endfor %}
@@ -159,12 +166,20 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% endif %}
   script:
     - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
+  {% if IMAGE.e2e_playwright %}artifacts:
+    when: always
+    paths:
+      - playwright-results/
+    expire_in: 1 day
+    reports:
+      junit: playwright-results/results.xml
+  {% endif %}
 {% endfor %}
 
 ############################################

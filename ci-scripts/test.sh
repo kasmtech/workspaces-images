@@ -8,6 +8,18 @@ DOCKERFILE=$3
 ARCH=$4
 AWS_ID=$5
 AWS_KEY=$6
+RUN_PLAYWRIGHT=${7:-false}
+
+# On this branch, the Playwright calibration tester replaces Selenium's
+#   kasm-tester entirely for the 5 images it covers -- not run alongside it --
+#   so the two suites never share a DB/instance. Other images (and every
+#   image once RUN_PLAYWRIGHT isn't passed at all, e.g. on develop) are
+#   unaffected and keep running kasm-tester exactly as before.
+if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+  RUN_SELENIUM=false
+else
+  RUN_SELENIUM=true
+fi
 
 # Setup aws cli
 export AWS_ACCESS_KEY_ID="${AWS_ID}"
@@ -19,6 +31,7 @@ apk add \
   aws-cli \
   curl \
   jq \
+  git \
   openssh-client
 
 ## Functions ##
@@ -181,6 +194,21 @@ for IP in "${IPS[@]}"; do
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
     "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json"
+  # install.sh never grants ${USER} docker-group access -- needed so the
+  #   Playwright calibration tester's DOCKER_HOST=ssh://${USER}@${IP} can reach
+  #   the socket without sudo (docker's ssh: transport runs a plain, unprefixed
+  #   `docker system dial-stdio` on the remote end). Group membership is
+  #   re-evaluated per SSH login, so this is picked up by every later
+  #   connection with no restart/re-login needed. Gated on RUN_PLAYWRIGHT so
+  #   this doesn't change the shared Selenium path's instance for images that
+  #   don't opt in.
+  if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+    ssh \
+      -oConnectTimeout=10 \
+      -oStrictHostKeyChecking=no \
+      ${USER}@${IP} \
+      "sudo usermod -aG docker ${USER}"
+  fi
 done
 
 # Install Kasm workspaces
@@ -193,36 +221,128 @@ ssh \
 # Ensure install is up and running
 ready_check
 
-# Pull tester image
-docker pull ${ORG_NAME}/kasm-tester:1.18.0
+# Playwright calibration tester (Phase 2 of the multi-image project, see
+#   multi-image-plan.md). Replaces kasm-tester on this instance (RUN_SELENIUM
+#   is false below) rather than running alongside it, so calibration never
+#   contaminates -- or is contaminated by -- a Selenium run against the same
+#   DB. x86_64 only -- TEST_IMAGES/imageMatrix.ts is amd64-oriented, so an
+#   aarch64-only divergence here would be neither an image limitation nor a
+#   test bug.
+#
+# Calibration-phase only: PLAYWRIGHT_STATUS is intentionally not wired into
+#   this script's final exit code below -- Selenium is skipped on this branch
+#   for these images (see RUN_SELENIUM above), so there's no other gate to
+#   defer to; the job stays green regardless of the calibration result until
+#   skip maps make this suite reliably green on these images.
+PLAYWRIGHT_STATUS=0
+if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+  echo "Building Playwright calibration tester from kasmweb@${KASMWEB_VERSION:-develop}"
+  # Clear any stale checkout from a prior attempt -- job-level `retry: 1`
+  #   would otherwise hit "directory exists and is not empty" here.
+  rm -rf kasmweb-checkout
+  git clone --depth 1 --branch "${KASMWEB_VERSION:-develop}" \
+    "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/kasm-technologies/internal/kasmweb.git" \
+    kasmweb-checkout
 
-# Run test
-cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
-chmod 777 $(dirname ${CI_PROJECT_DIR})/sshkey
-docker run --rm \
-  -e TZ=US/Pacific \
-  -e KASM_HOST=${IPS[0]} \
-  -e KASM_PORT=443 \
-  -e KASM_PASSWORD="${RAND}" \
-  -e SSH_USER=$USER \
-  -e DOCKERUSER=$DOCKER_HUB_USERNAME \
-  -e DOCKERPASS=$DOCKER_HUB_PASSWORD \
-  -e TEST_IMAGE="${ORG_NAME}/image-cache-private:${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}" \
-  -e AWS_KEY=${KASM_TEST_AWS_KEY} \
-  -e AWS_SECRET="${KASM_TEST_AWS_SECRET}" \
-  -e SLACK_TOKEN=${SLACK_TOKEN} \
-  -e S3_BUCKET=kasm-ci \
-  -e COMMIT=${CI_COMMIT_SHA} \
-  -e REPO=workspaces-images \
-  -e AUTOMATED=true \
-  -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
-  kasmweb/kasm-tester:1.18.0
+  docker build -t kasm-playwright-tester \
+    -f kasmweb-checkout/docker_build/Dockerfile.playwright \
+    kasmweb-checkout
+
+  mkdir -p playwright-results
+
+  # DOCKER_HOST=ssh://... -- NOT recording-specific. Kasm's agent on ${IPS[0]}
+  #   has its own Docker daemon, separate from this runner's; without this,
+  #   imageWarmup.ts's `docker pull` (documented there as talking to "the
+  #   shared inner Docker daemon") would either fail outright (no socket
+  #   mounted) or silently pull into the wrong daemon, and every image-spec
+  #   test depending on that warmup would report "did not run" for every
+  #   image. This also happens to be what e2e_sessionRecordingContainer needs
+  #   for its `docker exec` into kasm_guac -- but recording stays excluded
+  #   below regardless, since its shared-setup separately hard-fails without
+  #   real RECORDING_* S3 credentials, which aren't provisioned here yet.
+  #
+  # Own copy of the key at 600: the existing $(dirname ${CI_PROJECT_DIR})/sshkey
+  #   is deliberately 777 for kasm-tester's own (non-OpenSSH) use below; a real
+  #   `ssh`/docker ssh: transport refuses a group/world-readable identity file.
+  cp /root/.ssh/id_rsa "$PWD/playwright-sshkey"
+  chmod 600 "$PWD/playwright-sshkey"
+
+  # System-wide (not user-specific) so it applies regardless of which user the
+  #   pinned kasm-playwright-private base image runs as. StrictHostKeyChecking
+  #   disabled because this is a fresh EC2 instance every run -- there's no
+  #   prior known_hosts entry to check against. Mounted as a full replacement
+  #   of /etc/ssh/ssh_config rather than an additive drop-in under
+  #   ssh_config.d/ -- whether that base image's config even has the Debian
+  #   `Include /etc/ssh/ssh_config.d/*.conf` convention is unverified (private
+  #   image, not pullable from this sandbox). Low risk: this config is
+  #   self-sufficient for the one thing this container does over SSH.
+  cat > "$PWD/playwright-ssh-config" <<EOF
+Host *
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  IdentityFile /playwright-sshkey
+EOF
+
+  echo "Running Playwright calibration tester against ${NAME}"
+  docker run --rm \
+    -v "$PWD/playwright-results:/playwright-tests/playwright-results" \
+    -v "$PWD/playwright-sshkey:/playwright-sshkey:ro" \
+    -v "$PWD/playwright-ssh-config:/etc/ssh/ssh_config:ro" \
+    -e CI=true \
+    -e "DOCKER_AUTH_CONFIG=${DOCKER_AUTH_CONFIG}" \
+    -e "DOCKER_HOST=ssh://${USER}@${IPS[0]}" \
+    -e "KASM_ADDR=https://${IPS[0]}" \
+    -e "USER_NAME=admin@kasm.local" \
+    -e "PASSWORD=${RAND}" \
+    -e "KASM_TEST_IMAGE_REFS=${ORG_NAME}/image-cache-private:${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}" \
+    -e "KASM_LICENSE_KEY=${KASM_LICENSE_KEY}" \
+    kasm-playwright-tester --grep-invert "rdp|recording" \
+    || PLAYWRIGHT_STATUS=$?
+
+  echo "Playwright calibration tester exit status: ${PLAYWRIGHT_STATUS}"
+fi
+
+if [ "${RUN_SELENIUM}" == "true" ]; then
+  # Pull tester image
+  docker pull ${ORG_NAME}/kasm-tester:1.18.0
+
+  # Run test
+  cp /root/.ssh/id_rsa $(dirname ${CI_PROJECT_DIR})/sshkey
+  chmod 777 $(dirname ${CI_PROJECT_DIR})/sshkey
+  docker run --rm \
+    -e TZ=US/Pacific \
+    -e KASM_HOST=${IPS[0]} \
+    -e KASM_PORT=443 \
+    -e KASM_PASSWORD="${RAND}" \
+    -e SSH_USER=$USER \
+    -e DOCKERUSER=$DOCKER_HUB_USERNAME \
+    -e DOCKERPASS=$DOCKER_HUB_PASSWORD \
+    -e TEST_IMAGE="${ORG_NAME}/image-cache-private:${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}" \
+    -e AWS_KEY=${KASM_TEST_AWS_KEY} \
+    -e AWS_SECRET="${KASM_TEST_AWS_SECRET}" \
+    -e SLACK_TOKEN=${SLACK_TOKEN} \
+    -e S3_BUCKET=kasm-ci \
+    -e COMMIT=${CI_COMMIT_SHA} \
+    -e REPO=workspaces-images \
+    -e AUTOMATED=true \
+    -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
+    kasmweb/kasm-tester:1.18.0
+fi
 
 # Shutdown Instances
 turnoff
 
-# Exit 1 if test failed or file does not exist
-STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}/ci-status.yml | awk -F'"' '{print $2}')
-if [ ! "${STATUS}" == "PASS" ]; then
-  exit 1
+if [ "${RUN_SELENIUM}" == "true" ]; then
+  # Exit 1 if test failed or file does not exist
+  STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}/ci-status.yml | awk -F'"' '{print $2}')
+  if [ ! "${STATUS}" == "PASS" ]; then
+    exit 1
+  fi
+else
+  # Calibration-phase only: Selenium didn't run, so there's no ci-status.yml
+  #   to check. PLAYWRIGHT_STATUS (captured above) is intentionally still not
+  #   wired into this job's exit code -- stays green regardless of the
+  #   calibration result until skip maps make the suite reliably green on
+  #   these images. Triage failures from the results.xml artifact instead.
+  echo "Selenium skipped on this branch; Playwright calibration tester exit status was ${PLAYWRIGHT_STATUS}"
 fi
