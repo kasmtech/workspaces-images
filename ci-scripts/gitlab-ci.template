@@ -20,14 +20,28 @@ variables:
   MIRROR_ORG_NAME: "{{ MIRROR_ORG_NAME }}"
 default:
   retry: 2
-before_script:
-  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi 
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
-  - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
+  before_script: !reference [.common_before_script, before_script]
 
 include:
   - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
+
+# Hidden job holding the shared login/branch-sanitizing lines, rather than a
+#   bare top-level `before_script:` (functionally equivalent as a default,
+#   but a bare top-level key isn't a documented/demonstrated `!reference`
+#   target -- GitLab's own docs only show `!reference` against named/hidden
+#   jobs like this one, never against `default:` or other top-level
+#   keywords). Referenced both by `default:` above (so every job keeps this
+#   behavior unchanged) and directly by the e2e_playwright test_ jobs below,
+#   which need to install a docker CLI first (their node:24 job image has
+#   none) before these same lines can run, and so must fully override
+#   `before_script:` and re-include them explicitly rather than relying on
+#   any implicit ordering with the default.
+.common_before_script:
+  before_script:
+    - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+    - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi
+    - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi
+    - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
 .run_rules:
   rules:
@@ -111,7 +125,18 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  extends:
+  image: "{{ 'node:24' if IMAGE.e2e_playwright else 'docker:29.4.3' }}"
+  {% if IMAGE.e2e_playwright %}before_script:
+    # node:24 has no docker CLI preinstalled, and .common_before_script
+    #   (see above) runs `docker login` before this job's own `script:` gets
+    #   a chance to install anything -- so it has to happen here instead.
+    #   This ARCH's own Playwright leg doesn't need docker login
+    #   (RUN_SELENIUM is false for it, see test.sh), but this same job image
+    #   also runs the aarch64 leg for this image, which still runs Selenium
+    #   and needs docker login to pull kasm-tester.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
+  {% endif %}extends:
     - .run_rules
     - .monitor-in-grafana
   rules:
@@ -127,20 +152,24 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
+    {% if not IMAGE.e2e_playwright %}- apk add bash
+    {% endif %}- bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
   {% if IMAGE.e2e_playwright %}artifacts:
+    # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
+    #   kasmweb-checkout` first, so playwright.config.ts's relative
+    #   `outputFile: "playwright-results/results.xml"` resolves under there,
+    #   not at this job's own root.
     when: always
     paths:
-      - playwright-results/
+      - kasmweb-checkout/playwright-results/
     expire_in: 1 day
     reports:
-      junit: playwright-results/results.xml
+      junit: kasmweb-checkout/playwright-results/results.xml
   {% endif %}parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -149,7 +178,12 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  extends:
+  image: "{{ 'node:24' if IMAGE.e2e_playwright else 'docker:29.4.3' }}"
+  {% if IMAGE.e2e_playwright %}before_script:
+    # See the matching multiImages test_ job comment above -- same reasoning.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
+  {% endif %}extends:
     - .run_rules
     - .monitor-in-grafana
   rules:
@@ -165,20 +199,24 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
-    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
+    {% if not IMAGE.e2e_playwright %}- apk add bash
+    {% endif %}- bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
   {% if IMAGE.e2e_playwright %}artifacts:
+    # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
+    #   kasmweb-checkout` first, so playwright.config.ts's relative
+    #   `outputFile: "playwright-results/results.xml"` resolves under there,
+    #   not at this job's own root.
     when: always
     paths:
-      - playwright-results/
+      - kasmweb-checkout/playwright-results/
     expire_in: 1 day
     reports:
-      junit: playwright-results/results.xml
+      junit: kasmweb-checkout/playwright-results/results.xml
   {% endif %}
 {% endfor %}
 
