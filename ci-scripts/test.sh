@@ -444,15 +444,6 @@ if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
     #   `cat`-the-file pattern kasmweb's own e2e-test job uses, since it's a
     #   multi-line secure file, not a plain CI/CD variable.
     export KASM_LICENSE_KEY="$(cat /tmp/activation_key)"
-    # Group-level CI/CD variables -- inherited by this project automatically,
-    #   same four vars kasmweb's own e2e-test job passes. Only
-    #   e2e_sessionRecording.shared-setup.ts's presence check needs these to
-    #   pass; the recording spec that would actually use them for real stays
-    #   excluded via --grep-invert below.
-    export RECORDING_UPLOAD_LOCATION="${RECORDING_UPLOAD_LOCATION}"
-    export RECORDING_STORAGE_ACCESS_KEY="${RECORDING_STORAGE_ACCESS_KEY}"
-    export RECORDING_STORAGE_ACCESS_SECRET="${RECORDING_STORAGE_ACCESS_SECRET}"
-    export RECORDING_S3_REGION="${RECORDING_S3_REGION}"
     # DOCKER_HOST is already exported above (needed there for the frontend
     #   image build) and inherited into this subshell -- imageWarmup.ts's own
     #   `docker pull` needs it too, to reach the same instance daemon.
