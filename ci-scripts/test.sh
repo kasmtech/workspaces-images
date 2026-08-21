@@ -221,28 +221,10 @@ for IP in "${IPS[@]}"; do
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
     "sudo mkdir -p /root/.docker && sudo mv /tmp/config.json /root/.docker/ && sudo chown root:root /root/.docker/config.json"
-  # install.sh never grants ${USER} docker-group access -- needed so the
-  #   Playwright calibration tester's DOCKER_HOST=ssh://${USER}@${IP} can reach
-  #   the socket without sudo (docker's ssh: transport runs a plain, unprefixed
-  #   `docker system dial-stdio` on the remote end). Group membership is
-  #   re-evaluated per SSH login, so this is picked up by every later
-  #   connection with no restart/re-login needed. Gated on RUN_PLAYWRIGHT so
-  #   this doesn't change the shared Selenium path's instance for images that
-  #   don't opt in.
-  if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
-    ssh \
-      -oConnectTimeout=10 \
-      -oStrictHostKeyChecking=no \
-      ${USER}@${IP} \
-      "sudo usermod -aG docker ${USER}"
-  fi
 done
 
-# Resolve which installer bundle to use, and (Playwright-calibration path
-#   only) build a custom frontend image carrying the DEVOPS-74 kasmweb
-#   branch's UI/test-ids, directly into the instance's own Docker daemon.
+# Resolve which installer bundle to use.
 INSTALLER_URL="${TEST_INSTALLER}"
-CUSTOM_PROXY_TAG=""
 if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
   # Rolling develop bundle, not the pinned release above -- calibration needs
   #   the post-1.19.0 API/UI changes the DEVOPS-74 Playwright specs depend
@@ -250,7 +232,54 @@ if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
   #   a separate variable so Selenium's own calibration against these images
   #   isn't silently switched to a moving target.
   INSTALLER_URL="${TEST_INSTALLER_ROLLING}"
+fi
+
+# Install Kasm workspaces with the stock bundle first. The Playwright
+#   calibration path's custom frontend image (below) can't be built until
+#   Docker exists on the instance, and Docker doesn't exist until this
+#   install.sh run's own install_dependencies.sh call installs it -- so the
+#   frontend swap has to happen as a second, targeted step afterward, not
+#   folded into this install.
+cat >/tmp/kasm_install_remote.sh <<EOF
+set -e
+curl -L -o /tmp/installer.tar.gz "${INSTALLER_URL}"
+cd /tmp
+tar xf installer.tar.gz
+sudo bash kasm_release/install.sh -H -u -I -e -P ${RAND} -U ${RAND}
+EOF
+
+scp \
+  -oStrictHostKeyChecking=no \
+  /tmp/kasm_install_remote.sh \
+  ${USER}@"${IPS[0]}":/tmp/kasm_install_remote.sh
+ssh \
+  -oConnectTimeout=4 \
+  -oStrictHostKeyChecking=no \
+  ${USER}@"${IPS[0]}" \
+  "bash /tmp/kasm_install_remote.sh"
+
+# Ensure install is up and running
+ready_check
+
+# Playwright-calibration-only: swap in a custom frontend image carrying the
+#   DEVOPS-74 kasmweb branch's UI/test-ids, built directly into the
+#   instance's own Docker daemon -- which only exists now, post-install.
+if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
   CUSTOM_PROXY_TAG="pwcalib-${RAND}"
+
+  # install.sh never grants ${USER} docker-group access -- needed so the
+  #   DOCKER_HOST=ssh://${USER}@${IP} build below (and imageWarmup.ts's own
+  #   `docker pull` once Playwright runs) can reach the socket without sudo
+  #   (docker's ssh: transport runs a plain, unprefixed `docker system
+  #   dial-stdio` on the remote end). Group membership is re-evaluated per
+  #   SSH login, so this is picked up by every later connection with no
+  #   restart/re-login needed. Docker (and the docker group) exist now,
+  #   since install.sh has already run above.
+  ssh \
+    -oConnectTimeout=10 \
+    -oStrictHostKeyChecking=no \
+    ${USER}@"${IPS[0]}" \
+    "sudo usermod -aG docker ${USER}"
 
   # SSH transport for the `docker build` below and for imageWarmup.ts's own
   #   `docker pull` once Playwright runs -- both need to reach the
@@ -316,48 +345,47 @@ EOF
     -t "kasmweb/proxy-private:${CUSTOM_PROXY_TAG}" \
     -f kasmweb-checkout/docker_build/Dockerfile.kasmweb \
     kasmweb-frontend-context
-fi
 
-# Install Kasm workspaces. Built as a local script (rather than one long
-#   inline ssh command string) so the conditional sed line below doesn't
-#   need multiple layers of shell-quoting escaped through both this script's
-#   own string and ssh's remote command string.
-cat >/tmp/kasm_install_remote.sh <<EOF
+  # Point the running install's proxy service at the custom-built image.
+  #   install.sh already collapsed every docker-compose-*.yaml variant down
+  #   to one live file by now (ROLE defaults to "all", so it copied
+  #   docker/.conf/docker-compose-all.yaml -> docker/docker-compose.yaml --
+  #   traced directly in install.sh's role dispatch), and that's the only
+  #   file install/bin/start's bare `docker compose up -d` actually reads (no
+  #   -f flag, relies on Compose's default discovery) -- so the swap targets
+  #   that single live file under /opt/kasm/current, not the extraction
+  #   directory. Built as a local script (rather than one long inline ssh
+  #   command string) for the same reason kasm_install_remote.sh is: avoids
+  #   layering this script's own quoting on top of ssh's remote command
+  #   string. Two separate substitutions (no backreference) so the character
+  #   class only needs to exclude the surrounding quote style, not capture
+  #   around it. Ends with `start` (plain `docker compose up -d`, the same
+  #   command install/bin/start itself runs) rather than `restart` --
+  #   CUSTOM_PROXY_TAG is a fresh, unique tag every run, so Compose's own
+  #   config-diff already recreates just the `proxy` service; nothing else
+  #   needs a forced recreate.
+  cat >/tmp/kasm_swap_frontend_remote.sh <<EOF
 set -e
-curl -L -o /tmp/installer.tar.gz "${INSTALLER_URL}"
-cd /tmp
-tar xf installer.tar.gz
-EOF
-if [ -n "${CUSTOM_PROXY_TAG}" ]; then
-  # Point just the proxy/proxy-private service at our custom-built image --
-  #   not a blanket tag substitution across every service, since only the
-  #   frontend needs to diverge from what the rolling develop bundle already
-  #   references for every other service. Two separate substitutions (no
-  #   backreference) so the character class only needs to exclude the
-  #   surrounding quote style, not capture around it.
-  cat >>/tmp/kasm_install_remote.sh <<EOF
-sed -i \\
+sudo sed -i \\
   -e "s#kasmweb/proxy:[^\"'[:space:]]\\+#kasmweb/proxy:${CUSTOM_PROXY_TAG}#g" \\
   -e "s#kasmweb/proxy-private:[^\"'[:space:]]\\+#kasmweb/proxy-private:${CUSTOM_PROXY_TAG}#g" \\
-  kasm_release/docker/docker-compose-*.yaml
+  /opt/kasm/current/docker/docker-compose.yaml
+sudo /opt/kasm/bin/start
 EOF
+
+  scp \
+    -oStrictHostKeyChecking=no \
+    /tmp/kasm_swap_frontend_remote.sh \
+    ${USER}@"${IPS[0]}":/tmp/kasm_swap_frontend_remote.sh
+  ssh \
+    -oConnectTimeout=10 \
+    -oStrictHostKeyChecking=no \
+    ${USER}@"${IPS[0]}" \
+    "bash /tmp/kasm_swap_frontend_remote.sh"
+
+  # Re-confirm readiness with the swapped frontend before Playwright runs.
+  ready_check
 fi
-cat >>/tmp/kasm_install_remote.sh <<EOF
-sudo bash kasm_release/install.sh -H -u -I -e -P ${RAND} -U ${RAND}
-EOF
-
-scp \
-  -oStrictHostKeyChecking=no \
-  /tmp/kasm_install_remote.sh \
-  ${USER}@"${IPS[0]}":/tmp/kasm_install_remote.sh
-ssh \
-  -oConnectTimeout=4 \
-  -oStrictHostKeyChecking=no \
-  ${USER}@"${IPS[0]}" \
-  "bash /tmp/kasm_install_remote.sh"
-
-# Ensure install is up and running
-ready_check
 
 # Playwright calibration tester (Phase 2 of the multi-image project, see
 #   multi-image-plan.md). Runs directly in this job's shell -- no separate
