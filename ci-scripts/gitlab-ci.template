@@ -163,10 +163,13 @@ test_{{ IMAGE.name }}:
     # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
     #   kasmweb-checkout` first, so playwright.config.ts's relative
     #   `outputFile: "playwright-results/results.xml"` resolves under there,
-    #   not at this job's own root.
+    #   not at this job's own root. test-results/ holds per-test trace.zip
+    #   (trace: "on-first-retry") and error-context.md snapshots -- needed to
+    #   diagnose failures beyond what the JUnit XML alone shows.
     when: always
     paths:
       - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
     expire_in: 1 day
     reports:
       junit: kasmweb-checkout/playwright-results/results.xml
@@ -210,10 +213,13 @@ test_{{ IMAGE.name }}:
     # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
     #   kasmweb-checkout` first, so playwright.config.ts's relative
     #   `outputFile: "playwright-results/results.xml"` resolves under there,
-    #   not at this job's own root.
+    #   not at this job's own root. test-results/ holds per-test trace.zip
+    #   (trace: "on-first-retry") and error-context.md snapshots -- needed to
+    #   diagnose failures beyond what the JUnit XML alone shows.
     when: always
     paths:
       - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
     expire_in: 1 day
     reports:
       junit: kasmweb-checkout/playwright-results/results.xml
