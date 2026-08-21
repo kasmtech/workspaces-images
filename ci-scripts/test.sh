@@ -48,6 +48,18 @@ else
     openssh-client
 fi
 
+# GitLab Secure File, same as kasmweb's own e2e-test job (.gitlab-ci.yml):
+#   downloads project Secure Files (distinct from CI/CD variables) into
+#   SECURE_FILES_DOWNLOAD_PATH via the community installer. Only needed on
+#   the RUN_PLAYWRIGHT leg -- Selenium's kasm-tester has no license handling
+#   at all -- but this alone doesn't need the ARCH==x86_64 check the
+#   Playwright-specific steps below use, matching the tool-install branch
+#   above.
+if [ "${RUN_PLAYWRIGHT}" == "true" ]; then
+  export SECURE_FILES_DOWNLOAD_PATH="/tmp/"
+  curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files/-/raw/main/installer" | bash
+fi
+
 ## Functions ##
 # Ami locater
 getami () {
@@ -419,12 +431,32 @@ if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
     export KASM_ADDR="https://${IPS[0]}"
     export USER_NAME="admin@kasm.local"
     export PASSWORD="${RAND}"
-    export KASM_TEST_IMAGE_REFS="${ORG_NAME}/image-cache-private:${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}"
-    export KASM_LICENSE_KEY="${KASM_LICENSE_KEY}"
+    # ${NAME} is workspaces-images' own canonical name for this app image
+    # (chromium, brave, ubuntu-noble-desktop, ...) -- the same generic
+    # identity imageMatrix.ts's future capability-skip maps will key on, so
+    # it's used verbatim as the label rather than a prefixed or derived one.
+    # KASM_TEST_IMAGE_REFS requires an explicit "label|ref" entry (see
+    # imageMatrix.ts) precisely so this label doesn't need to be re-derived
+    # from the ref on the Playwright side -- one value, used in both places
+    # below, can't drift out of sync with itself.
+    export KASM_TEST_IMAGE_REFS="${NAME}|${ORG_NAME}/image-cache-private:${ARCH}-${NAME}-${SANITIZED_BRANCH}-${CI_PIPELINE_ID}"
+    # activation_key is the Secure File downloaded above -- same
+    #   `cat`-the-file pattern kasmweb's own e2e-test job uses, since it's a
+    #   multi-line secure file, not a plain CI/CD variable.
+    export KASM_LICENSE_KEY="$(cat /tmp/activation_key)"
+    # Group-level CI/CD variables -- inherited by this project automatically,
+    #   same four vars kasmweb's own e2e-test job passes. Only
+    #   e2e_sessionRecording.shared-setup.ts's presence check needs these to
+    #   pass; the recording spec that would actually use them for real stays
+    #   excluded via --grep-invert below.
+    export RECORDING_UPLOAD_LOCATION="${RECORDING_UPLOAD_LOCATION}"
+    export RECORDING_STORAGE_ACCESS_KEY="${RECORDING_STORAGE_ACCESS_KEY}"
+    export RECORDING_STORAGE_ACCESS_SECRET="${RECORDING_STORAGE_ACCESS_SECRET}"
+    export RECORDING_S3_REGION="${RECORDING_S3_REGION}"
     # DOCKER_HOST is already exported above (needed there for the frontend
     #   image build) and inherited into this subshell -- imageWarmup.ts's own
     #   `docker pull` needs it too, to reach the same instance daemon.
-    npx playwright test --grep-invert "rdp|recording"
+    npx playwright test --project="image-spec:${NAME}" --workers=1
   ) || PLAYWRIGHT_STATUS=$?
 
   echo "Playwright calibration tester exit status: ${PLAYWRIGHT_STATUS}"
