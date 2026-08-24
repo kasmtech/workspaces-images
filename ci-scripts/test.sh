@@ -444,6 +444,11 @@ if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
     #   `cat`-the-file pattern kasmweb's own e2e-test job uses, since it's a
     #   multi-line secure file, not a plain CI/CD variable.
     export KASM_LICENSE_KEY="$(cat /tmp/activation_key)"
+    # SKIP_DB_SNAPSHOT_ON_FAILURE: pass through as-is from the pipeline's own
+    #   CI/CD variable.  Set to "true" by default to bound test-results/ artifact
+    #   size across the dozens of per-image runs this pipeline accumulates. Change
+    #   to false when a failure needs extra diagnostics.
+    export SKIP_DB_SNAPSHOT_ON_FAILURE="${SKIP_DB_SNAPSHOT_ON_FAILURE:-true}"
     # DOCKER_HOST is already exported above (needed there for the frontend
     #   image build) and inherited into this subshell -- imageWarmup.ts's own
     #   `docker pull` needs it too, to reach the same instance daemon.
