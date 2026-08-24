@@ -29,6 +29,18 @@ with open("template-vars.yaml", 'r') as stream:
   templateVars['SCHEDULED'] = scheduled
   templateVars['SCHEDULE_NAME'] = scheduleName
 
+  # e2e_playwright defaults to true for every image (multi and single) unless
+  #   an entry explicitly opts out with `e2e_playwright: false`. Defaulting
+  #   here, not in gitlab-ci.template's Jinja, means a new image entry gets
+  #   Playwright calibration automatically -- no per-entry flag to remember to
+  #   add, and no drift risk the way KASM_DISABLED_CAPABILITIES had before it
+  #   was wired into startup.sh. Setting e2e_playwright: false on a specific
+  #   entry is the escape hatch for an image found to need more time on
+  #   Selenium's kasm-tester, not a growing allow-list.
+  for imageList in (templateVars.get('multiImages', []), templateVars.get('singleImages', [])):
+    for image in imageList:
+      image.setdefault('e2e_playwright', True)
+
 # Read template file
 with open("gitlab-ci.template", 'r') as stream:
   template = stream.read()

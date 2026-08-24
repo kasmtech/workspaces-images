@@ -449,6 +449,13 @@ if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
     #   size across the dozens of per-image runs this pipeline accumulates. Change
     #   to false when a failure needs extra diagnostics.
     export SKIP_DB_SNAPSHOT_ON_FAILURE="${SKIP_DB_SNAPSHOT_ON_FAILURE:-true}"
+    # SKIP_TRACE_ON_FAILURE: same reasoning as SKIP_DB_SNAPSHOT_ON_FAILURE
+    #   above -- default to "true" here to bound test-results/ artifact size
+    #   (trace.zip files can run 70MB+ each) across the many per-image runs
+    #   this pipeline accumulates, especially once the image matrix scales up
+    #   and a failure surface could hit dozens of images at once. Change to
+    #   false on a specific pipeline run when a failure needs a real trace.
+    export SKIP_TRACE_ON_FAILURE="${SKIP_TRACE_ON_FAILURE:-true}"
     # DOCKER_HOST is already exported above (needed there for the frontend
     #   image build) and inherited into this subshell -- imageWarmup.ts's own
     #   `docker pull` needs it too, to reach the same instance daemon.

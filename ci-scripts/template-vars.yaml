@@ -15,7 +15,6 @@ multiImages:
   - name: chromium
     runset: set-b
     singleapp: true
-    e2e_playwright: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chromium
     changeFiles:
@@ -59,7 +58,6 @@ multiImages:
   - name: firefox
     runset: set-b
     singleapp: true
-    e2e_playwright: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-firefox
     changeFiles:
@@ -333,7 +331,6 @@ multiImages:
   - name: ubuntu-noble-desktop
     runset: set-a
     singleapp: false
-    e2e_playwright: true
     base: core-ubuntu-noble
     dockerfile: dockerfile-kasm-ubuntu-noble-desktop
     changeFiles:
@@ -438,7 +435,6 @@ multiImages:
   - name: brave
     runset: set-a
     singleapp: true
-    e2e_playwright: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-brave
     changeFiles:
@@ -746,7 +742,6 @@ singleImages:
   - name: chrome
     runset: set-b
     singleapp: true
-    e2e_playwright: true
     base: core-ubuntu-jammy
     dockerfile: dockerfile-kasm-chrome
     changeFiles:
