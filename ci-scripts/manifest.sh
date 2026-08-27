@@ -48,9 +48,9 @@ fi
 if [[ -z "${REVERT_PIPELINE_ID}" ]]; then
   apk add curl
   if [[ "${TYPE}" == "multi" ]]; then
-    ARCHES=("x86_64" "aarch64")
+    ARCHES=("aarch64")
   else
-    ARCHES=("x86_64")
+    ARCHES=()
   fi
   for ARCH in "${ARCHES[@]}"; do
 
