@@ -145,8 +145,7 @@ done
 
 # AWS Ubuntu AMIs are pre-configured to use a regional AWS apt mirror
 # (e.g. <region>.ec2.archive.ubuntu.com), which is occasionally broken or
-# unavailable. Check it first, and only bypass it with the official Ubuntu
-# mirrors if it's not actually working.
+# unavailable. Force the instance to use the official Ubuntu mirrors instead.
 if [[ "${ARCH}" == "x86_64" ]]; then
   APT_MIRROR="http://archive.ubuntu.com/ubuntu/"
   APT_SECURITY_MIRROR="http://security.ubuntu.com/ubuntu/"
@@ -162,25 +161,16 @@ deb ${APT_SECURITY_MIRROR} jammy-security main restricted universe multiverse
 EOL
 APT_UPDATE_TIMEOUT=120
 for IP in "${IPS[@]}"; do
-  if timeout ${APT_UPDATE_TIMEOUT} ssh \
+  timeout ${APT_UPDATE_TIMEOUT} scp \
+    -oConnectTimeout=10 \
+    -oStrictHostKeyChecking=no \
+    /root/sources.list \
+    ${USER}@${IP}:/tmp/
+  timeout ${APT_UPDATE_TIMEOUT} ssh \
     -oConnectTimeout=10 \
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
-    "sudo apt-get update -o APT::Update::Error-Mode=any"; then
-    echo "${IP}: default apt mirror is working, leaving it as-is"
-  else
-    echo "${IP}: default apt mirror failed, switching to official Ubuntu mirrors"
-    timeout ${APT_UPDATE_TIMEOUT} scp \
-      -oConnectTimeout=10 \
-      -oStrictHostKeyChecking=no \
-      /root/sources.list \
-      ${USER}@${IP}:/tmp/
-    timeout ${APT_UPDATE_TIMEOUT} ssh \
-      -oConnectTimeout=10 \
-      -oStrictHostKeyChecking=no \
-      ${USER}@${IP} \
-      "sudo mv /tmp/sources.list /etc/apt/sources.list && sudo rm -f /etc/apt/sources.list.d/ubuntu.sources && sudo apt-get update -o APT::Update::Error-Mode=any"
-  fi
+    "sudo mv /tmp/sources.list /etc/apt/sources.list && sudo rm -f /etc/apt/sources.list.d/ubuntu.sources && sudo apt-get update -o APT::Update::Error-Mode=any"
 done
 
 # Sleep here to ensure subsequent connections don't fail
