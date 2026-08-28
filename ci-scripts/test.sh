@@ -180,8 +180,9 @@ deb ${APT_MIRROR} jammy-updates main restricted universe multiverse
 deb ${APT_MIRROR} jammy-backports main restricted universe multiverse
 deb ${APT_SECURITY_MIRROR} jammy-security main restricted universe multiverse
 EOL
-APT_UPDATE_TIMEOUT=120
+APT_UPDATE_TIMEOUT=300
 for IP in "${IPS[@]}"; do
+  echo "${IP}: Switching to official Ubuntu mirrors"
   timeout ${APT_UPDATE_TIMEOUT} scp \
     -oConnectTimeout=10 \
     -oStrictHostKeyChecking=no \
@@ -191,7 +192,7 @@ for IP in "${IPS[@]}"; do
     -oConnectTimeout=10 \
     -oStrictHostKeyChecking=no \
     ${USER}@${IP} \
-    "sudo mv /tmp/sources.list /etc/apt/sources.list && sudo rm -f /etc/apt/sources.list.d/ubuntu.sources && sudo apt-get update -o APT::Update::Error-Mode=any"
+    "sudo mv -v /tmp/sources.list /etc/apt/sources.list && sudo rm -vf /etc/apt/sources.list.d/ubuntu.sources && sudo apt-get update -o APT::Update::Error-Mode=any"
 done
 
 # Copy over docker auth
