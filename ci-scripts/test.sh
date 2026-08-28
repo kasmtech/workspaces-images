@@ -406,9 +406,12 @@ fi
 #   install, and run the specs. Replaces kasm-tester on this instance
 #   (RUN_SELENIUM is false below) rather than running alongside it, so
 #   calibration never contaminates -- or is contaminated by -- a Selenium run
-#   against the same DB. x86_64 only -- TEST_IMAGES/imageMatrix.ts is
-#   amd64-oriented, so an aarch64-only divergence here would be neither an
-#   image limitation nor a test bug.
+#   against the same DB. Runs on both ARCH legs (x86_64 and aarch64) since
+#   RUN_PLAYWRIGHT is no longer gated on ARCH -- previously x86_64 only,
+#   because TEST_IMAGES/imageMatrix.ts is amd64-oriented and an aarch64-only
+#   divergence here would be neither an image limitation nor a test bug.
+#   That amd64-orientation concern hasn't been re-validated for the aarch64
+#   leg; open question, not yet resolved.
 #
 # PLAYWRIGHT_STATUS is captured here (rather than let via `set -e`/the ERR
 #   trap) so that `turnoff` below still runs and shuts the instance down

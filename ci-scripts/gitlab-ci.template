@@ -130,10 +130,12 @@ test_{{ IMAGE.name }}:
     # node:24 has no docker CLI preinstalled, and .common_before_script
     #   (see above) runs `docker login` before this job's own `script:` gets
     #   a chance to install anything -- so it has to happen here instead.
-    #   This ARCH's own Playwright leg doesn't need docker login
-    #   (RUN_SELENIUM is false for it, see test.sh), but this same job image
-    #   also runs the aarch64 leg for this image, which still runs Selenium
-    #   and needs docker login to pull kasm-tester.
+    #   Both ARCH legs of this job run Playwright (test.sh no longer gates
+    #   RUN_SELENIUM/RUN_PLAYWRIGHT on ARCH), and still need docker login:
+    #   test.sh copies /root/.docker/config.json to the remote instance for
+    #   pulling the private image-cache-private image, and its Playwright
+    #   branch also runs `docker build`/`docker pull` over an ssh transport
+    #   to that same instance.
     - apt-get update && apt-get install -y --no-install-recommends docker.io
     - !reference [.common_before_script, before_script]
   {% endif %}extends:
