@@ -15,7 +15,7 @@ RUN_PLAYWRIGHT=${7:-false}
 #   so the two suites never share a DB/instance. Other images (and every
 #   image once RUN_PLAYWRIGHT isn't passed at all, e.g. on develop) are
 #   unaffected and keep running kasm-tester exactly as before.
-if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+if [ "${RUN_PLAYWRIGHT}" == "true" ]; then
   RUN_SELENIUM=false
 else
   RUN_SELENIUM=true
@@ -237,7 +237,7 @@ done
 
 # Resolve which installer bundle to use.
 INSTALLER_URL="${TEST_INSTALLER}"
-if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+if [ "${RUN_PLAYWRIGHT}" == "true" ]; then
   # Rolling develop bundle, not the pinned release above -- calibration needs
   #   the post-1.19.0 API/UI changes the DEVOPS-74 Playwright specs depend
   #   on. Same install.sh-compatible tarball shape as TEST_INSTALLER; kept as
@@ -276,7 +276,7 @@ ready_check
 # Playwright-calibration-only: swap in a custom frontend image carrying the
 #   DEVOPS-74 kasmweb branch's UI/test-ids, built directly into the
 #   instance's own Docker daemon -- which only exists now, post-install.
-if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+if [ "${RUN_PLAYWRIGHT}" == "true" ]; then
   CUSTOM_PROXY_TAG="pwcalib-${RAND}"
 
   # install.sh never grants ${USER} docker-group access -- needed so the
@@ -418,7 +418,7 @@ fi
 #   now the only result signal for the job -- wired into the final exit code
 #   below.
 PLAYWRIGHT_STATUS=0
-if [ "${RUN_PLAYWRIGHT}" == "true" ] && [ "${ARCH}" == "x86_64" ]; then
+if [ "${RUN_PLAYWRIGHT}" == "true" ]; then
   echo "Running Playwright calibration tests against ${NAME}"
   # Subshell: keeps the cd and all these exports scoped to just this step,
   #   rather than leaking into the rest of the script (RUN_SELENIUM is false

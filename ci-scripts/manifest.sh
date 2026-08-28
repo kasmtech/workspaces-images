@@ -48,9 +48,9 @@ fi
 if [[ -z "${REVERT_PIPELINE_ID}" ]]; then
   apk add curl
   if [[ "${TYPE}" == "multi" ]]; then
-    ARCHES=("aarch64")
+    ARCHES=("x86_64" "aarch64")
   else
-    ARCHES=()
+    ARCHES=("x86_64")
   fi
   for ARCH in "${ARCHES[@]}"; do
 
@@ -58,9 +58,11 @@ if [[ -z "${REVERT_PIPELINE_ID}" ]]; then
     STATUS=$(curl -sL https://kasm-ci.s3.amazonaws.com/${CI_COMMIT_SHA}/${ARCH}/kasmweb/image-cache-private/${ARCH}-${NAME}-${PULL_BRANCH}-${CI_PIPELINE_ID}/ci-status.yml | awk -F'"' '{print $2}')
     if [ "${STATUS}" == "PASS" ]; then
       STATE=success
-    else
+    elif [ "${STATUS}" == "FAIL"]; then
       STATE=failed
       FAILED="true"
+    else
+      continue
     fi
 
     # Ping gitlab api with link output
