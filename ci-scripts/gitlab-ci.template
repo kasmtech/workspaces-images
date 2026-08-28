@@ -243,9 +243,9 @@ manifest_{{ IMAGE.name }}:
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
-      when: always
+      when: on_success
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
-      when: always
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
@@ -280,9 +280,9 @@ manifest_{{ IMAGE.name }}:
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
-      when: always
+      when: on_success
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
-      when: always
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
