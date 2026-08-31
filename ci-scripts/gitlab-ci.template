@@ -262,7 +262,8 @@ manifest_{{ IMAGE.name }}:
     #{% if IMAGE.singleapp %}
     #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
   needs:
-    - test_{{ IMAGE.name }}
+    - job: test_{{ IMAGE.name }}
+      artifacts: false
   retry: 1
   tags:
     - oci-amd-scheduled
@@ -299,7 +300,8 @@ manifest_{{ IMAGE.name }}:
     #{% if IMAGE.singleapp %}
     #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "single" "{{ IMAGE.base }}"{% endif %}
   needs:
-    - test_{{ IMAGE.name }}
+    - job: test_{{ IMAGE.name }}
+      artifacts: false
   retry: 1
   tags:
     - oci-amd-scheduled
