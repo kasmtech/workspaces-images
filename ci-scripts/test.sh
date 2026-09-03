@@ -105,20 +105,56 @@ fi
 mkdir -p /root/.ssh
 RAND=$(head /dev/urandom | tr -dc 'a-z0-9' | head -c36)
 
+# Kasm instance logs, gathered into the same test-results/ tree the
+#   Playwright job already collects as an artifact (see gitlab-ci.template) --
+#   no template change needed to pick these up. Only meaningful on the
+#   RUN_PLAYWRIGHT leg: that's the only path missing kasm-side diagnostics
+#   today (Selenium's kasm-tester has its own log handling).
+LOGS_DIR="kasmweb-checkout/test-results/kasm-logs"
+function gather_kasm_logs() {
+  mkdir -p "${LOGS_DIR}"
+  for IP in "${IPS[@]}"; do
+    echo "Gathering Kasm logs from ${IP}..."
+    # Each SSH call is individually bounded so a wedged instance -- the
+    #   common reason a test failed in the first place -- can't hang
+    #   turnoff() and block the poweroff loop below it.
+    CONTAINERS=$(timeout 30 ssh \
+      -oConnectTimeout=4 \
+      -oStrictHostKeyChecking=no \
+      ${USER}@${IP} \
+      sudo docker container ls --all --format '{{.Names}}' || :)
+    for CONTAINER in ${CONTAINERS}; do
+      timeout 60 ssh \
+        -oConnectTimeout=4 \
+        -oStrictHostKeyChecking=no \
+        ${USER}@${IP} \
+        sudo docker logs "${CONTAINER}" &>"${LOGS_DIR}/${CONTAINER}-${IP}.log" || :
+    done
+  done
+}
+
 # Shutdown Instances function and trap. Registered here -- as soon as RAND
 #   (the key-pair name) exists, before the key pair or instance are actually
 #   created -- and on EXIT rather than ERR, so cleanup fires no matter how
 #   the script terminates: a failing command under `set -e`, normal
 #   completion, or a GitLab job cancellation/timeout sending SIGTERM to this
-#   process (which ERR never catches -- signals bypass it entirely). Guarded
-#   with CLEANED_UP since EXIT still fires once more when the script's own
-#   `exit` calls near the end run, after cleanup already happened.
-CLEANED_UP=false
+#   process (which ERR never catches -- signals bypass it entirely). Not
+#   called explicitly anywhere -- the EXIT trap alone guarantees this runs
+#   exactly once, whether the script gets there via `exit 1`,
+#   `exit "${PLAYWRIGHT_STATUS}"`, or just falling off the end.
 function turnoff() {
-  if [ "${CLEANED_UP}" == "true" ]; then
-    return
+  # Captured as the very first statement, before any other command
+  #   (including `[`) can clobber $?. Nonzero here means the script itself
+  #   died (a `set -e` failure or a signal); PLAYWRIGHT_STATUS covers a clean
+  #   run where the Playwright tests themselves failed.
+  EXIT_CODE="$?"
+
+  if [ "${RUN_PLAYWRIGHT}" == "true" ] \
+    && { [ "${EXIT_CODE}" -ne 0 ] || [ "${PLAYWRIGHT_STATUS:-0}" -ne 0 ]; } \
+    && [ "${SKIP_TRACE_ON_FAILURE:-true}" != "true" ]; then
+    gather_kasm_logs
   fi
-  CLEANED_UP=true
+
   for IP in "${IPS[@]}"; do
     ssh \
       -oConnectTimeout=4 \
@@ -494,9 +530,6 @@ if [ "${RUN_SELENIUM}" == "true" ]; then
     -v $(dirname ${CI_PROJECT_DIR})/sshkey:/sshkey:ro  ${SLIM_FLAG} \
     kasmweb/kasm-tester:1.18.0
 fi
-
-# Shutdown Instances
-turnoff
 
 if [ "${RUN_SELENIUM}" == "true" ]; then
   # Exit 1 if test failed or file does not exist
