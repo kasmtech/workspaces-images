@@ -12,21 +12,15 @@ variables:
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.18.0"
   TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.18.0.09f70a.tar.gz"
-  # Rolling develop Kasm install bundle -- same install.sh-compatible tarball
-  # shape as TEST_INSTALLER above, but tracking kasm_backend's develop branch
-  # instead of a pinned release. Used only for the Playwright calibration
-  # path (see ci-scripts/test.sh): calibration needs the post-1.19.0 API/UI
-  # changes the DEVOPS-74 Playwright specs depend on, which the pinned
-  # release above doesn't have. Kept as a separate variable, not a change to
-  # TEST_INSTALLER itself, so Selenium's own calibration against TEST_IMAGES
-  # images isn't silently switched to a moving target.
+  # Rolling develop Kasm install bundle, used only by Playwright calibration
+  # (ci-scripts/test.sh): calibration needs UI/API changes newer than the
+  # pinned TEST_INSTALLER release. Kept separate so Selenium's own tests
+  # against the pinned release are unaffected.
   TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/branches/develop/kasm_workspaces_develop.tar.gz"
-  # Ref of the kasmweb repo the Playwright calibration specs are cloned from
-  # -- see ci-scripts/test.sh. Pinned explicitly rather than auto-matched by
-  # branch name; see the branch-check-stale-backend-branch-match precedent in
-  # kasmweb's own CI. DEVOPS-74 (multi-image support / KASM_TEST_IMAGE_REFS)
-  # is not on develop yet -- pinned to the feature branch until it merges,
-  # then switch this to "develop".
+  # kasmweb branch the Playwright calibration specs are cloned from (see
+  # ci-scripts/test.sh). Pinned to this feature branch since its
+  # KASM_TEST_IMAGE_REFS support isn't on develop yet; switch to "develop"
+  # once it merges.
   KASMWEB_VERSION: "feature/DEVOPS-74-multi-image-support-for-image-specs"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}

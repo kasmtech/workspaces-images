@@ -25,17 +25,9 @@ default:
 include:
   - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
 
-# Hidden job holding the shared login/branch-sanitizing lines, rather than a
-#   bare top-level `before_script:` (functionally equivalent as a default,
-#   but a bare top-level key isn't a documented/demonstrated `!reference`
-#   target -- GitLab's own docs only show `!reference` against named/hidden
-#   jobs like this one, never against `default:` or other top-level
-#   keywords). Referenced both by `default:` above (so every job keeps this
-#   behavior unchanged) and directly by the e2e_playwright test_ jobs below,
-#   which need to install a docker CLI first (their node:24 job image has
-#   none) before these same lines can run, and so must fully override
-#   `before_script:` and re-include them explicitly rather than relying on
-#   any implicit ordering with the default.
+# Shared login/branch-sanitizing lines, referenced both by `default:` above
+# and directly by the e2e_playwright test_ jobs below, which override
+# before_script to install a docker CLI first.
 .common_before_script:
   before_script:
     - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
@@ -127,15 +119,8 @@ test_{{ IMAGE.name }}:
   stage: test
   image: "{{ 'node:24' if IMAGE.e2e_playwright else 'docker:29.4.3' }}"
   {% if IMAGE.e2e_playwright %}before_script:
-    # node:24 has no docker CLI preinstalled, and .common_before_script
-    #   (see above) runs `docker login` before this job's own `script:` gets
-    #   a chance to install anything -- so it has to happen here instead.
-    #   Both ARCH legs of this job run Playwright (test.sh no longer gates
-    #   RUN_SELENIUM/RUN_PLAYWRIGHT on ARCH), and still need docker login:
-    #   test.sh copies /root/.docker/config.json to the remote instance for
-    #   pulling the private image-cache-private image, and its Playwright
-    #   branch also runs `docker build`/`docker pull` over an ssh transport
-    #   to that same instance.
+    # node:24 has no docker CLI preinstalled, needed here for docker login
+    # and for the Playwright leg's own docker build/pull over ssh.
     - apt-get update && apt-get install -y --no-install-recommends docker.io
     - !reference [.common_before_script, before_script]
   {% endif %}extends:
@@ -162,12 +147,8 @@ test_{{ IMAGE.name }}:
     - oci-amd-scheduled
   retry: 1
   {% if IMAGE.e2e_playwright %}artifacts:
-    # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
-    #   kasmweb-checkout` first, so playwright.config.ts's relative
-    #   `outputFile: "playwright-results/results.xml"` resolves under there,
-    #   not at this job's own root. test-results/ holds per-test trace.zip
-    #   (trace: "on-first-retry") and error-context.md snapshots -- needed to
-    #   diagnose failures beyond what the JUnit XML alone shows.
+    # kasmweb-checkout/ prefix: test.sh runs playwright from that directory,
+    # so its relative output paths resolve there.
     when: always
     paths:
       - kasmweb-checkout/playwright-results/
@@ -212,12 +193,7 @@ test_{{ IMAGE.name }}:
     - oci-amd-scheduled
   retry: 1
   {% if IMAGE.e2e_playwright %}artifacts:
-    # kasmweb-checkout/ prefix: test.sh runs `npx playwright test` with `cd
-    #   kasmweb-checkout` first, so playwright.config.ts's relative
-    #   `outputFile: "playwright-results/results.xml"` resolves under there,
-    #   not at this job's own root. test-results/ holds per-test trace.zip
-    #   (trace: "on-first-retry") and error-context.md snapshots -- needed to
-    #   diagnose failures beyond what the JUnit XML alone shows.
+    # See the matching multiImages test_ job comment above -- same reasoning.
     when: always
     paths:
       - kasmweb-checkout/playwright-results/

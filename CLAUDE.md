@@ -73,6 +73,9 @@ Key CI variables (set in GitLab or pipeline triggers):
 - `RUN_SET` — restrict CI to `set-a` or `set-b` image subsets
 - `MIRROR_ORG_NAME` — DockerHub org for mirror pushes (default: `kasmtech`)
 - `SKIP_DB_SNAPSHOT_ON_FAILURE` — Playwright calibration job only (`RUN_PLAYWRIGHT`); defaults to `true` there to avoid a `pg_dump` artifact per failed test across dozens of per-image runs. Set to `false` on a specific pipeline run to get the DB snapshot back for diagnosing that failure.
+- `SKIP_TRACE_ON_FAILURE` — Playwright calibration job only; same artifact-size reasoning as `SKIP_DB_SNAPSHOT_ON_FAILURE`, and also gates whether Kasm instance logs are gathered on failure. Set to `false` for a real trace.
+- `TEST_INSTALLER_ROLLING` — rolling develop install bundle used only by Playwright calibration; see its definition in `.gitlab-ci.yml`.
+- `KASMWEB_VERSION` — kasmweb branch the Playwright calibration specs are cloned from; defaults to `develop`.
 
 On `develop` and `release/*` branches, images are pushed publicly to DockerHub and Quay. Feature branches push only to an internal cache registry tagged `<arch>-<name>-<branch>-<pipeline_id>`.
 
