@@ -11,13 +11,15 @@ variables:
   BASE_TAG: "develop"
   USE_PRIVATE_IMAGES: 0
   KASM_RELEASE: "1.18.0"
-  TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.18.0.09f70a.tar.gz"
-  # Rolling develop Kasm install bundle, used only by Playwright calibration
-  # (ci-scripts/test.sh): calibration needs UI/API changes newer than the
-  # pinned TEST_INSTALLER release. Kept separate so Selenium's own tests
-  # against the pinned release are unaffected.
+  # Once DEVOPS-74 has merged and shipped in a release (both kasm_backend
+  # and kasmweb), switch test.sh back to a static installer pinned to the
+  # latest release instead of TEST_INSTALLER_ROLLING below.
+  # TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.18.0.09f70a.tar.gz"
+  # Rolling develop Kasm install bundle, used by the Playwright tester
+  # (ci-scripts/test.sh), which needs UI/API changes newer than any pinned
+  # release.
   TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/branches/develop/kasm_workspaces_develop.tar.gz"
-  # kasmweb branch the Playwright calibration specs are cloned from (see
+  # kasmweb branch the Playwright specs are cloned from (see
   # ci-scripts/test.sh). Pinned to this feature branch since its
   # KASM_TEST_IMAGE_REFS support isn't on develop yet; switch to "develop"
   # once it merges.

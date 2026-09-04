@@ -16,7 +16,6 @@ variables:
   KASM_RELEASE: "{{ KASM_RELEASE }}"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  TEST_INSTALLER: "{{ TEST_INSTALLER }}"
   MIRROR_ORG_NAME: "{{ MIRROR_ORG_NAME }}"
 default:
   retry: 2
@@ -26,8 +25,8 @@ include:
   - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
 
 # Shared login/branch-sanitizing lines, referenced both by `default:` above
-# and directly by the e2e_playwright test_ jobs below, which override
-# before_script to install a docker CLI first.
+# and directly by the test_ jobs below, which override before_script to
+# install a docker CLI first.
 .common_before_script:
   before_script:
     - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
@@ -117,13 +116,13 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  image: "{{ 'node:24' if IMAGE.e2e_playwright else 'docker:29.4.3' }}"
-  {% if IMAGE.e2e_playwright %}before_script:
+  image: "node:24"
+  before_script:
     # node:24 has no docker CLI preinstalled, needed here for docker login
     # and for the Playwright leg's own docker build/pull over ssh.
     - apt-get update && apt-get install -y --no-install-recommends docker.io
     - !reference [.common_before_script, before_script]
-  {% endif %}extends:
+  extends:
     - .run_rules
     - .monitor-in-grafana
   rules:
@@ -139,14 +138,13 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    {% if not IMAGE.e2e_playwright %}- apk add bash
-    {% endif %}- bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
-  {% if IMAGE.e2e_playwright %}artifacts:
+  artifacts:
     # kasmweb-checkout/ prefix: test.sh runs playwright from that directory,
     # so its relative output paths resolve there.
     when: always
@@ -156,7 +154,7 @@ test_{{ IMAGE.name }}:
     expire_in: 1 day
     reports:
       junit: kasmweb-checkout/playwright-results/results.xml
-  {% endif %}parallel:
+  parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
 {% endfor %}
@@ -164,12 +162,12 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
-  image: "{{ 'node:24' if IMAGE.e2e_playwright else 'docker:29.4.3' }}"
-  {% if IMAGE.e2e_playwright %}before_script:
+  image: "node:24"
+  before_script:
     # See the matching multiImages test_ job comment above -- same reasoning.
     - apt-get update && apt-get install -y --no-install-recommends docker.io
     - !reference [.common_before_script, before_script]
-  {% endif %}extends:
+  extends:
     - .run_rules
     - .monitor-in-grafana
   rules:
@@ -185,14 +183,13 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    {% if not IMAGE.e2e_playwright %}- apk add bash
-    {% endif %}- bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}" "{{ (IMAGE.e2e_playwright | default(false)) | lower }}"
+    - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
-  {% if IMAGE.e2e_playwright %}artifacts:
+  artifacts:
     # See the matching multiImages test_ job comment above -- same reasoning.
     when: always
     paths:
@@ -201,7 +198,6 @@ test_{{ IMAGE.name }}:
     expire_in: 1 day
     reports:
       junit: kasmweb-checkout/playwright-results/results.xml
-  {% endif %}
 {% endfor %}
 
 ############################################
