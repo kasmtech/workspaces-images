@@ -22,7 +22,7 @@ apt-get update && apt-get install -y --no-install-recommends awscli jq git opens
 # Downloads GitLab Secure Files (the license activation key) into
 # SECURE_FILES_DOWNLOAD_PATH via the community installer.
 export SECURE_FILES_DOWNLOAD_PATH="/tmp/"
-curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files/-/raw/main/installer" | bash
+curl --silent "https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/load-secure-files/-/raw/5e1cf0e12fd9e8910f8dc7272e8844db474995cc/installer" | bash
 
 ## Functions ##
 # Ami locater
