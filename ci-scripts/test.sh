@@ -360,6 +360,7 @@ sudo /opt/kasm/bin/start
 EOF
 
 scp \
+  -oConnectTimeout=10 \
   -oStrictHostKeyChecking=no \
   /tmp/kasm_swap_frontend_remote.sh \
   ${USER}@"${IPS[0]}":/tmp/kasm_swap_frontend_remote.sh
@@ -381,7 +382,9 @@ ready_check
 PLAYWRIGHT_STATUS=0
 echo "Running Playwright tests against ${NAME}"
 # Subshell scopes the cd and all these exports to just this step.
+set +e
 (
+  set -e
   cd kasmweb-checkout
   npm ci
   npx playwright install --with-deps chromium
@@ -406,7 +409,9 @@ echo "Running Playwright tests against ${NAME}"
   # DOCKER_HOST is exported above and inherited here; imageWarmup.ts's own
   # `docker pull` needs it to reach the same instance daemon.
   npx playwright test --project="image-spec:${NAME}" --workers=1
-) || PLAYWRIGHT_STATUS=$?
+)
+PLAYWRIGHT_STATUS=$?
+set -e
 
 echo "Playwright tester exit status: ${PLAYWRIGHT_STATUS}"
 if [ "${PLAYWRIGHT_STATUS}" -ne 0 ]; then
