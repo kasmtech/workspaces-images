@@ -205,6 +205,37 @@ for IP in "${IPS[@]}"; do
   done
 done
 
+# AWS Ubuntu AMIs are pre-configured to use a regional AWS apt mirror
+# (e.g. <region>.ec2.archive.ubuntu.com), which is occasionally broken or
+# unavailable. Force the instance to use the official Ubuntu mirrors instead.
+if [[ "${ARCH}" == "x86_64" ]]; then
+  APT_MIRROR="http://archive.ubuntu.com/ubuntu/"
+  APT_SECURITY_MIRROR="http://security.ubuntu.com/ubuntu/"
+else
+  APT_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
+  APT_SECURITY_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
+fi
+cat >/root/sources.list <<EOL
+deb ${APT_MIRROR} jammy main restricted universe multiverse
+deb ${APT_MIRROR} jammy-updates main restricted universe multiverse
+deb ${APT_MIRROR} jammy-backports main restricted universe multiverse
+deb ${APT_SECURITY_MIRROR} jammy-security main restricted universe multiverse
+EOL
+APT_UPDATE_TIMEOUT=300
+for IP in "${IPS[@]}"; do
+  echo "${IP}: Switching to official Ubuntu mirrors"
+  timeout ${APT_UPDATE_TIMEOUT} scp \
+    -oConnectTimeout=10 \
+    -oStrictHostKeyChecking=no \
+    /root/sources.list \
+    ${USER}@${IP}:/tmp/
+  timeout ${APT_UPDATE_TIMEOUT} ssh \
+    -oConnectTimeout=10 \
+    -oStrictHostKeyChecking=no \
+    ${USER}@${IP} \
+    "sudo mv -v /tmp/sources.list /etc/apt/sources.list && sudo rm -vf /etc/apt/sources.list.d/ubuntu.sources && sudo apt-get update -o APT::Update::Error-Mode=any"
+done
+
 # Materialize docker config from env var if docker login was not run
 if [ ! -f /root/.docker/config.json ] && [ -n "${DOCKER_AUTH_CONFIG:-}" ]; then
   mkdir -p /root/.docker
