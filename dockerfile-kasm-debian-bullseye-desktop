@@ -4,6 +4,16 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
+# Debian 11 (bullseye) is EOL. archive.debian.org has not yet mirrored
+# debian-security for bullseye, so point apt at a fixed snapshot.debian.org
+ARG SNAPSHOT_TS="20260824T000000Z"
+RUN printf '%s\n' \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye main contrib non-free" \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye-updates main contrib non-free" \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/$SNAPSHOT_TS bullseye-security main contrib non-free" \
+      > /etc/apt/sources.list && \
+    echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
 WORKDIR $HOME
