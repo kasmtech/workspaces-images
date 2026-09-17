@@ -4,14 +4,19 @@ FROM kasmweb/$BASE_IMAGE:$BASE_TAG
 
 USER root
 
-# Debian 11 (bullseye) is EOL. archive.debian.org has not yet mirrored
-# debian-security for bullseye, so point apt at a fixed snapshot.debian.org
-ARG SNAPSHOT_TS="20260824T000000Z"
+#Debian 11 (bullseye) has aged out of security.debian.org and archive.debian.org hasn't backfilled it yet,
+# Pin to a snapshot.debian.org timestamp from before the cutover instead.
+# Apt's integrity model doesn't depend on transport encryption. 
+# The Release/InRelease file is GPG-signed using keys already baked into the base image
+ARG SNAPSHOT_TS="20260901T090127Z"
 RUN printf '%s\n' \
-      "deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye main contrib non-free" \
-      "deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye-updates main contrib non-free" \
-      "deb [check-valid-until=no] https://snapshot.debian.org/archive/debian-security/$SNAPSHOT_TS bullseye-security main contrib non-free" \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye main contrib non-free" \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/$SNAPSHOT_TS bullseye-updates main contrib non-free" \
+      "deb [check-valid-until=no] http://snapshot.debian.org/archive/debian-security/$SNAPSHOT_TS bullseye-security main contrib non-free" \
       > /etc/apt/sources.list
+# snapshot.debian.org is a rate-limited archive and intermittently
+# answers with 503/504/connection-reset. Setting retries to help some.
+RUN echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/99snapshot-retries
 
 ENV HOME /home/kasm-default-profile
 ENV STARTUPDIR /dockerstartup
