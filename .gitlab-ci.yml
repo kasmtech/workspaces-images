@@ -20,10 +20,9 @@ variables:
   # release.
   TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/branches/develop/kasm_workspaces_develop.tar.gz"
   # kasmweb branch the Playwright specs are cloned from (see
-  # ci-scripts/test.sh). Pinned to this feature branch since its
-  # KASM_TEST_IMAGE_REFS support isn't on develop yet; switch to "develop"
-  # once it merges.
-  KASMWEB_VERSION: "feature/DEVOPS-74-multi-image-support-for-image-specs"
+  # ci-scripts/test.sh). DEVOPS-74 (KASM_TEST_IMAGE_REFS support) has merged
+  # into kasmweb develop; switch to a release branch once one ships it.
+  KASMWEB_VERSION: "develop"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
