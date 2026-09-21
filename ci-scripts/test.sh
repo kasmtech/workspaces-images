@@ -260,9 +260,8 @@ done
 # .gitlab-ci.yml for why.
 INSTALLER_URL="${TEST_INSTALLER_ROLLING}"
 
-# Install Kasm workspaces with the stock bundle first -- install.sh is what
-# installs Docker on the instance, which the frontend image build below
-# needs, so the frontend swap has to be a separate step afterward.
+# Install Kasm workspaces from the stock bundle -- its frontend is what
+# gets tested; see KASMWEB_VERSION in .gitlab-ci.yml for the spec source.
 cat >/tmp/kasm_install_remote.sh <<EOF
 set -e
 curl -L -o /tmp/installer.tar.gz "${INSTALLER_URL}"
@@ -284,20 +283,10 @@ ssh \
 # Ensure install is up and running
 ready_check
 
-# TODO(DEVOPS-74): remove this whole custom-frontend swap once a Kasm
-# release ships with the DEVOPS-74 kasmweb UI/test-id changes built in --
-# at that point the stock installer's own frontend already has what the
-# specs need, and TEST_INSTALLER_ROLLING can revert to a pinned release too
-# (see TEST_INSTALLER above).
-#
-# Swap in a custom frontend image carrying the DEVOPS-74 kasmweb branch's
-# UI/test-ids, built directly into the instance's own Docker daemon --
-# which only exists now, post-install.
-CUSTOM_PROXY_TAG="pwcalib-${RAND}"
-
-# Grants docker-group access so the ssh: DOCKER_HOST transport below (and
-# imageWarmup.ts's own `docker pull`) can reach the daemon without sudo.
-# Group membership is re-evaluated per SSH login, so no restart is needed.
+# Grants docker-group access so the ssh: DOCKER_HOST transport below can
+# reach the daemon without sudo (imageWarmup.ts's own `docker pull` needs
+# it too). Group membership is re-evaluated per SSH login, so no restart
+# is needed.
 ssh \
   -oConnectTimeout=10 \
   -oStrictHostKeyChecking=no \
@@ -319,60 +308,13 @@ chmod 600 /root/.ssh/config
 # own `docker pull` call needs it too and can't take a per-call flag.
 export DOCKER_HOST="ssh://${USER}@${IPS[0]}"
 
-echo "Building custom frontend image from kasmweb@${KASMWEB_VERSION:-develop}"
-# Clear any stale checkout so a job retry doesn't fail on a non-empty dir.
+# The frontend under test is whatever TEST_INSTALLER_ROLLING's backend
+# bundle already installed -- this clone only supplies the Playwright spec
+# files themselves, pinned to the same branch.
 rm -rf kasmweb-checkout
 git clone --depth 1 --branch "${KASMWEB_VERSION:-develop}" \
   "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/kasm-technologies/internal/kasmweb.git" \
   kasmweb-checkout
-
-# kasmweb's `deploy` job uploads this tarball per-branch on every pipeline
-# run, so it reflects whatever UI/test-id changes are on this branch.
-# Dockerfile.kasmweb just unpacks it into an nginx image.
-SANITIZED_KASMWEB_VERSION="$(echo "${KASMWEB_VERSION:-develop}" | sed 's/\//_/g')"
-
-# Minimal build context: Dockerfile.kasmweb only needs this one file, at
-# the path its `COPY ./output/kasmweb.tar.gz` expects.
-rm -rf kasmweb-frontend-context
-mkdir -p kasmweb-frontend-context/output
-curl -L -o kasmweb-frontend-context/output/kasmweb.tar.gz \
-  "https://kasmweb-build-artifacts.s3.amazonaws.com/kasmweb/${SANITIZED_KASMWEB_VERSION}.tar.gz"
-
-# Builds straight into the instance's own daemon -- no registry push/pull
-# needed. Tags both proxy repo names since it's not known ahead of time
-# which one this bundle's compose files reference.
-docker build \
-  -t "kasmweb/proxy:${CUSTOM_PROXY_TAG}" \
-  -t "kasmweb/proxy-private:${CUSTOM_PROXY_TAG}" \
-  -f kasmweb-checkout/docker_build/Dockerfile.kasmweb \
-  kasmweb-frontend-context
-
-# Points the running install's proxy service at the custom-built image by
-# rewriting the live docker-compose.yaml. Ends with `start`, not `restart`
-# -- a fresh CUSTOM_PROXY_TAG every run means Compose's config-diff already
-# recreates just the `proxy` service.
-cat >/tmp/kasm_swap_frontend_remote.sh <<EOF
-set -e
-sudo sed -i \\
-  -e "s#kasmweb/proxy:[^\"'[:space:]]\\+#kasmweb/proxy:${CUSTOM_PROXY_TAG}#g" \\
-  -e "s#kasmweb/proxy-private:[^\"'[:space:]]\\+#kasmweb/proxy-private:${CUSTOM_PROXY_TAG}#g" \\
-  /opt/kasm/current/docker/docker-compose.yaml
-sudo /opt/kasm/bin/start
-EOF
-
-scp \
-  -oConnectTimeout=10 \
-  -oStrictHostKeyChecking=no \
-  /tmp/kasm_swap_frontend_remote.sh \
-  ${USER}@"${IPS[0]}":/tmp/kasm_swap_frontend_remote.sh
-ssh \
-  -oConnectTimeout=10 \
-  -oStrictHostKeyChecking=no \
-  ${USER}@"${IPS[0]}" \
-  "bash /tmp/kasm_swap_frontend_remote.sh"
-
-# Re-confirm readiness with the swapped frontend before Playwright runs.
-ready_check
 
 # Playwright tester. Runs directly in this job's own node:24 shell rather
 # than a separate tester image. Runs on both ARCH legs.
