@@ -1,1 +1,0 @@
-Debian Bullseye desktop for Kasm Workspaces
