@@ -8,8 +8,8 @@ stages:
   - template
   - run
 variables:
-  BASE_TAG: "develop"
-  USE_PRIVATE_IMAGES: 0
+  BASE_TAG: "integ_otel-openapi-pubsub"
+  USE_PRIVATE_IMAGES: 1
   KASM_RELEASE: "1.18.0"
   # Once DEVOPS-74 has merged and shipped in a release (both kasm_backend
   # and kasmweb), switch test.sh back to a static installer pinned to the
