@@ -22,7 +22,7 @@ variables:
   # kasmweb branch the Playwright specs are cloned from (see
   # ci-scripts/test.sh). DEVOPS-74 (KASM_TEST_IMAGE_REFS support) has merged
   # into kasmweb develop; switch to a release branch once one ships it.
-  KASMWEB_VERSION: "KASMWEB_VERSION=feature/DEVOPS-174-input-observation-in-playwright"
+  KASMWEB_VERSION: "feature/DEVOPS-174-input-observation-in-playwright"
   # Space-separated images whose test job also runs the session-integrity
   # specs (see ci-scripts/test.sh). Pilot set; empty skips them everywhere.
   SESSION_INTEGRITY_IMAGES: "chromium blender ubuntu-jammy-desktop"
