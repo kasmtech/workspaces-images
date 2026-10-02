@@ -25,7 +25,7 @@ variables:
   KASMWEB_VERSION: "feature/DEVOPS-174-input-observation-in-playwright"
   # Space-separated images whose test job also runs the session-integrity
   # specs (see ci-scripts/test.sh). Pilot set; empty skips them everywhere.
-  SESSION_INTEGRITY_IMAGES: "chromium blender ubuntu-jammy-desktop"
+  SESSION_INTEGRITY_IMAGES: "chromium blender ubuntu-jammy-desktop sublime-text thunderbird kali-rolling-desktop vlc"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
