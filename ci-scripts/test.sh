@@ -374,11 +374,11 @@ PLAYWRIGHT_STATUS=$?
 # Session-integrity checks (input delivery through the viewer, later vision).
 # Runs even when the image-specs failed, so its results are still collected,
 # with its own JUnit file and output directory so the first run's results
-# survive. Runs only for images listed in SESSION_INTEGRITY_IMAGES
-# (space-separated, empty by default), and skipped when the kasmweb branch
-# has no such project yet.
+# survive. Runs on every image unless SESSION_INTEGRITY_IMAGES (space-separated)
+# narrows it to the listed ones, and skipped when the kasmweb branch has no
+# such project yet.
 SESSION_INTEGRITY_STATUS=0
-if [[ " ${SESSION_INTEGRITY_IMAGES:-} " != *" ${NAME} "* ]]; then
+if [[ -n "${SESSION_INTEGRITY_IMAGES:-}" && " ${SESSION_INTEGRITY_IMAGES} " != *" ${NAME} "* ]]; then
   echo "${NAME} isn't in SESSION_INTEGRITY_IMAGES; skipping session-integrity tests"
 else
   (
