@@ -22,7 +22,7 @@ variables:
   # kasmweb branch the Playwright specs are cloned from (see
   # ci-scripts/test.sh). DEVOPS-74 (KASM_TEST_IMAGE_REFS support) has merged
   # into kasmweb develop; switch to a release branch once one ships it.
-  KASMWEB_VERSION: "feature/DEVOPS-165-174-merged"
+  KASMWEB_VERSION: "feature/DEVOPS-174-input-observation-in-playwright"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
