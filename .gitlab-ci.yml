@@ -10,7 +10,7 @@ stages:
 variables:
   BASE_TAG: "develop"
   USE_PRIVATE_IMAGES: 0
-  KASM_RELEASE: "1.18.0"
+  KASM_RELEASE: "1.20.0"
   # Once DEVOPS-74 has merged and shipped in a release (both kasm_backend
   # and kasmweb), switch test.sh back to a static installer pinned to the
   # latest release instead of TEST_INSTALLER_ROLLING below.
