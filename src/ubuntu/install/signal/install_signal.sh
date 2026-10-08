@@ -9,7 +9,7 @@ if [ "${ARCH}" == "arm64" ] ; then
 fi
 # Signal only releases its desktop app under the xenial release, however it is compatible with all versions of Debian and Ubuntu that we support.
 # apt-key add is deprecated in trixie and later, use keyrings instead
-if grep -q "trixie" /etc/os-release; then
+if ! command -v apt-key >/dev/null 2>&1 || grep -q "trixie" /etc/os-release; then
   mkdir -p /usr/share/keyrings
   wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor | tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
   echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\

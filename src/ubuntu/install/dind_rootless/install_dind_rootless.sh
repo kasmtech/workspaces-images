@@ -3,7 +3,7 @@ set -ex
 
 # Enable Docker repo
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
-if grep -q "VERSION_CODENAME=resolute" /etc/os-release; then
+if ! command -v apt-key >/dev/null 2>&1; then
   # apt-key is removed on newer apt releases, use a keyring instead
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
