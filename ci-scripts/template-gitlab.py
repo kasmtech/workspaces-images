@@ -22,7 +22,6 @@ if os.getenv('USE_PRIVATE_IMAGES') == 1:
 with open("template-vars.yaml", 'r') as stream:
   templateVars = yaml.safe_load(stream)
   templateVars['KASM_RELEASE'] = os.getenv('KASM_RELEASE')
-  templateVars['TEST_INSTALLER'] = os.getenv('TEST_INSTALLER')
   templateVars['USE_PRIVATE_IMAGES'] = os.getenv('USE_PRIVATE_IMAGES')
   templateVars['BASE_TAG'] = os.getenv('BASE_TAG')
   templateVars['FILE_LIMITS'] = fileLimits

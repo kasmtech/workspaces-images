@@ -16,18 +16,23 @@ variables:
   KASM_RELEASE: "{{ KASM_RELEASE }}"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  TEST_INSTALLER: "{{ TEST_INSTALLER }}"
   MIRROR_ORG_NAME: "{{ MIRROR_ORG_NAME }}"
 default:
   retry: 2
-before_script:
-  - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi 
-  - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi 
-  - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
+  before_script: !reference [.common_before_script, before_script]
 
 include:
   - component: $CI_SERVER_FQDN/kasm-technologies/internal/qa-infrastructure/monitor-in-grafana@develop
+
+# Shared login/branch-sanitizing lines, referenced both by `default:` above
+# and directly by the test_ jobs below, which override before_script to
+# install a docker CLI first.
+.common_before_script:
+  before_script:
+    - docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
+    - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $QUAY_USERNAME --password $QUAY_PASSWORD quay.io; fi
+    - if [ "$CI_COMMIT_REF_PROTECTED" == "true" ]; then docker login --username $GHCR_USERNAME --password $GHCR_PASSWORD ghcr.io; fi
+    - export SANITIZED_BRANCH="$(echo $CI_COMMIT_REF_NAME | sed -r 's#^release/##' | sed 's/\//_/g')"
 
 .run_rules:
   rules:
@@ -111,6 +116,12 @@ build_{{ IMAGE.name }}:
 {% for IMAGE in multiImages %}
 test_{{ IMAGE.name }}:
   stage: test
+  image: "node:24"
+  before_script:
+    # node:24 has no docker CLI preinstalled, needed here for docker login
+    # and for the Playwright leg's own docker build/pull over ssh.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -127,13 +138,22 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "${ARCH}" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
+  artifacts:
+    # kasmweb-checkout/ prefix: test.sh runs playwright from that directory,
+    # so its relative output paths resolve there.
+    when: always
+    paths:
+      - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
+    expire_in: 1 day
+    reports:
+      junit: kasmweb-checkout/playwright-results/results.xml
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -142,6 +162,11 @@ test_{{ IMAGE.name }}:
 {% for IMAGE in singleImages %}
 test_{{ IMAGE.name }}:
   stage: test
+  image: "node:24"
+  before_script:
+    # See the matching multiImages test_ job comment above -- same reasoning.
+    - apt-get update && apt-get install -y --no-install-recommends docker.io
+    - !reference [.common_before_script, before_script]
   extends:
     - .run_rules
     - .monitor-in-grafana
@@ -158,13 +183,21 @@ test_{{ IMAGE.name }}:
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
       {% endfor %}{% endif %}
   script:
-    - apk add bash
     - bash ci-scripts/test.sh "{{ IMAGE.name }}" "{{ IMAGE.base }}" "{{ IMAGE.dockerfile }}" "x86_64" "${EC2_LAUNCHER_ID}" "${EC2_LAUNCHER_SECRET}"
   needs:
     - build_{{ IMAGE.name }}
   tags:
     - oci-amd-scheduled
   retry: 1
+  artifacts:
+    # See the matching multiImages test_ job comment above -- same reasoning.
+    when: always
+    paths:
+      - kasmweb-checkout/playwright-results/
+      - kasmweb-checkout/test-results/
+    expire_in: 1 day
+    reports:
+      junit: kasmweb-checkout/playwright-results/results.xml
 {% endfor %}
 
 ############################################
@@ -184,9 +217,9 @@ manifest_{{ IMAGE.name }}:
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
-      when: always
+      when: on_success
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
-      when: always
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
@@ -201,7 +234,8 @@ manifest_{{ IMAGE.name }}:
     #{% if IMAGE.singleapp %}
     #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "multi" "{{ IMAGE.base }}"{% endif %}
   needs:
-    - test_{{ IMAGE.name }}
+    - job: test_{{ IMAGE.name }}
+      artifacts: false
   retry: 1
   tags:
     - oci-amd-scheduled
@@ -221,9 +255,9 @@ manifest_{{ IMAGE.name }}:
     - if: $PARENT_PIPELINE_SOURCE == "schedule" && $RUN_SET != "{{ IMAGE.runset }}"
       when: never
     - if: $CI_COMMIT_REF_NAME == "develop" || $CI_COMMIT_REF_NAME =~ /^release\/.*$/
-      when: always
+      when: on_success
     - if: $PARENT_PIPELINE_SOURCE == "merge_request_event"
-      when: always
+      when: on_success
     {% if FILE_LIMITS %}- changes:
       {% for FILE in files %}- {{ FILE }}
       {% endfor %}{% for FILE in IMAGE.changeFiles %}- {{ FILE }}
@@ -238,7 +272,8 @@ manifest_{{ IMAGE.name }}:
     #{% if IMAGE.singleapp %}
     #- bash ci-scripts/app-layer.sh "{{ IMAGE.name }}" "single" "{{ IMAGE.base }}"{% endif %}
   needs:
-    - test_{{ IMAGE.name }}
+    - job: test_{{ IMAGE.name }}
+      artifacts: false
   retry: 1
   tags:
     - oci-amd-scheduled
