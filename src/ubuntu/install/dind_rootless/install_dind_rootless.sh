@@ -3,9 +3,18 @@ set -ex
 
 # Enable Docker repo
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-echo "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > \
+if grep -q "VERSION_CODENAME=resolute" /etc/os-release; then
+  # apt-key is removed on newer apt releases, use a keyring instead
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  echo "deb [arch=${ARCH} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > \
     /etc/apt/sources.list.d/docker.list
+else
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  echo "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > \
+    /etc/apt/sources.list.d/docker.list
+fi
 
 # Install deps
 apt-get update
