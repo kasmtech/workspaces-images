@@ -22,8 +22,10 @@ variables:
   # this branch merges to develop.
   TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-builder/feature/1.20.0/integ-otel-openapi-pubsub/kasm-workspaces-integ-otel-openapi-pubsub.tar.gz"
   # kasmweb branch the Playwright specs are cloned from (see
-  # ci-scripts/test.sh); kept on the same integ branch as the installer.
-  KASMWEB_VERSION: "integ/otel-openapi-pubsub"
+  # ci-scripts/test.sh). Stays on develop even against the integ installer:
+  # the per-image Playwright projects (DEVOPS-74) are not on kasmweb's integ
+  # branch yet.
+  KASMWEB_VERSION: "develop"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
