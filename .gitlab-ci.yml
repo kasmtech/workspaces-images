@@ -8,7 +8,9 @@ stages:
   - template
   - run
 variables:
-  BASE_TAG: "integ_otel-openapi-pubsub"
+  # Temporary: build on the core images from workspaces-core-images !441 to
+  # verify the builds pass. Revert to "integ_otel-openapi-pubsub" before merging.
+  BASE_TAG: "feature_DEV-1130-integ-test-installer"
   USE_PRIVATE_IMAGES: 1
   KASM_RELEASE: "1.18.0"
   # Once DEVOPS-74 has merged and shipped in a release (both kasm_backend
