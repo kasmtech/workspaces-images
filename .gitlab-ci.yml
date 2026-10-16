@@ -15,14 +15,15 @@ variables:
   # and kasmweb), switch test.sh back to a static installer pinned to the
   # latest release instead of TEST_INSTALLER_ROLLING below.
   # TEST_INSTALLER: "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.18.0.09f70a.tar.gz"
-  # Rolling develop Kasm install bundle, used by the Playwright tester
-  # (ci-scripts/test.sh), which needs UI/API changes newer than any pinned
-  # release.
-  TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm_backend/branches/develop/kasm_workspaces_develop.tar.gz"
+  # Rolling integ Kasm install bundle, used by the Playwright tester
+  # (ci-scripts/test.sh). Images on this branch ship the integ squid adapter,
+  # whose web filter endpoints only the integ backend serves, so testing them
+  # against the develop bundle fails. Switch back to the develop bundle when
+  # this branch merges to develop.
+  TEST_INSTALLER_ROLLING: "https://kasmweb-build-artifacts.s3.amazonaws.com/kasm-builder/feature/1.20.0/integ-otel-openapi-pubsub/kasm-workspaces-integ-otel-openapi-pubsub.tar.gz"
   # kasmweb branch the Playwright specs are cloned from (see
-  # ci-scripts/test.sh). DEVOPS-74 (KASM_TEST_IMAGE_REFS support) has merged
-  # into kasmweb develop; switch to a release branch once one ships it.
-  KASMWEB_VERSION: "develop"
+  # ci-scripts/test.sh); kept on the same integ branch as the installer.
+  KASMWEB_VERSION: "integ/otel-openapi-pubsub"
   MIRROR_ORG_NAME: "kasmtech"
   DOCKER_AUTH_CONFIG: ${_DOCKER_AUTH_CONFIG}
 default:
