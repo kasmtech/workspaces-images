@@ -43,24 +43,75 @@ if supports_vulkan; then
   echo 'vulkan supported'
 fi
 
+DEVICE_EXTENSION_DIR="/dockerstartup/device_extension/workspace-device-extension"
+DEVICE_EXTENSION_CRX="\${DEVICE_EXTENSION_DIR}.crx"
+EXTENSION_FLAGS=
+# A packed CRX is registered as an external extension at build time, only fall back to
+#   loading the unpacked extension when the browser build still allows it.
+if [ ! -f "\${DEVICE_EXTENSION_CRX}" ] && [ -d "\${DEVICE_EXTENSION_DIR}" ]; then
+  EXTENSION_FLAGS="--load-extension=\${DEVICE_EXTENSION_DIR}"
+fi
+
 if [ -f /opt/VirtualGL/bin/vglrun ] && [ ! -z "\${KASM_EGL_CARD}" ] && [ ! -z "\${KASM_RENDERD}" ] && [ -O "\${KASM_RENDERD}" ] && [ -O "\${KASM_EGL_CARD}" ] ; then
     echo "Starting Brave with GPU Acceleration on EGL device \${KASM_EGL_CARD}"
-    vglrun -d "\${KASM_EGL_CARD}" /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\${VULKAN_FLAGS}" "\$@" 
+    vglrun -d "\${KASM_EGL_CARD}" /opt/brave.com/brave/brave-browser ${CHROME_ARGS} \${VULKAN_FLAGS} \${EXTENSION_FLAGS} "\$@"
 else
     echo "Starting Brave"
-    /opt/brave.com/brave/brave-browser ${CHROME_ARGS} "\${VULKAN_FLAGS}" "\$@"
+    /opt/brave.com/brave/brave-browser ${CHROME_ARGS} \${VULKAN_FLAGS} \${EXTENSION_FLAGS} "\$@"
 fi
 EOL
 chmod +x /usr/bin/brave-browser
 cp /usr/bin/brave-browser /usr/bin/brave
+
+# Register the Kasm workspace device extension as an external extension.
+register_device_extension() {
+  DEVICE_EXTENSION_DIR="${DEVICE_EXTENSION_DIR:-/dockerstartup/device_extension/workspace-device-extension}"
+  DEVICE_EXTENSION_CRX="${DEVICE_EXTENSION_CRX:-${DEVICE_EXTENSION_DIR}.crx}"
+  DEVICE_EXTENSION_MANIFEST="${DEVICE_EXTENSION_DIR}/manifest.json"
+
+  if [ ! -f "${DEVICE_EXTENSION_CRX}" ] || [ ! -f "${DEVICE_EXTENSION_MANIFEST}" ]; then
+    echo "No packed device extension at ${DEVICE_EXTENSION_CRX}, skipping external extension registration"
+    return 0
+  fi
+
+  DEVICE_EXTENSION_KEY=$(sed -n 's/.*"key"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "${DEVICE_EXTENSION_MANIFEST}")
+  DEVICE_EXTENSION_VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "${DEVICE_EXTENSION_MANIFEST}")
+  if [ -z "${DEVICE_EXTENSION_KEY}" ] || [ -z "${DEVICE_EXTENSION_VERSION}" ]; then
+    echo "Device extension manifest has no key or version, skipping external extension registration"
+    return 0
+  fi
+
+  DEVICE_EXTENSION_ID=$(printf '%s' "${DEVICE_EXTENSION_KEY}" | base64 -d | sha256sum | cut -c1-32 | tr '0-9a-f' 'a-p')
+
+  for DEVICE_EXTENSION_TARGET in "$@"; do
+    mkdir -p "${DEVICE_EXTENSION_TARGET}"
+    cat >"${DEVICE_EXTENSION_TARGET}/${DEVICE_EXTENSION_ID}.json" <<EOF
+    {
+      "external_crx": "${DEVICE_EXTENSION_CRX}",
+      "external_version": "${DEVICE_EXTENSION_VERSION}"
+    }
+EOF
+  done
+
+  # Keep the extension installable if a deployment applies an extension blocklist.
+  if [ -n "${DEVICE_EXTENSION_POLICY_DIR:-}" ]; then
+    mkdir -p "${DEVICE_EXTENSION_POLICY_DIR}"
+    cat >"${DEVICE_EXTENSION_POLICY_DIR}/kasm_device_extension.json" <<EOF
+    {
+      "ExtensionInstallAllowlist": ["${DEVICE_EXTENSION_ID}"]
+    }
+EOF
+  fi
+
+  echo "Registered device extension ${DEVICE_EXTENSION_ID} version ${DEVICE_EXTENSION_VERSION}"
+}
+
 
 sed -i 's@exec -a "$0" "$HERE/brave-browser" "$\@"@@g' /usr/bin/x-www-browser
 cat >>/usr/bin/x-www-browser <<EOL
 exec -a "\$0" "\$HERE/brave" "${CHROME_ARGS}"  "\$@"
 EOL
 
-# Vanilla Chrome looks for policies in /etc/opt/chrome/policies/managed which is used by web filtering.
-#   Create a symlink here so filter is applied to brave as well.
 mkdir -p /etc/opt/chrome/policies/
 mkdir -p /etc/brave
 ln -s /etc/opt/chrome/policies /etc/brave/policies
@@ -83,3 +134,6 @@ fi
 # Cleanup for app layer
 chown -R 1000:0 $HOME
 find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \;
+
+DEVICE_EXTENSION_POLICY_DIR=/etc/brave/policies/managed \
+  register_device_extension /usr/share/brave/extensions /opt/brave.com/brave/extensions
