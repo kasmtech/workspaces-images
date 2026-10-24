@@ -724,7 +724,7 @@ multiImages:
       - src/ubuntu/install/chrome/**
   - name: ubuntu-resolute-dind
     runset: set-b
-    singleapp: true
+    singleapp: false
     base: core-ubuntu-resolute
     dockerfile: dockerfile-kasm-ubuntu-resolute-dind
     changeFiles:
@@ -732,7 +732,7 @@ multiImages:
       - src/ubuntu/install/docker/**
   - name: ubuntu-resolute-dind-rootless
     runset: set-b
-    singleapp: true
+    singleapp: false
     base: core-ubuntu-resolute
     dockerfile: dockerfile-kasm-ubuntu-resolute-dind-rootless
     changeFiles:
