@@ -41,7 +41,6 @@ kasm_startup() {
             if ! pgrep -x $PGREP > /dev/null
             then
                 /usr/bin/filter_ready
-                /usr/bin/desktop_ready
                 set +e
                 sudo /usr/bin/supervisord -n &
                 set -e
