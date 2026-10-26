@@ -42,7 +42,7 @@ RUN \
 
 # Remove desktop shortcuts
 RUN rm $HOME/Desktop/*.desktop \
-    && sed -i 's#inode/directory;##g' /usr/share/applications/code.desktop
+    && sed -i 's#inode/directory;##g' /usr/share/applications/com.microsoft.VSCode.desktop
 
 # Userspace Runtime
 ENV HOME /home/kasm-user
