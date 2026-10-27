@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
-START_COMMAND="/usr/share/discord/Discord"
-PGREP="Discord"
+START_COMMAND="/usr/bin/discord"
+PGREP="discord"
 export MAXIMIZE="true"
 export MAXIMIZE_NAME="Discord"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
