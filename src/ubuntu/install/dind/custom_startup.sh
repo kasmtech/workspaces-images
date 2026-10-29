@@ -18,7 +18,6 @@ while [[ $1 != -- ]]; do
 done
 shift
 
-# Process non-option arguments.
 for arg; do
     echo "arg! $arg"
 done
@@ -32,7 +31,7 @@ kasm_startup() {
         URL=$LAUNCH_URL
     fi
 
-    if  [ -z "$DISABLE_CUSTOM_STARTUP" ] ||  [ -n "$FORCE" ]  ; then
+    if [ -z "$DISABLE_CUSTOM_STARTUP" ] || [ -n "$FORCE" ] ; then
 
         echo "Entering process startup loop"
         set +x
@@ -42,15 +41,14 @@ kasm_startup() {
             then
                 /usr/bin/filter_ready
                 set +e
-                sudo /usr/bin/supervisord -n &
+                sudo $START_COMMAND $ARGS &
                 set -e
             fi
             sleep 1
         done
         set -x
-    
-    fi
 
-} 
+    fi
+}
 
 kasm_startup
