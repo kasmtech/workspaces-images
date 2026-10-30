@@ -39,6 +39,29 @@ apt-get install -y \
 # User settings
 echo 'hosts: files dns' > /etc/nsswitch.conf
 
+# Passwordless Sudo
+echo 'kasm-user:kasm-user' | chpasswd
+echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Resolute (26.04) compatibility fixes
+# 1. iptables legacy mode - Resolute uses nftables by default, dockerd needs iptables-legacy
+update-alternatives --set iptables /usr/sbin/iptables-legacy || true
+update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy || true
+
+# 2. Ensure cgroup v2 compatibility - Resolute removed cgroup v1
+mkdir -p /home/kasm-user/.config/docker
+cat > /home/kasm-user/.config/docker/daemon.json << 'EOF'
+{
+  "storage-driver": "fuse-overlayfs",
+  "exec-opts": ["native.cgroupdriver=cgroupfs"]
+}
+EOF
+chown -R 1000:0 /home/kasm-user/.config/docker
+
+# 3. sudo-rs compatibility - Resolute uses sudo-rs, ensure sudoers works
+echo 'kasm-user ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/kasm-user
+chmod 0440 /etc/sudoers.d/kasm-user
+
 # Cleanup
 if [ -z ${SKIP_CLEAN+x} ]; then
   apt-get autoclean
