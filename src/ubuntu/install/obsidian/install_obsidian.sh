@@ -68,11 +68,19 @@ fi
 log "sha256 verified"
 
 chmod 755 "$TARGET"
-(cd "$APP_DIR" && "$TARGET" --appimage-extract >/dev/null)
+
+log "extracting AppImage"
+(cd "$APP_DIR" && "$TARGET" --appimage-extract > /dev/null)
 rm -f "$TARGET"
 chown -R 1000:1000 "$APP_DIR"
 
-[[ -f "${SQ}/AppRun" && -f "${SQ}/obsidian.desktop" ]] || die 7 "unexpected AppImage layout after extraction. The AppImage may be corrupted."
+[[ -f "${SQ}/AppRun" ]] || die 7 "unexpected AppImage layout after extraction: missing AppRun. The AppImage may be corrupted."
+
+# Obsidian's desktop file name has changed over versions (e.g. obsidian.desktop
+# vs md.obsidian.Obsidian.desktop). Find it dynamically instead of hardcoding.
+DESKTOP_FILE="$(find "${SQ}" -maxdepth 1 -name '*.desktop' | head -n1)"
+[[ -n "$DESKTOP_FILE" ]] || die 7 "unexpected AppImage layout after extraction: no .desktop file found. The AppImage may be corrupted."
+log "found desktop file: $(basename "$DESKTOP_FILE")"
 
 cat > "${SQ}/launcher" <<'EEOF'
 #!/usr/bin/env bash
@@ -82,11 +90,11 @@ EEOF
 sed -i "s@\${SQUASHFS_ROOT:-.}@${SQ}@" "${SQ}/launcher"
 chmod 755 "${SQ}/launcher"
 
-sed -i "s@^Exec=.*@Exec=${SQ}/launcher@" "${SQ}/obsidian.desktop"
-sed -i "s@^Icon=.*@Icon=${SQ}/obsidian.png@" "${SQ}/obsidian.desktop"
+sed -i "s@^Exec=.*@Exec=${SQ}/launcher@" "${DESKTOP_FILE}"
+sed -i "s@^Icon=.*@Icon=${SQ}/obsidian.png@" "${DESKTOP_FILE}"
 
 install -d "$HOME/Desktop"
-install -m 755 "${SQ}/obsidian.desktop" "$HOME/Desktop/obsidian.desktop"
-install -m 755 "${SQ}/obsidian.desktop" /usr/share/applications/obsidian.desktop
+install -m 755 "${DESKTOP_FILE}" "$HOME/Desktop/obsidian.desktop"
+install -m 755 "${DESKTOP_FILE}" /usr/share/applications/obsidian.desktop
 
 log "installed ${TAG} to ${SQ}"
