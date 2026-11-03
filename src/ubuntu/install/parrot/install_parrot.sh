@@ -2,7 +2,17 @@
 set -ex
 
 # Set proper bashrc
+kasm_bashrc_lines=""
+if [ -f "$HOME/.bashrc" ]; then
+  kasm_bashrc_lines=$(grep 'generate_container_user' "$HOME/.bashrc" || true)
+fi
+
 cp /root/.bashrc $HOME/.bashrc
+
+if [ -n "$kasm_bashrc_lines" ]; then
+  printf '\n%s\n' "$kasm_bashrc_lines" >> $HOME/.bashrc
+fi
+
 chown 1000:1000 $HOME/.bashrc
 
 # Install parrot tools
