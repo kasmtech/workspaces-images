@@ -28,7 +28,12 @@ kasm_startup() {
                 bash ${MAXIMIZE_SCRIPT} &
                 $START_COMMAND $ARGS $URL &
                 sleep 3
-                chromium-browser https://localhost:8834 --start-maximized &
+                BROWSER="$(command -v chromium || command -v chromium-browser || true)"
+                if [ -n "$BROWSER" ]; then
+                    "$BROWSER" https://localhost:8834 --start-maximized &
+                else
+                    echo "Neither chromium nor chromium-browser found; skipping Nessus UI launch" >&2
+                fi
                 set -e
             fi
             sleep 1
