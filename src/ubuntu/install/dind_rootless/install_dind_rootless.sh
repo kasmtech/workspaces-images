@@ -3,9 +3,18 @@ set -ex
 
 # Enable Docker repo
 ARCH=$(arch | sed 's/aarch64/arm64/g' | sed 's/x86_64/amd64/g')
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-echo "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > \
+if ! command -v apt-key >/dev/null 2>&1; then
+  # apt-key is removed on newer apt releases, use a keyring instead
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  echo "deb [arch=${ARCH} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > \
     /etc/apt/sources.list.d/docker.list
+else
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  echo "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" > \
+    /etc/apt/sources.list.d/docker.list
+fi
 
 # Install deps
 apt-get update
@@ -29,6 +38,23 @@ apt-get install -y \
 
 # User settings
 echo 'hosts: files dns' > /etc/nsswitch.conf
+
+
+# Resolute (26.04) compatibility fixes
+# 1. iptables legacy mode - Resolute uses nftables by default, dockerd needs iptables-legacy
+update-alternatives --set iptables /usr/sbin/iptables-legacy || true
+update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy || true
+
+# 2. Ensure cgroup v2 compatibility - Resolute removed cgroup v1
+mkdir -p /home/kasm-user/.config/docker
+cat > /home/kasm-user/.config/docker/daemon.json << 'EOF'
+{
+  "storage-driver": "fuse-overlayfs",
+  "exec-opts": ["native.cgroupdriver=cgroupfs"]
+}
+EOF
+chown -R 1000:0 /home/kasm-user/.config/docker
+
 
 # Cleanup
 if [ -z ${SKIP_CLEAN+x} ]; then

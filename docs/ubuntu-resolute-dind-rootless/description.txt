@@ -1,0 +1,1 @@
+Ubuntu 26.04 (Resolute) DinD Rootless for Kasm Workspaces

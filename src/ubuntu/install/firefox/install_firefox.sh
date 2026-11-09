@@ -17,7 +17,7 @@ if [[ "${DISTRO}" == @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
   dnf install -y firefox p11-kit
 elif [ "${DISTRO}" == "opensuse" ]; then
   zypper install -yn p11-kit-tools MozillaFirefox
-elif grep -q Jammy /etc/os-release || grep -q Noble /etc/os-release; then
+elif grep -q Jammy /etc/os-release || grep -q Noble /etc/os-release || grep -q Resolute /etc/os-release; then
   if [ ! -f '/etc/apt/preferences.d/mozilla-firefox' ]; then
     add-apt-repository -y ppa:mozillateam/ppa
     echo '
@@ -115,6 +115,7 @@ if [[ "${DISTRO}" != @(oracle8|rockylinux9|rockylinux8|oracle9|rhel9|almalinux9|
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox-esr/libnssckbi.so
   else
     rm -f /usr/lib/firefox/libnssckbi.so
+    mkdir -p /usr/lib/firefox/
     ln /usr/lib/$(arch)-linux-gnu/pkcs11/p11-kit-trust.so /usr/lib/firefox/libnssckbi.so
   fi
 fi
@@ -137,6 +138,7 @@ elif grep -q "ID=debian" /etc/os-release || grep -q "ID=parrot" /etc/os-release;
     preferences_file=/usr/lib/firefox-esr/defaults/pref/firefox.js
   fi
 else
+  mkdir -p /usr/lib/firefox/browser/defaults/preferences/
   preferences_file=/usr/lib/firefox/browser/defaults/preferences/firefox.js
 fi
 

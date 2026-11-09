@@ -18,7 +18,7 @@ elif [ "${DISTRO}" == "opensuse" ]; then
   if [ -z ${SKIP_CLEAN+x} ]; then
     zypper clean --all
   fi
-elif grep -q "ID=debian" /etc/os-release || grep -q "VERSION_CODENAME=noble" /etc/os-release; then
+elif grep -q "ID=debian" /etc/os-release || grep -q "VERSION_CODENAME=noble" /etc/os-release || grep -q "VERSION_CODENAME=resolute" /etc/os-release; then
   apt-get update
   apt-get install -y remmina remmina-plugin-rdp remmina-plugin-secret xdotool
   if [ -z ${SKIP_CLEAN+x} ]; then

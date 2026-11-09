@@ -356,6 +356,34 @@ multiImages:
       - src/ubuntu/install/ansible/**
       - src/ubuntu/install/chrome/**
       - src/ubuntu/install/slack/**
+  - name: ubuntu-resolute-desktop
+    runset: set-a
+    singleapp: false
+    base: core-ubuntu-resolute
+    dockerfile: dockerfile-kasm-ubuntu-resolute-desktop
+    changeFiles:
+      - dockerfile-kasm-ubuntu-resolute-desktop
+      - src/ubuntu/install/zoom/**
+      - src/ubuntu/install/vs_code/**
+      - src/ubuntu/install/tools/**
+      - src/ubuntu/install/thunderbird/**
+      - src/ubuntu/install/terraform/**
+      - src/ubuntu/install/telegram/**
+      - src/ubuntu/install/sublime_text/**
+      - src/ubuntu/install/signal/**
+      - src/ubuntu/install/remmina/**
+      - src/ubuntu/install/only_office/**
+      - src/ubuntu/install/obs/**
+      - src/ubuntu/install/nextcloud/**
+      - src/ubuntu/install/misc/**
+      - src/ubuntu/install/gimp/**
+      - src/ubuntu/install/gamepad_utils/**
+      - src/ubuntu/install/firefox/**
+      - src/ubuntu/install/cleanup/**
+      - src/ubuntu/install/chromium/**
+      - src/ubuntu/install/ansible/**
+      - src/ubuntu/install/chrome/**
+      - src/ubuntu/install/slack/**
   - name: vlc
     runset: set-b
     singleapp: true
@@ -694,6 +722,24 @@ multiImages:
       - src/ubuntu/install/cleanup/**
       - src/ubuntu/install/chromium/**
       - src/ubuntu/install/chrome/**
+  - name: ubuntu-resolute-dind
+    runset: set-b
+    singleapp: false
+    base: core-ubuntu-resolute
+    dockerfile: dockerfile-kasm-ubuntu-resolute-dind
+    changeFiles:
+      - dockerfile-kasm-ubuntu-resolute-dind
+      - src/ubuntu/install/docker/**
+  - name: ubuntu-resolute-dind-rootless
+    runset: set-b
+    singleapp: false
+    base: core-ubuntu-resolute
+    dockerfile: dockerfile-kasm-ubuntu-resolute-dind-rootless
+    changeFiles:
+      - dockerfile-kasm-ubuntu-resolute-dind-rootless
+      - src/ubuntu/install/docker/**
+      - src/ubuntu/install/dind_rootless/**
+      - src/ubuntu/install/cleanup/**
   - name: vivaldi
     runset: set-b
     singleapp: true
