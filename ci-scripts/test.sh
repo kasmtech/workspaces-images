@@ -138,7 +138,7 @@ chmod 600 /root/.ssh/id_rsa
 # Launch instance
 cat >/root/user-data <<EOL
 #!/bin/bash
-shutdown -P +60
+shutdown -P +120
 EOL
 aws ec2 run-instances \
   --image-id ${AMI} \
