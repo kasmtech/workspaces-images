@@ -144,6 +144,10 @@ test_{{ IMAGE.name }}:
   tags:
     - oci-amd-scheduled
   retry: 1
+  # test.sh exits 3 when only the session-integrity checks failed: shown as
+  # passed with warnings until those checks are trusted.
+  allow_failure:
+    exit_codes: [3]
   artifacts:
     # kasmweb-checkout/ prefix: test.sh runs playwright from that directory,
     # so its relative output paths resolve there.
@@ -151,9 +155,12 @@ test_{{ IMAGE.name }}:
     paths:
       - kasmweb-checkout/playwright-results/
       - kasmweb-checkout/test-results/
+      - kasmweb-checkout/test-results-session-integrity/
     expire_in: 1 day
     reports:
-      junit: kasmweb-checkout/playwright-results/results.xml
+      junit:
+        - kasmweb-checkout/playwright-results/results.xml
+        - kasmweb-checkout/playwright-results/session-integrity.xml
   parallel:
     matrix:
       - ARCH: [ "x86_64", "aarch64" ]
@@ -189,15 +196,22 @@ test_{{ IMAGE.name }}:
   tags:
     - oci-amd-scheduled
   retry: 1
+  # test.sh exits 3 when only the session-integrity checks failed: shown as
+  # passed with warnings until those checks are trusted.
+  allow_failure:
+    exit_codes: [3]
   artifacts:
     # See the matching multiImages test_ job comment above -- same reasoning.
     when: always
     paths:
       - kasmweb-checkout/playwright-results/
       - kasmweb-checkout/test-results/
+      - kasmweb-checkout/test-results-session-integrity/
     expire_in: 1 day
     reports:
-      junit: kasmweb-checkout/playwright-results/results.xml
+      junit:
+        - kasmweb-checkout/playwright-results/results.xml
+        - kasmweb-checkout/playwright-results/session-integrity.xml
 {% endfor %}
 
 ############################################

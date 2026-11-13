@@ -76,6 +76,7 @@ Key CI variables (set in GitLab or pipeline triggers):
 - `SKIP_TRACE_ON_FAILURE` — same artifact-size reasoning as `SKIP_DB_SNAPSHOT_ON_FAILURE`, and also gates whether Kasm instance logs are gathered on failure. Set to `false` for a real trace.
 - `TEST_INSTALLER_ROLLING` — rolling develop install bundle used by the Playwright tester; see its definition in `.gitlab-ci.yml`.
 - `KASMWEB_VERSION` — kasmweb branch the Playwright specs are cloned from; defaults to `develop`.
+- `SESSION_INTEGRITY_IMAGES` — space-separated image names that get the second Playwright run (kasmweb's `session-integrity:<name>` project) after the image-specs. Unset or empty runs it on every image; set it to narrow the run to those images. A failure only there exits 3, which the test job's `allow_failure: exit_codes: [3]` shows as passed with warnings.
 
 On `develop` and `release/*` branches, images are pushed publicly to DockerHub and Quay. Feature branches push only to an internal cache registry tagged `<arch>-<name>-<branch>-<pipeline_id>`.
 

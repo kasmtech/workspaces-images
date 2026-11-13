@@ -104,7 +104,8 @@ function turnoff() {
   # the tests failed.
   EXIT_CODE="$?"
 
-  if { [ "${EXIT_CODE}" -ne 0 ] || [ "${PLAYWRIGHT_STATUS:-0}" -ne 0 ]; } \
+  if { [ "${EXIT_CODE}" -ne 0 ] || [ "${PLAYWRIGHT_STATUS:-0}" -ne 0 ] \
+    || [ "${SESSION_INTEGRITY_STATUS:-0}" -ne 0 ]; } \
     && [ "${SKIP_TRACE_ON_FAILURE:-true}" != "true" ]; then
     gather_kasm_logs
   fi
@@ -117,6 +118,14 @@ function turnoff() {
       "sudo poweroff" || :
   done
   aws ec2 delete-key-pair --key-name ${RAND} || :
+
+  # Exit 3 is reserved for a tolerated session-integrity failure (the job's
+  # allow_failure: exit_codes). Under `set -e` any failing command's status
+  # becomes the script's (ssh passes the remote script's through), so a 3
+  # from anywhere else is turned into 1 rather than tolerated.
+  if [ "${EXIT_CODE}" -eq 3 ] && [ "${SESSION_INTEGRITY_TOLERATED:-false}" != "true" ]; then
+    exit 1
+  fi
 }
 trap turnoff EXIT
 
@@ -129,7 +138,7 @@ chmod 600 /root/.ssh/id_rsa
 # Launch instance
 cat >/root/user-data <<EOL
 #!/bin/bash
-shutdown -P +60
+shutdown -P +120
 EOL
 aws ec2 run-instances \
   --image-id ${AMI} \
@@ -319,18 +328,15 @@ git clone --depth 1 --branch "${KASMWEB_VERSION:-develop}" \
 # Playwright tester. Runs directly in this job's own node:24 shell rather
 # than a separate tester image. Runs on both ARCH legs.
 #
-# PLAYWRIGHT_STATUS is captured explicitly, not left to `set -e`, so
-# `turnoff` still runs and shuts the instance down before the script exits.
-# It's the job's only result signal.
-PLAYWRIGHT_STATUS=0
-echo "Running Playwright tests against ${NAME}"
-# Subshell scopes the cd and all these exports to just this step.
-set +e
-(
-  set -e
-  cd kasmweb-checkout
-  npm ci
-  npx playwright install --with-deps chromium
+# PLAYWRIGHT_STATUS and SESSION_INTEGRITY_STATUS are captured explicitly,
+# not left to `set -e`, so both runs happen and `turnoff` still shuts the
+# instance down. Together they're the job's result signal.
+
+# The environment both Playwright runs share; called inside each run's
+# subshell, so the exports stay scoped to it. DOCKER_HOST, exported above, is
+# inherited: imageWarmup.ts's `docker pull` and the session-integrity specs'
+# `docker exec` need it to reach the instance daemon.
+function export_playwright_env() {
   export CI=true
   export KASM_ADDR="https://${IPS[0]}"
   export USER_NAME="admin@kasm.local"
@@ -349,14 +355,62 @@ set +e
   # Same reasoning: bounds trace.zip size (70MB+ each) across per-image
   # runs. Also gates gather_kasm_logs above. Set false for a real trace.
   export SKIP_TRACE_ON_FAILURE="${SKIP_TRACE_ON_FAILURE:-true}"
-  # DOCKER_HOST is exported above and inherited here; imageWarmup.ts's own
-  # `docker pull` needs it to reach the same instance daemon.
+}
+
+PLAYWRIGHT_STATUS=0
+echo "Running Playwright tests against ${NAME}"
+# Subshell scopes the cd and all these exports to just this step.
+set +e
+(
+  set -e
+  cd kasmweb-checkout
+  npm ci
+  npx playwright install --with-deps chromium
+  export_playwright_env
   npx playwright test --project="image-spec:${NAME}" --workers=1
 )
 PLAYWRIGHT_STATUS=$?
+
+# Session-integrity checks (input delivery through the viewer, later vision).
+# Runs even when the image-specs failed, so its results are still collected,
+# with its own JUnit file and output directory so the first run's results
+# survive. Runs on every image unless SESSION_INTEGRITY_IMAGES (space-separated)
+# narrows it to the listed ones, and skipped when the kasmweb branch has no
+# such project yet.
+SESSION_INTEGRITY_STATUS=0
+if [[ -n "${SESSION_INTEGRITY_IMAGES:-}" && " ${SESSION_INTEGRITY_IMAGES} " != *" ${NAME} "* ]]; then
+  echo "${NAME} isn't in SESSION_INTEGRITY_IMAGES; skipping session-integrity tests"
+else
+  (
+    set -e
+    cd kasmweb-checkout
+    export_playwright_env
+    # Set before --list too, which otherwise writes its listing over results.xml.
+    export PLAYWRIGHT_JUNIT_OUTPUT_FILE="playwright-results/session-integrity.xml"
+    if ! list_output="$(npx playwright test --list --project="session-integrity:${NAME}" 2>&1)"; then
+      if grep -q 'Project(s) .* not found' <<<"${list_output}"; then
+        echo "No session-integrity:${NAME} project on this kasmweb branch; skipping"
+        exit 0
+      fi
+      echo "${list_output}"
+      echo "Listing session-integrity:${NAME} failed"
+      exit 1
+    fi
+    echo "Running session-integrity tests against ${NAME}"
+    npx playwright test --project="session-integrity:${NAME}" --workers=1 \
+      --output=test-results-session-integrity
+  )
+  SESSION_INTEGRITY_STATUS=$?
+fi
 set -e
 
-echo "Playwright tester exit status: ${PLAYWRIGHT_STATUS}"
+echo "Playwright exit status: image-spec ${PLAYWRIGHT_STATUS}, session-integrity ${SESSION_INTEGRITY_STATUS}"
 if [ "${PLAYWRIGHT_STATUS}" -ne 0 ]; then
   exit "${PLAYWRIGHT_STATUS}"
+fi
+# Tolerated as "passed with warnings" until the session-integrity checks are
+# trusted; then this exits non-zero like an image-spec failure.
+if [ "${SESSION_INTEGRITY_STATUS}" -ne 0 ]; then
+  SESSION_INTEGRITY_TOLERATED=true
+  exit 3
 fi

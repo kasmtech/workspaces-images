@@ -1,4 +1,4 @@
-############ 
+############
 # Settings #
 ############
 image: docker:29.4.3
@@ -84,7 +84,7 @@ pipeline_readme:
     include:
       - artifact: gitlab-ci.yml
         job: template
-        
+
 pipeline_readme_quay:
   stage: run
   only:
@@ -96,7 +96,7 @@ pipeline_readme_quay:
     include:
       - artifact: gitlab-ci.yml
         job: template
-        
+
 pipeline_revert:
   stage: run
   only:
