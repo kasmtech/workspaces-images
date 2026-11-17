@@ -12,7 +12,7 @@ mkdir -p $HOME/.config/discord/
 echo '{"SKIP_HOST_UPDATE": true}' > $HOME/.config/discord/settings.json
 
 # Desktop file setup
-sed -i "s@Exec=/usr/share/discord/Discord@Exec=/usr/share/discord/Discord --no-sandbox@g"  /usr/share/applications/discord.desktop
+sed -i "s@Exec=/usr/bin/discord@Exec=/usr/bin/discord --no-sandbox@g"  /usr/share/applications/discord.desktop
 cp /usr/share/applications/discord.desktop $HOME/Desktop/
 chmod +x $HOME/Desktop/discord.desktop
 
